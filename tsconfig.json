@@ -1,0 +1,29 @@
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "utils/*": ["./src/utils/*"],
+      "constants/*": ["./src/constants/*"],
+      "components/*": ["./src/components/*"],
+      "images/*": ["./src/assets/images/*"],
+      "services/*": ["./src/services/*"],
+      "pages/*": ["./src/pages/*"],
+      "store/*": ["./src/store/*"],
+      "navigation/*": ["./src/navigation/*"],
+      "staticLists/*": ["./src/staticLists/*"],
+      "enums/*": ["./src/enums/*"],
+      "@src/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "./index.js",
+    "App.tsx",
+    "src",
+    "@types",
+    "__tests__",
+    "modules/mfa"
+  ],
+  "exclude": ["node_modules", "jest-setup.js", "__mocks__"]
+}
