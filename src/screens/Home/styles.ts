@@ -1,11 +1,17 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { StyleSheet } from 'react-native';
+import { AppColors } from 'modules/theme/src';
 
 const styles = StyleSheet.create({
-  scrollView: { marginVertical: ResponsiveDimensions.vs(8) },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scrollView: {
+    flex: 1,
+  },
   scrollViewContent: {
-    paddingVertical: ResponsiveDimensions.vs(8),
-    gap: ResponsiveDimensions.vs(8),
+    paddingBottom: ResponsiveDimensions.vs(100), // Space for bottom navigation
   },
 });
 

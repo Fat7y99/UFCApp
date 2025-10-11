@@ -1,0 +1,15 @@
+export default {
+  title: 'Edit Profile',
+  username: 'username',
+  fullName: 'Full Name',
+  email: 'Email',
+  mobileNumber: 'Mobile Number',
+  gender: 'Gender',
+  male: 'Male',
+  female: 'Female',
+  dateOfBirth: 'Date of Birth',
+  datePlaceholder: 'Select date',
+  address: 'Address',
+  addressPlaceholder: 'Enter your address',
+  saveButton: 'SAVE',
+};

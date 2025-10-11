@@ -1,0 +1,15 @@
+export default {
+  title: 'تعديل الملف الشخصي',
+  username: 'اسم المستخدم',
+  fullName: 'الاسم الكامل',
+  email: 'البريد الإلكتروني',
+  mobileNumber: 'رقم الهاتف المحمول',
+  gender: 'الجنس',
+  male: 'ذكر',
+  female: 'أنثى',
+  dateOfBirth: 'تاريخ الميلاد',
+  datePlaceholder: 'اختر التاريخ',
+  address: 'العنوان',
+  addressPlaceholder: 'أدخل عنوانك',
+  saveButton: 'حفظ',
+};

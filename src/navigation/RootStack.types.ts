@@ -8,6 +8,12 @@ type RootStackParamList = {
   notifications: undefined;
   landing: undefined;
   signup: undefined;
+  forgotPassword: undefined;
+  otpVerification: undefined;
+  help: undefined;
+  contactUs: undefined;
+  changePassword: undefined;
+  editProfile: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =
