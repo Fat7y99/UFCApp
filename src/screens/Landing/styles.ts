@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { AppColors } from 'modules/theme/src';
 import { StyleSheet } from 'react-native';
+import { AppColors } from 'modules/theme/src';
 
 const styles = StyleSheet.create({
   scrollView: { marginVertical: ResponsiveDimensions.vs(8) },
@@ -20,6 +20,15 @@ const styles = StyleSheet.create({
   btn: {
     paddingVertical: ResponsiveDimensions.vs(16),
     borderRadius: ResponsiveDimensions.vs(16),
+  },
+  btnText: {
+    textAlign: 'center',
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    fontSize: 16,
+    lineHeight: 24,
+    letterSpacing: 0,
+    textTransform: 'uppercase',
   },
 });
 

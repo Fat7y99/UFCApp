@@ -9,6 +9,7 @@ import {
   Home,
   Notifications,
   Landing,
+  Signup,
 } from '@src/screens';
 
 const stack = createNativeStackNavigator<RootStackParamList, 'RootStack'>();
@@ -25,6 +26,7 @@ export default React.memo(() => (
       <stack.Screen name="networkLogs" component={NetworkLogs} />
     ) : null}
     <stack.Screen name="login" component={Login} />
+    <stack.Screen name="signup" component={Signup} />
     <stack.Screen name="home" component={Home} />
     <stack.Screen name="notifications" component={Notifications} />
     <stack.Screen name="landing" component={Landing} />

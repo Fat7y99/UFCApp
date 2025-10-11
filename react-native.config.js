@@ -5,5 +5,5 @@ module.exports = {
     'react-native-config': { platforms: { android: null } },
   },
   // TODO: Enable this if you have custom fonts after adding them.
-  // assets: ['./modules/assets/src/fonts/'],
+  assets: ['./modules/assets/src/fonts/'],
 };

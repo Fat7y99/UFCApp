@@ -1,0 +1,15 @@
+export default {
+  signup: 'إنشاء حساب',
+  name: 'الاسم',
+  username: 'اسم المستخدم',
+  mobileNumber: 'رقم الهاتف المحمول',
+  email: 'البريد الإلكتروني',
+  idNumber: 'رقم الهوية',
+  password: 'كلمة المرور',
+  confirmPassword: 'تأكيد كلمة المرور',
+  termsText: 'بإنشاء حساب فإنك توافق على',
+  termsLink: 'الشروط والأحكام',
+  signupButton: 'إنشاء حساب',
+  signInText: 'لديك حساب بالفعل؟',
+  signInLink: 'تسجيل الدخول',
+};

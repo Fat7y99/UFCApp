@@ -1,0 +1,15 @@
+export default {
+  signup: 'SIGN UP',
+  name: 'Name',
+  username: 'Username',
+  mobileNumber: 'Mobile number',
+  email: 'Email',
+  idNumber: 'ID Number',
+  password: 'Password',
+  confirmPassword: 'Confirm Password',
+  termsText: 'By creating an account your agree to our',
+  termsLink: 'Terms and Conditions',
+  signupButton: 'SIGN UP',
+  signInText: 'Have an account?',
+  signInLink: 'Sign In',
+};

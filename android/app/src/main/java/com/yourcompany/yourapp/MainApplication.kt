@@ -49,4 +49,8 @@ class MainApplication : MultiDexApplication(), ReactApplication {
 
         loadReactNative(this)
     }
+    @Override
+    protected JSIModulePackage getJSIModulePackage() {
+      return new ReanimatedJSIModulePackage(); // <- add
+    }
 }

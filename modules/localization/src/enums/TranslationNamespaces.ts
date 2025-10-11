@@ -5,6 +5,7 @@ enum TranslationNamespaces {
   HOME = 'home',
   NOTIFICATIONS = 'notifications',
   LANDING = 'landing',
+  SIGNUP = 'signup',
 }
 
 export default TranslationNamespaces;

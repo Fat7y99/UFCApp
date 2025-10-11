@@ -7,6 +7,7 @@ type RootStackParamList = {
   home: undefined;
   notifications: undefined;
   landing: undefined;
+  signup: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =

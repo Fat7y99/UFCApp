@@ -3,4 +3,5 @@ export default {
   // TODO: Add app images.
   logo: require('./images/logo.svg'),
   landingBg: require('./images/landing_bg.png'),
+  signupBg: require('./images/signup_bg.png'),
 };

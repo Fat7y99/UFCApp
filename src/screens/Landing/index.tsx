@@ -1,26 +1,19 @@
+import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import * as React from 'react';
 import {
   View,
   ImageBackground,
-  Image,
   Text,
   StyleSheet,
-  TouchableOpacity,
   Pressable,
 } from 'react-native';
-import { Screen, ScrollContainer } from '@modules/components';
-import { AppImages } from '@modules/assets';
-import { LogoIcon } from '@modules/assets';
-import styles from './styles';
-import { AppColors, useAppTheme } from 'modules/theme/src';
-import {
-  Button,
-  ResponsiveDimensions,
-} from '@eslam-elmeniawy/react-native-common-components';
-import { TranslationNamespaces } from 'modules/localization/src/enums';
+import { AppImages, LogoIcon } from '@modules/assets';
+import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
+import styles from './styles';
+import { TranslationNamespaces } from 'modules/localization/src/enums';
+import { AppColors } from 'modules/theme/src';
 export default React.memo(() => {
-  const theme = useAppTheme();
   const [isPressed1, setIsPressed1] = React.useState(false);
   const [isPressed2, setIsPressed2] = React.useState(false);
 
@@ -67,10 +60,20 @@ export default React.memo(() => {
             marginTop: ResponsiveDimensions.percentHeight(30),
           }}
         >
-          <LogoIcon />
-          <Text style={styles.landingNoteText}>
-            {translate(`${TranslationNamespaces.LANDING}:landingNote`)}
-          </Text>
+          <View style={{ marginVertical: ResponsiveDimensions.vs(48) }}>
+            <LogoIcon />
+          </View>
+          <View
+            style={
+              {
+                // paddingTop: ResponsiveDimensions.vs(28),
+              }
+            }
+          >
+            <Text style={styles.landingNoteText}>
+              {translate(`${TranslationNamespaces.LANDING}:landingNote`)}
+            </Text>
+          </View>
 
           <View
             style={{
@@ -98,13 +101,8 @@ export default React.memo(() => {
                 console.log('Button clicked');
               }}
             >
-              <Text
-                style={{
-                  color: buttonTextColor1,
-                  textAlign: 'center',
-                }}
-              >
-                {translate('restartApp')}
+              <Text style={[styles.btnText, { color: buttonTextColor1 }]}>
+                {translate(`${TranslationNamespaces.LANDING}:english`)}
               </Text>
             </Pressable>
             <Pressable
@@ -127,12 +125,14 @@ export default React.memo(() => {
               }}
             >
               <Text
-                style={{
-                  color: buttonTextColor2,
-                  textAlign: 'center',
-                }}
+                style={[
+                  styles.btnText,
+                  {
+                    color: buttonTextColor2,
+                  },
+                ]}
               >
-                {translate('restartApp')}
+                {translate(`${TranslationNamespaces.LANDING}:arabic`)}
               </Text>
             </Pressable>
           </View>

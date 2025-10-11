@@ -1,7 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
-
 // Firebase plugins removed
 
 // Added for "react-native-config".
@@ -17,6 +16,8 @@ apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.grad
 
 // Added for "react-native-vector-image".
 apply from: "../../node_modules/react-native-vector-image/strip_svgs.gradle"
+
+
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -178,3 +179,4 @@ dependencies {
     // to fix of build issue.
     implementation project(':react-native-config')
 }
+

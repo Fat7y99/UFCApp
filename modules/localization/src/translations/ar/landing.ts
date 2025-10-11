@@ -1,3 +1,5 @@
 export default {
-  landingNote: 'Please select your preferred language',
+  landingNote: 'الرجاء اختيار اللغة المفضلة لديك',
+  arabic: 'العربية',
+  english: 'الانجليزية',
 };
