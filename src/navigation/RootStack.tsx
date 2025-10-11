@@ -5,11 +5,11 @@ import type { RootStackParamList } from '@src/navigation';
 import {
   Splash,
   NetworkLogs,
-  Login,
   Home,
   Notifications,
   Landing,
   Signup,
+  SignIn,
 } from '@src/screens';
 
 const stack = createNativeStackNavigator<RootStackParamList, 'RootStack'>();
@@ -25,7 +25,7 @@ export default React.memo(() => (
     {Config.ENABLE_LOCAL_LOG === 'true' ? (
       <stack.Screen name="networkLogs" component={NetworkLogs} />
     ) : null}
-    <stack.Screen name="login" component={Login} />
+    <stack.Screen name="login" component={SignIn} />
     <stack.Screen name="signup" component={Signup} />
     <stack.Screen name="home" component={Home} />
     <stack.Screen name="notifications" component={Notifications} />
