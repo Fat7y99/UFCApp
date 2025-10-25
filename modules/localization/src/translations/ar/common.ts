@@ -19,4 +19,7 @@ export default {
   errorWhileAction: 'خطأ اثناء {{action}}',
   noDataAvailable: 'لا توجد {{data}} متاحة',
   errorLoadData: 'خطأ اثناء تحميل {{data}}',
+  signOutTitle: 'تسجيل الخروج من حسابك؟',
+  yes: 'نعم',
+  no: 'لا',
 };

@@ -1,18 +1,15 @@
-import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
+import { removeUserDataLogout } from '@modules/utils';
+import { styles } from './styles';
+import type { SettingsOption } from './types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-interface SettingsOption {
-  id: string;
-  title: string;
-  onPress: () => void;
-}
+import { AppImages } from 'modules/assets/src';
 
 const SettingsOptions: React.FC = () => {
   const navigation =
@@ -27,10 +24,23 @@ const SettingsOptions: React.FC = () => {
       navigation.navigate('changePassword');
     }
   };
-
   const handleSignOut = () => {
-    console.log('Sign out pressed');
-    // Handle sign out logic
+    Alert.alert(
+      translate(`${TranslationNamespaces.COMMON}:signOutTitle`),
+      '',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Sign out',
+          style: 'destructive',
+          onPress: () => removeUserDataLogout(),
+        },
+      ],
+      { cancelable: true },
+    );
   };
 
   const firstGroupOptions: SettingsOption[] = [
@@ -76,7 +86,7 @@ const SettingsOptions: React.FC = () => {
       onPress={option.onPress}
     >
       <Text style={styles.optionText}>{option.title}</Text>
-      <Text style={styles.chevronIcon}>›</Text>
+      <Image source={AppImages.chevronRight} />
     </TouchableOpacity>
   );
 
@@ -98,46 +108,5 @@ const SettingsOptions: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: ResponsiveDimensions.vs(20),
-    justifyContent: 'space-between',
-    height: '80%',
-  },
-  groupContainer: {
-    borderRadius: ResponsiveDimensions.vs(12),
-    marginBottom: ResponsiveDimensions.vs(20),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  optionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: ResponsiveDimensions.vs(16),
-    paddingHorizontal: ResponsiveDimensions.vs(16),
-  },
-  optionBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  optionText: {
-    fontSize: ResponsiveDimensions.vs(16),
-    color: '#333',
-    flex: 1,
-  },
-  chevronIcon: {
-    fontSize: ResponsiveDimensions.vs(18),
-    color: '#999',
-    fontWeight: 'bold',
-  },
-});
 
 export default SettingsOptions;

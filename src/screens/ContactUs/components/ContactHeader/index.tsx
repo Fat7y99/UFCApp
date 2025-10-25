@@ -1,18 +1,13 @@
-import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppImages } from 'modules/assets/src';
 
 const ContactHeader: React.FC = () => {
   const navigation =
@@ -37,7 +32,7 @@ const ContactHeader: React.FC = () => {
       {/* Header Content */}
       <View style={styles.headerContent}>
         <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Text style={styles.backIcon}>‹</Text>
+          <Image source={AppImages.leftArrow} />
         </TouchableOpacity>
 
         <Text style={styles.title}>
@@ -48,7 +43,10 @@ const ContactHeader: React.FC = () => {
           style={styles.notificationButton}
           onPress={handleNotificationPress}
         >
-          <Text style={styles.notificationIcon}>🔔</Text>
+          <Image
+            source={AppImages.notificationIcon}
+            style={styles.notificationIcon}
+          />
           <View style={styles.notificationBadge}>
             <Text style={styles.badgeText}>3</Text>
           </View>
@@ -57,79 +55,5 @@ const ContactHeader: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: AppColors.themeLight.primary_1,
-    paddingTop: ResponsiveDimensions.vs(50),
-    paddingHorizontal: ResponsiveDimensions.vs(20),
-    paddingBottom: ResponsiveDimensions.vs(20),
-    borderBottomLeftRadius: ResponsiveDimensions.vs(20),
-    borderBottomRightRadius: ResponsiveDimensions.vs(20),
-  },
-  statusBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: ResponsiveDimensions.vs(20),
-  },
-  timeText: {
-    color: 'white',
-    fontSize: ResponsiveDimensions.vs(18),
-    fontWeight: 'bold',
-  },
-  statusIcons: {
-    flexDirection: 'row',
-    gap: ResponsiveDimensions.vs(8),
-  },
-  statusIcon: {
-    color: 'white',
-    fontSize: ResponsiveDimensions.vs(16),
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    padding: ResponsiveDimensions.vs(8),
-  },
-  backIcon: {
-    color: AppColors.themeLight.primaryButtonColor, // Light blue
-    fontSize: ResponsiveDimensions.vs(24),
-    fontWeight: 'bold',
-  },
-  title: {
-    color: AppColors.themeLight.primaryButtonColor, // Light blue
-    fontSize: ResponsiveDimensions.vs(20),
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'center',
-  },
-  notificationButton: {
-    padding: ResponsiveDimensions.vs(8),
-    position: 'relative',
-  },
-  notificationIcon: {
-    color: 'white',
-    fontSize: ResponsiveDimensions.vs(20),
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: ResponsiveDimensions.vs(4),
-    right: ResponsiveDimensions.vs(4),
-    backgroundColor: AppColors.themeLight.primaryButtonColor, // Light blue
-    borderRadius: ResponsiveDimensions.vs(8),
-    minWidth: ResponsiveDimensions.vs(16),
-    height: ResponsiveDimensions.vs(16),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  badgeText: {
-    color: 'white',
-    fontSize: ResponsiveDimensions.vs(10),
-    fontWeight: 'bold',
-  },
-});
 
 export default ContactHeader;

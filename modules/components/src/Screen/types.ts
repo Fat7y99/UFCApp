@@ -11,4 +11,5 @@ export interface Props {
   navigationBarColor?: string;
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  showNavigationBar?: boolean;
 }

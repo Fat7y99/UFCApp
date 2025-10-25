@@ -22,4 +22,7 @@ export default {
   errorWhileAction: 'Error while {{action}}',
   noDataAvailable: 'No {{data}} available',
   errorLoadData: 'Error while loading {{data}}',
+  signOutTitle: 'Sign out of your account?',
+  yes: 'Yes',
+  no: 'No',
 };

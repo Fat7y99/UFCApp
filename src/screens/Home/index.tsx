@@ -9,9 +9,14 @@ import {
   OffersSection,
   ServicesSection,
 } from './components';
+import { AppColors } from 'modules/theme/src';
 
 export default React.memo(() => (
-  <Screen style={styles.container}>
+  <Screen
+    style={styles.container}
+    showNavigationBar={false}
+    statusBarColor={AppColors.themeLight.primary_1}
+  >
     {/* Fixed Header Section */}
     <HeaderSection />
 
@@ -39,7 +44,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    marginTop: ResponsiveDimensions.vs(140), // Space for fixed header
+    paddingTop: ResponsiveDimensions.vs(180), // Space for fixed header
   },
   scrollViewContent: {
     paddingBottom: ResponsiveDimensions.vs(20), // Reduced padding since no fixed bottom nav

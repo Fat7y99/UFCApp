@@ -3,6 +3,7 @@ import changePassword from './changePassword';
 import common from './common';
 import contact from './contact';
 import editProfile from './editProfile';
+import financing from './financing';
 import help from './help';
 import home from './home';
 import landing from './landing';
@@ -25,4 +26,5 @@ export default {
   [TranslationNamespaces.CONTACT]: contact,
   [TranslationNamespaces.CHANGE_PASSWORD]: changePassword,
   [TranslationNamespaces.EDIT_PROFILE]: editProfile,
+  [TranslationNamespaces.FINANCING]: financing,
 };

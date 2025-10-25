@@ -14,6 +14,17 @@ type RootStackParamList = {
   contactUs: undefined;
   changePassword: undefined;
   editProfile: undefined;
+  smeFinancing: undefined;
+  smeStep1: undefined;
+  smeStep2: undefined;
+  realEstateFinancing: undefined;
+  realEstateStep1: undefined;
+  realEstateStep2: undefined;
+  realEstateStep3: undefined;
+  personalStep1: undefined;
+  personalStep2: undefined;
+  personalStep3: undefined;
+  offers: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =

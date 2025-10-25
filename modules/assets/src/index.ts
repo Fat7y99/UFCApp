@@ -1,3 +1,11 @@
 export { default as AppImages } from './AppImages';
 export { default as LogoIcon } from './images/rnsvg/LogoSvg';
+export { default as PersonalLogo } from './images/rnsvg/PersonalLogo';
+export { default as SMELogo } from './images/rnsvg/SMELogo';
+export { default as RealEstateLogo } from './images/rnsvg/RealEstateLogo';
+export { default as PersonalStep1Logo } from './images/rnsvg/PersonalStep1Logo';
+export { default as SMEStep1Logo } from './images/rnsvg/SMEStep1Logo';
+export { default as SMEStep2Logo } from './images/rnsvg/SMEStep2Logo';
+export { default as RealEstateStep1Logo } from './images/rnsvg/RealEstateStep1Logo';
+export { default as RealEstateAllStepsLogo } from './images/rnsvg/RealEstateAllStepsLogo';
 export * from './fonts';

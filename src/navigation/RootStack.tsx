@@ -15,6 +15,17 @@ import {
   ContactUs,
   ChangePassword,
   EditProfile,
+  SMEFinancing,
+  SMEStep1,
+  SMEStep2,
+  RealEstateFinancing,
+  RealEstateStep1,
+  RealEstateStep2,
+  RealEstateStep3,
+  PersonalStep1,
+  PersonalStep2,
+  PersonalStep3,
+  Offers,
 } from '@src/screens';
 import TabNavigator from './TabNavigator';
 
@@ -42,6 +53,17 @@ export default React.memo(() => (
     <stack.Screen name="contactUs" component={ContactUs} />
     <stack.Screen name="changePassword" component={ChangePassword} />
     <stack.Screen name="editProfile" component={EditProfile} />
+    <stack.Screen name="smeFinancing" component={SMEFinancing} />
+    <stack.Screen name="smeStep1" component={SMEStep1} />
+    <stack.Screen name="smeStep2" component={SMEStep2} />
+    <stack.Screen name="realEstateFinancing" component={RealEstateFinancing} />
+    <stack.Screen name="realEstateStep1" component={RealEstateStep1} />
+    <stack.Screen name="realEstateStep2" component={RealEstateStep2} />
+    <stack.Screen name="realEstateStep3" component={RealEstateStep3} />
+    <stack.Screen name="personalStep1" component={PersonalStep1} />
+    <stack.Screen name="personalStep2" component={PersonalStep2} />
+    <stack.Screen name="personalStep3" component={PersonalStep3} />
+    <stack.Screen name="offers" component={Offers} />
     {/* Navigators */}
     {/* TODO: Add nested navigators here. */}
 

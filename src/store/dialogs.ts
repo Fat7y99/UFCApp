@@ -6,7 +6,6 @@ const initialState = {
   errorDialogTitle: undefined,
   errorDialogMessage: undefined,
   showLoadingDialog: undefined,
-  showLogoutDialog: undefined,
   showDeleteAccountDialog: undefined,
 } as DialogsState;
 
@@ -28,9 +27,7 @@ export const errorDialogSlice = createSlice({
     showLoadingDialog(state) {
       state.showLoadingDialog = true;
     },
-    showLogoutDialog(state) {
-      state.showLogoutDialog = true;
-    },
+
     showDeleteAccountDialog(state) {
       state.showDeleteAccountDialog = true;
     },
@@ -41,9 +38,7 @@ export const errorDialogSlice = createSlice({
     removeLoadingDialog(state) {
       state.showLoadingDialog = undefined;
     },
-    removeLogoutDialog(state) {
-      state.showLogoutDialog = undefined;
-    },
+
     removeDeleteAccountDialog(state) {
       state.showDeleteAccountDialog = undefined;
     },
@@ -54,11 +49,9 @@ export const {
   setErrorDialogMessage,
   setErrorDialogTitleMessage,
   showLoadingDialog,
-  showLogoutDialog,
   showDeleteAccountDialog,
   removeErrorDialog,
   removeLoadingDialog,
-  removeLogoutDialog,
   removeDeleteAccountDialog,
 } = errorDialogSlice.actions;
 

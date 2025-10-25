@@ -11,6 +11,7 @@ enum TranslationNamespaces {
   CONTACT = 'contact',
   CHANGE_PASSWORD = 'changePassword',
   EDIT_PROFILE = 'editProfile',
+  FINANCING = 'financing',
 }
 
 export default TranslationNamespaces;

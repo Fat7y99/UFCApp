@@ -1,43 +1,68 @@
-import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import React from 'react';
-import { View, StyleSheet, ImageBackground } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { View, ImageBackground, FlatList } from 'react-native';
 import { AppImages } from '@modules/assets';
+import { styles } from './styles';
 
 const BannerSection: React.FC = () => {
-  return (
-    <View style={styles.container}>
+  const flatListRef = useRef<FlatList>(null);
+  const currentIndex = useRef(0);
+
+  const banners = [
+    { id: '1', source: AppImages.banner1 },
+    { id: '2', source: AppImages.banner1 },
+    { id: '3', source: AppImages.banner1 },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      currentIndex.current = (currentIndex.current + 1) % banners.length;
+      try {
+        flatListRef.current?.scrollToIndex({
+          index: currentIndex.current,
+          animated: true,
+        });
+      } catch (error) {
+        // Handle scroll error gracefully
+        console.log('Scroll error:', error);
+      }
+    }, 3000); // Auto scroll every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  const renderBanner = ({ item }: { item: { id: string; source: any } }) => (
+    <View style={styles.bannerContainer}>
       <ImageBackground
-        source={AppImages.signupBg} // Using existing background image
+        source={item.source}
         style={styles.banner}
         resizeMode="cover"
       >
-        {/* Overlay for better text visibility if needed */}
         <View style={styles.overlay} />
       </ImageBackground>
     </View>
   );
-};
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: ResponsiveDimensions.vs(20),
-    marginBottom: ResponsiveDimensions.vs(32),
-  },
-  banner: {
-    height: ResponsiveDimensions.vs(180),
-    borderRadius: ResponsiveDimensions.vs(16),
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)', // Subtle overlay
-  },
-});
+  return (
+    <View style={styles.container}>
+      <FlatList
+        ref={flatListRef}
+        data={banners}
+        renderItem={renderBanner}
+        keyExtractor={item => item.id}
+        horizontal
+        // pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={true}
+        onMomentumScrollEnd={event => {
+          const index = Math.round(
+            event.nativeEvent.contentOffset.x /
+              event.nativeEvent.layoutMeasurement.width,
+          );
+          currentIndex.current = index;
+        }}
+      />
+    </View>
+  );
+};
 
 export default BannerSection;

@@ -1,11 +1,12 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppImages } from 'modules/assets/src';
 
 interface HelpOption {
   id: string;
@@ -45,7 +46,7 @@ const HelpOptions: React.FC = () => {
       onPress={option.onPress}
     >
       <Text style={styles.optionText}>{option.title}</Text>
-      <Text style={styles.chevronIcon}>›</Text>
+      <Image source={AppImages.chevronRight} />
     </TouchableOpacity>
   );
 

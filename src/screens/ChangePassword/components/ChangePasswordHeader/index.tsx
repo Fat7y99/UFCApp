@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
   View,
@@ -6,13 +7,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import type { RootStackParamList } from '@src/navigation';
-import { AppColors } from '@modules/theme';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
+import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppImages } from 'modules/assets/src';
 
 const ChangePasswordHeader: React.FC = () => {
   const navigation =
@@ -29,20 +31,10 @@ const ChangePasswordHeader: React.FC = () => {
         backgroundColor={AppColors.themeLight.primary_1}
       />
 
-      {/* Status Bar Area */}
-      <View style={styles.statusBar}>
-        <Text style={styles.timeText}>9:09</Text>
-        <View style={styles.statusIcons}>
-          <Text style={styles.statusIcon}>📶</Text>
-          <Text style={styles.statusIcon}>📶</Text>
-          <Text style={styles.statusIcon}>🔋</Text>
-        </View>
-      </View>
-
       {/* Header Content */}
       <View style={styles.headerContent}>
         <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Text style={styles.backIcon}>‹</Text>
+          <Image source={AppImages.leftArrow} />
         </TouchableOpacity>
 
         <Text style={styles.title}>

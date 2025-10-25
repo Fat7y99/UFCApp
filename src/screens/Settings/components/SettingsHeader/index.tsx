@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
   View,
@@ -6,29 +7,37 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  Image,
 } from 'react-native';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from 'navigation/RootStack.types';
+import { AppImages } from 'modules/assets/src';
 
 const SettingsHeader: React.FC = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const handleBackPress = () => {
-    // Handle back navigation
-    console.log('Back pressed');
+    navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
       <StatusBar
-        barStyle="light-content"
+        translucent={true}
+        barStyle="dark-content"
         backgroundColor={AppColors.themeLight.primary_1}
+        hidden={false}
       />
 
       {/* Header Content with Avatar */}
       <View style={styles.headerContent}>
         <View style={styles.leftSection}>
           <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-            <Text style={styles.backIcon}>‹</Text>
+            <Image source={AppImages.leftArrow} />
           </TouchableOpacity>
           <Text style={styles.title}>
             {translate(`${TranslationNamespaces.SETTINGS}:title`)}

@@ -1,0 +1,43 @@
+import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: ResponsiveDimensions.vs(20),
+    paddingTop: ResponsiveDimensions.vs(20),
+    backgroundColor: 'white',
+  },
+  groupContainer: {
+    backgroundColor: 'white',
+    borderRadius: ResponsiveDimensions.vs(12),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  optionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: ResponsiveDimensions.vs(16),
+    paddingHorizontal: ResponsiveDimensions.vs(16),
+  },
+  optionBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  optionText: {
+    fontSize: ResponsiveDimensions.vs(16),
+    color: '#333',
+    flex: 1,
+  },
+  chevronIcon: {
+    fontSize: ResponsiveDimensions.vs(18),
+    color: '#999',
+    fontWeight: 'bold',
+  },
+});

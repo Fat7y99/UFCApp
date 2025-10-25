@@ -1,4 +1,4 @@
-import { useAppTheme } from '@modules/theme';
+import { AppColors, useAppTheme } from '@modules/theme';
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
@@ -16,11 +16,12 @@ export default React.memo((props: Props) => {
   const {
     edges,
     statusBarProps,
-    statusBarColor,
+    statusBarColor = AppColors.themeLight.primary_1,
     navigationBarProps,
     navigationBarColor,
     children,
     style,
+    showNavigationBar,
   } = props;
 
   const contentStyle = {
@@ -51,7 +52,7 @@ export default React.memo((props: Props) => {
       <View style={StyleSheet.flatten([styles.content, contentStyle, style])}>
         {children}
       </View>
-      <View style={navigationBarContainerStyle} />
+      {showNavigationBar && <View style={navigationBarContainerStyle} />}
     </SafeAreaProvider>
   );
 });
