@@ -6,6 +6,8 @@ declare module 'react-native-config' {
     ENABLE_LOCAL_LOG?: string;
     ENABLE_FIREBASE_LOG?: string;
     USE_FAKE_API?: string;
+    CLIENT_ID?: string;
+    CLIENT_SECRET?: string;
   }
 
   export const Config: NativeConfig;

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import type { FontFamily } from './useAppThemeFonts';
+import type { ReactNode } from 'react';
 
 interface FontContextType {
   fontFamily: FontFamily;
@@ -41,7 +42,10 @@ export const FontProvider: React.FC<FontProviderProps> = ({
 export const useFontFamily = (): FontContextType => {
   const context = useContext(FontContext);
   if (context === undefined) {
-    throw new Error('useFontFamily must be used within a FontProvider');
+    return {
+      fontFamily: 'Poppins' as FontFamily,
+      setFontFamily: () => {},
+    };
   }
   return context;
 };

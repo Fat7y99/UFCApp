@@ -1,6 +1,7 @@
 import * as React from 'react';
-import Svg, { SvgProps, G, Path, Defs, ClipPath } from 'react-native-svg';
 import { memo } from 'react';
+import Svg, { G, Path, Defs, ClipPath } from 'react-native-svg';
+import type { SvgProps } from 'react-native-svg';
 const SvgComponent = (props: SvgProps) => (
   <Svg width={126} height={127} fill="none" {...props}>
     <G clipPath="url(#a)">

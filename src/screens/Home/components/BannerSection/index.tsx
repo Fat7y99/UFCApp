@@ -50,7 +50,7 @@ const BannerSection: React.FC = () => {
         renderItem={renderBanner}
         keyExtractor={item => item.id}
         horizontal
-        // pagingEnabled
+        pagingEnabled
         showsHorizontalScrollIndicator={false}
         scrollEnabled={true}
         onMomentumScrollEnd={event => {

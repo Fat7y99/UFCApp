@@ -111,7 +111,6 @@ module.exports = {
     'max-nested-callbacks': ['warn', 10],
     'max-params': ['warn', 4],
     'max-lines': ['warn', 300],
-    'max-statements': ['warn', 10, { ignoreTopLevelFunctions: true }],
     'react-func/max-lines-per-function': ['warn', 50],
     'react-func/max-combined-conditions': ['error', 1],
     'eslint-comments/no-use': ['error', { allow: [] }],

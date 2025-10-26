@@ -1,4 +1,5 @@
-import { translate, getCurrentLocale } from '@modules/localization';
+import { Buffer } from 'buffer';
+import { translate } from '@modules/localization';
 import { setErrorDialogMessage, store } from '@src/store';
 import axios from 'axios';
 import { default as Config } from 'react-native-config';
@@ -13,15 +14,36 @@ import type {
 
 const getLogMessage = (message: string) => `## HttpClient:: ${message}`;
 
-const addHeaders = (config: InternalAxiosRequestConfig<any>) => {
-  config.headers.Accept = 'application/json';
-  config.headers['Content-Type'] = 'application/json';
-  config.headers['Accept-Language'] = getCurrentLocale();
-  config.headers['cache-control'] = 'no-cache';
-  const token = store.getState().user?.apiToken;
+const isLoginRequest = (url?: string) =>
+  url?.includes('/oauth2/token') || url?.includes('/login');
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+const addHeaders = (config: InternalAxiosRequestConfig<any>) => {
+  config.headers.Accept = '*/*';
+
+  // Add Basic Auth for login request only
+  if (isLoginRequest(config.url)) {
+    // Get client credentials from Config
+    const clientId = Config.CLIENT_ID || '';
+    const clientSecret = Config.CLIENT_SECRET || '';
+
+    // Create Basic Auth header
+    const basicAuthToken = Buffer.from(`${clientId}:${clientSecret}`).toString(
+      'base64',
+    );
+    config.headers.Authorization = `Basic ${basicAuthToken}`;
+    // Set Content-Type to application/x-www-form-urlencoded for login
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
+    console.info(getLogMessage('Added Basic Auth for login request'));
+  } else {
+    // Use Bearer token for other requests
+    const token = store.getState().user?.apiToken;
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Set Content-Type to application/json for other requests
+    config.headers['Content-Type'] = 'application/json';
   }
 };
 

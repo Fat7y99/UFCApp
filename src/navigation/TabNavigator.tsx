@@ -5,7 +5,6 @@ import { Home, Settings } from '@src/screens';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
-
 export type TabParamList = {
   Home: undefined;
   Search: undefined;
