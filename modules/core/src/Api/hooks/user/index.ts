@@ -1,2 +1,6 @@
 export { default as useGetUserDetailsApi } from './useGetUserDetailsApi';
-export { default as useUpdateUserProfileApi } from './useUpdateUserProfileApi';
+export { default as useGetCurrentUserApi } from './useGetCurrentUserApi';
+export {
+  default as useUpdateUserProfileApi,
+  useUpdateProfileApi,
+} from './useUpdateUserProfileApi';

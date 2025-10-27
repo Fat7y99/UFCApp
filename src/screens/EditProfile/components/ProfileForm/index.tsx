@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -11,17 +11,27 @@ import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 
-const ProfileForm: React.FC = () => {
-  const [username, setUsername] = useState('greatPower.G');
-  const [fullName, setFullName] = useState('Ahmed Ibrahim Mahmoud');
-  const [email, setEmail] = useState('Ahmed@ui.com');
-  const [mobileNumber, setMobileNumber] = useState('(+966) 0547 6324 12');
-  const [gender, setGender] = useState<'male' | 'female'>('male');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [address, setAddress] = useState('');
+interface ProfileData {
+  username: string;
+  fullName: string;
+  email: string;
+  mobileNumber: string;
+  gender: 'male' | 'female';
+  dateOfBirth: string;
+  address: string;
+}
 
+interface ProfileFormProps {
+  profileData: ProfileData;
+  setProfileData: React.Dispatch<React.SetStateAction<ProfileData>>;
+}
+
+const ProfileForm: React.FC<ProfileFormProps> = ({
+  profileData,
+  setProfileData,
+}) => {
   const handleGenderSelect = (selectedGender: 'male' | 'female') => {
-    setGender(selectedGender);
+    setProfileData(prev => ({ ...prev, gender: selectedGender }));
   };
 
   return (
@@ -33,8 +43,10 @@ const ProfileForm: React.FC = () => {
         </Text>
         <TextInput
           style={styles.fieldValue}
-          value={username}
-          onChangeText={setUsername}
+          value={profileData.username}
+          onChangeText={value =>
+            setProfileData(prev => ({ ...prev, username: value }))
+          }
           placeholderTextColor="#B0B0B0"
         />
         <View style={styles.separator} />
@@ -47,8 +59,10 @@ const ProfileForm: React.FC = () => {
         </Text>
         <TextInput
           style={styles.fieldValue}
-          value={fullName}
-          onChangeText={setFullName}
+          value={profileData.fullName}
+          onChangeText={value =>
+            setProfileData(prev => ({ ...prev, fullName: value }))
+          }
           placeholderTextColor="#B0B0B0"
         />
         <View style={styles.separator} />
@@ -61,8 +75,10 @@ const ProfileForm: React.FC = () => {
         </Text>
         <TextInput
           style={styles.fieldValue}
-          value={email}
-          onChangeText={setEmail}
+          value={profileData.email}
+          onChangeText={value =>
+            setProfileData(prev => ({ ...prev, email: value }))
+          }
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor="#B0B0B0"
@@ -77,8 +93,10 @@ const ProfileForm: React.FC = () => {
         </Text>
         <TextInput
           style={styles.fieldValue}
-          value={mobileNumber}
-          onChangeText={setMobileNumber}
+          value={profileData.mobileNumber}
+          onChangeText={value =>
+            setProfileData(prev => ({ ...prev, mobileNumber: value }))
+          }
           keyboardType="phone-pad"
           placeholderTextColor="#B0B0B0"
         />
@@ -98,15 +116,17 @@ const ProfileForm: React.FC = () => {
             <View
               style={[
                 styles.radioButton,
-                gender === 'male' && styles.radioButtonSelected,
+                profileData.gender === 'male' && styles.radioButtonSelected,
               ]}
             >
-              {gender === 'male' && <View style={styles.radioButtonInner} />}
+              {profileData.gender === 'male' && (
+                <View style={styles.radioButtonInner} />
+              )}
             </View>
             <Text
               style={[
                 styles.genderText,
-                gender === 'male' && styles.genderTextSelected,
+                profileData.gender === 'male' && styles.genderTextSelected,
               ]}
             >
               {translate(`${TranslationNamespaces.EDIT_PROFILE}:male`)}
@@ -120,15 +140,17 @@ const ProfileForm: React.FC = () => {
             <View
               style={[
                 styles.radioButton,
-                gender === 'female' && styles.radioButtonSelected,
+                profileData.gender === 'female' && styles.radioButtonSelected,
               ]}
             >
-              {gender === 'female' && <View style={styles.radioButtonInner} />}
+              {profileData.gender === 'female' && (
+                <View style={styles.radioButtonInner} />
+              )}
             </View>
             <Text
               style={[
                 styles.genderText,
-                gender === 'female' && styles.genderTextSelected,
+                profileData.gender === 'female' && styles.genderTextSelected,
               ]}
             >
               {translate(`${TranslationNamespaces.EDIT_PROFILE}:female`)}
@@ -146,8 +168,10 @@ const ProfileForm: React.FC = () => {
         <View style={styles.dateInputContainer}>
           <TextInput
             style={styles.dateInput}
-            value={dateOfBirth}
-            onChangeText={setDateOfBirth}
+            value={profileData.dateOfBirth}
+            onChangeText={value =>
+              setProfileData(prev => ({ ...prev, dateOfBirth: value }))
+            }
             placeholder={translate(
               `${TranslationNamespaces.EDIT_PROFILE}:datePlaceholder`,
             )}
@@ -165,8 +189,10 @@ const ProfileForm: React.FC = () => {
         </Text>
         <TextInput
           style={styles.fieldValue}
-          value={address}
-          onChangeText={setAddress}
+          value={profileData.address}
+          onChangeText={value =>
+            setProfileData(prev => ({ ...prev, address: value }))
+          }
           placeholder={translate(
             `${TranslationNamespaces.EDIT_PROFILE}:addressPlaceholder`,
           )}

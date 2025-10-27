@@ -57,7 +57,9 @@ const PersonalStep2: React.FC = () => {
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
-          <Text style={styles.progressTitle}>Progress</Text>
+          <Text style={styles.progressTitle}>
+            {translate(`${TranslationNamespaces.FINANCING}:progress`)}
+          </Text>
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBar}>
               <View style={styles.progressFill} />

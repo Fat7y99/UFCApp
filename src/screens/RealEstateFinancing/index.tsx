@@ -12,40 +12,51 @@ import {
 
 import type { RootStackParamList } from '@src/navigation';
 import { Screen } from '@modules/components';
+import { translate } from '@modules/localization';
+import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, RealEstateStep1Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
+interface FinancingType {
+  id: number;
+  title: string;
+  subtitle?: string;
+  onPress: () => void;
+}
+
 const RealEstateFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
-  const financingTypes = [
+  const financingTypes: FinancingType[] = [
     {
       id: 1,
-      title: 'Purchase',
+      title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
       onPress: () => navigation.navigate('realEstateStep1'),
     },
     {
       id: 2,
-      title: 'Mortgage',
+      title: translate(`${TranslationNamespaces.FINANCING}:mortgage`),
       onPress: () => navigation.navigate('realEstateStep1'),
     },
     {
       id: 3,
-      title: 'Refinance',
+      title: translate(`${TranslationNamespaces.FINANCING}:refinance`),
       onPress: () => navigation.navigate('realEstateStep1'),
     },
     {
       id: 4,
-      title: 'Self-Build',
+      title: translate(`${TranslationNamespaces.FINANCING}:selfBuild`),
       onPress: () => navigation.navigate('realEstateStep1'),
     },
     {
       id: 5,
-      title: 'Wealth Financing',
-      subtitle: '(Commercial Buildings)',
+      title: translate(`${TranslationNamespaces.FINANCING}:wealthFinancing`),
+      subtitle: translate(
+        `${TranslationNamespaces.FINANCING}:commercialBuildings`,
+      ),
       onPress: () => navigation.navigate('realEstateStep1'),
     },
   ];
@@ -60,7 +71,9 @@ const RealEstateFinancing: React.FC = () => {
         >
           <Image source={AppImages.leftArrow} style={styles.backIcon} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Real Estate Financing</Text>
+        <Text style={styles.headerTitle}>
+          {translate(`${TranslationNamespaces.FINANCING}:realEstateFinancing`)}
+        </Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -75,11 +88,13 @@ const RealEstateFinancing: React.FC = () => {
         </View>
 
         {/* Select Financing Type Label */}
-        <Text style={styles.sectionLabel}>Select Financing Type</Text>
+        <Text style={styles.sectionLabel}>
+          {translate(`${TranslationNamespaces.FINANCING}:selectFinancingType`)}
+        </Text>
 
         {/* Financing Type Buttons */}
         <View style={styles.buttonsContainer}>
-          {financingTypes.map(type => (
+          {financingTypes.map((type: FinancingType) => (
             <TouchableOpacity
               key={type.id}
               style={[
@@ -100,7 +115,9 @@ const RealEstateFinancing: React.FC = () => {
 
         {/* Next Button */}
         <TouchableOpacity style={styles.nextButton}>
-          <Text style={styles.nextButtonText}>NEXT</Text>
+          <Text style={styles.nextButtonText}>
+            {translate(`${TranslationNamespaces.FINANCING}:next`)}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </Screen>

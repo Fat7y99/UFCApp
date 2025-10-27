@@ -4,24 +4,49 @@ import { StyleSheet, ScrollView } from 'react-native';
 import { Screen } from '@modules/components';
 import { EditProfileHeader, ProfileForm, SaveButton } from './components';
 
-export default React.memo(() => (
-  <Screen style={styles.container}>
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.scrollViewContent}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Edit Profile Header */}
-      <EditProfileHeader />
+interface ProfileData {
+  username: string;
+  fullName: string;
+  email: string;
+  mobileNumber: string;
+  gender: 'male' | 'female';
+  dateOfBirth: string;
+  address: string;
+}
 
-      {/* Profile Form */}
-      <ProfileForm />
+export default React.memo(() => {
+  const [profileData, setProfileData] = React.useState<ProfileData>({
+    username: 'greatPower.G',
+    fullName: 'Ahmed Ibrahim Mahmoud',
+    email: 'Ahmed@ui.com',
+    mobileNumber: '(+966) 0547 6324 12',
+    gender: 'male',
+    dateOfBirth: '',
+    address: '',
+  });
 
-      {/* Save Button */}
-      <SaveButton />
-    </ScrollView>
-  </Screen>
-));
+  return (
+    <Screen style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Edit Profile Header */}
+        <EditProfileHeader />
+
+        {/* Profile Form */}
+        <ProfileForm
+          profileData={profileData}
+          setProfileData={setProfileData}
+        />
+
+        {/* Save Button */}
+        <SaveButton profileData={profileData} />
+      </ScrollView>
+    </Screen>
+  );
+});
 
 const styles = StyleSheet.create({
   container: {

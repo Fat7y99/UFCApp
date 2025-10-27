@@ -145,7 +145,18 @@ export default React.memo(() => {
             />
 
             {/* Sign Up Button */}
-            <SignupButton onPress={handleSignup} disabled={!termsAccepted} />
+            <SignupButton
+              onPress={handleSignup}
+              disabled={!termsAccepted}
+              formData={{
+                email: formData.email,
+                name: formData.name,
+                idNumber: formData.idNumber,
+                mobileNumber: formData.mobileNumber,
+                password: formData.password,
+                username: formData.username,
+              }}
+            />
 
             {/* Sign In Link */}
             <SignInLink onPress={handleSignIn} />

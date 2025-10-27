@@ -3,6 +3,8 @@ import type {
   LoginBody,
   LoginResponse,
   LogoutResponse,
+  SignupBody,
+  SignupResponse,
 } from '@modules/core';
 import { httpClient } from '@modules/core';
 
@@ -20,6 +22,11 @@ const queryAuth = {
       .post<LoginResponse>('/oauth2/token', params)
       .then(response => response.data);
   },
+  // TODO: Change params, endpoint, method, and response mapping based on API requirements.
+  signup: (request: ApiRequest<SignupBody>): Promise<SignupResponse> =>
+    httpClient
+      .post<SignupResponse>('/api/user/addEndUser', request.body)
+      .then(response => response.data),
   // TODO: Change params, endpoint, method, and response mapping based on API requirements.
   logout: () =>
     httpClient.post<LogoutResponse>('/logout').then(response => response.data),
