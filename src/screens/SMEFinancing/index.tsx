@@ -20,10 +20,16 @@ import { AppImages, SMEStep1Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
+interface FinancingType {
+  id: number;
+  title: string;
+  onPress: () => void;
+}
+
 const SMEFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
-  const financingTypes = [
+  const financingTypes: FinancingType[] = [
     {
       id: 1,
       title: translate(`${TranslationNamespaces.FINANCING}:invoice`),
@@ -91,7 +97,7 @@ const SMEFinancing: React.FC = () => {
 
         {/* Financing Type Buttons */}
         <View style={styles.buttonsContainer}>
-          {financingTypes.map(type => (
+          {financingTypes.map((type: FinancingType) => (
             <TouchableOpacity
               key={type.id}
               style={styles.financingButton}

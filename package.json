@@ -54,6 +54,8 @@
     "fresh-start": "yarn fresh-install && yarn start --reset-cache",
     "check-dependencies": "rnx-align-deps",
     "fix-dependencies": "rnx-align-deps --write",
+    "cache-clean": "yarn cache clean --all",
+    "del:android": "rm -rf ./android/.gradle && rm -rf ./android/.idea && rm -rf ./android/build",
     "fastlane": "bundle exec fastlane"
   },
   "dependencies": {

@@ -94,10 +94,10 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.yourcompany.yourapp"
+    namespace "com.ufc.ufcapp"
 
     defaultConfig {
-        applicationId "com.yourcompany.yourapp"
+        applicationId "com.ufc.ufcapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -108,7 +108,7 @@ android {
 
         // Added for "react-native-config" to support the use of "applicationIdSuffix"
         // or different "applicationId" than the package name.
-        resValue "string", "build_config_package", "com.yourcompany.yourapp"
+        resValue "string", "build_config_package", "com.ufc.ufcapp"
     }
 
     signingConfigs {
