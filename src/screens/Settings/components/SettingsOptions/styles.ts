@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
@@ -10,6 +10,8 @@ export const styles = StyleSheet.create({
   groupContainer: {
     borderRadius: ResponsiveDimensions.vs(12),
     marginBottom: ResponsiveDimensions.vs(20),
+  },
+  iosGroupContainer: {
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

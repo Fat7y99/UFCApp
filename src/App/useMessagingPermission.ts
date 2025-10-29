@@ -1,9 +1,3 @@
-import {
-  getMessaging,
-  requestPermission as firebaseRequestPermission,
-  AuthorizationStatus,
-  hasPermission as firebaseHasPermission,
-} from '@react-native-firebase/messaging';
 import * as React from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 
@@ -13,7 +7,7 @@ export const useMessagingPermission = () => {
     `## App::useMessagingPermission:: ${message}`;
   // #endregion
 
-  const messaging = getMessaging();
+  // const messaging = getMessaging();
 
   const checkAndroidPermissions = React.useCallback(async () => {
     if (Platform.OS === 'android') {
@@ -29,19 +23,16 @@ export const useMessagingPermission = () => {
   }, []);
 
   const requestPermission = React.useCallback(async () => {
-    const authStatus = await firebaseRequestPermission(messaging);
-    console.info(getLogMessage('authStatus'), authStatus);
-
-    const enabled =
-      authStatus === AuthorizationStatus.AUTHORIZED ||
-      authStatus === AuthorizationStatus.PROVISIONAL;
-
-    console.info(getLogMessage('enabled'), enabled);
-
-    if (!enabled) {
-      console.warn(getLogMessage('Notifications Disabled'));
-    }
-  }, [messaging]);
+    // const authStatus = await firebaseRequestPermission(messaging);
+    // console.info(getLogMessage('authStatus'), authStatus);
+    // const enabled =
+    //   authStatus === AuthorizationStatus.AUTHORIZED ||
+    //   authStatus === AuthorizationStatus.PROVISIONAL;
+    // console.info(getLogMessage('enabled'), enabled);
+    // if (!enabled) {
+    //   console.warn(getLogMessage('Notifications Disabled'));
+    // }
+  }, []);
 
   React.useEffect(() => {
     /**
@@ -55,17 +46,13 @@ export const useMessagingPermission = () => {
 
       try {
         await checkAndroidPermissions();
-        const hasPermission = await firebaseHasPermission(messaging);
-        console.info(getLogMessage('hasPermission'), hasPermission);
-
-        if (!hasPermission) {
-          requestPermission();
-        }
+        // const hasPermission = await firebaseHasPermission(messaging);
+        // console.info(getLogMessage('hasPermission'), hasPermission);
       } catch (error) {
         console.error(getLogMessage('checkMessagingPermission Error'), error);
       }
     };
 
     checkMessagingPermission();
-  }, [checkAndroidPermissions, requestPermission, messaging]);
+  }, [checkAndroidPermissions, requestPermission]);
 };

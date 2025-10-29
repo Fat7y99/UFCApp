@@ -6,7 +6,6 @@ import {
   removeApiToken as removeLocalStorageApiToken,
   removeFcmToken as removeLocalStorageFcmToken,
 } from '@modules/core';
-import { getMessaging, deleteToken } from '@react-native-firebase/messaging';
 import { reset } from '@src/navigation';
 import {
   store,
@@ -94,7 +93,7 @@ export const removeReduxUserData = () => {
 export const removeUserData = async (onFinish?: () => void): Promise<void> => {
   console.info(getLogMessage('removeUserData'));
   removeLocalStorageUserData();
-  await deleteToken(getMessaging());
+  // await deleteToken(getMessaging());
   removeReduxUserData();
   onFinish?.();
 };

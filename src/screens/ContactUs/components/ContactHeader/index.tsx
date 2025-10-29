@@ -5,6 +5,7 @@ import type { RootStackParamList } from '@src/navigation';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import { NotificationButton } from '@modules/components';
 import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
@@ -15,11 +16,6 @@ const ContactHeader: React.FC = () => {
 
   const handleBackPress = () => {
     navigation.goBack();
-  };
-
-  const handleNotificationPress = () => {
-    // Handle notification press
-    console.log('Notifications pressed');
   };
 
   return (
@@ -39,18 +35,7 @@ const ContactHeader: React.FC = () => {
           {translate(`${TranslationNamespaces.CONTACT}:title`)}
         </Text>
 
-        <TouchableOpacity
-          style={styles.notificationButton}
-          onPress={handleNotificationPress}
-        >
-          <Image
-            source={AppImages.notificationIcon}
-            style={styles.notificationIcon}
-          />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.badgeText}>3</Text>
-          </View>
-        </TouchableOpacity>
+        <NotificationButton />
       </View>
     </View>
   );

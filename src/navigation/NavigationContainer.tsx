@@ -1,4 +1,3 @@
-import { getAnalytics, logEvent } from '@react-native-firebase/analytics';
 import { NavigationContainer } from '@react-navigation/native';
 import * as React from 'react';
 import { View } from 'react-native';
@@ -26,15 +25,14 @@ export default React.memo(() => {
         routeNameRef.current = navigationRef.getCurrentRoute()?.name;
       }}
       onStateChange={async () => {
-        const previousRouteName = routeNameRef.current;
         const currentRouteName = navigationRef.getCurrentRoute()?.name;
 
-        if (previousRouteName !== currentRouteName) {
-          await logEvent(getAnalytics(), 'screen_view', {
-            firebase_screen: currentRouteName,
-            firebase_screen_class: currentRouteName,
-          });
-        }
+        // if (previousRouteName !== currentRouteName) {
+        //   await logEvent(getAnalytics(), 'screen_view', {
+        //     firebase_screen: currentRouteName,
+        //     firebase_screen_class: currentRouteName,
+        //   });
+        // }
 
         // Save the current route name for later comparison.
         routeNameRef.current = currentRouteName;

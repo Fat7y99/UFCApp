@@ -1,6 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Image,
+  Platform,
+} from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 
 import { translate } from '@modules/localization';
@@ -100,7 +107,12 @@ const SettingsOptions: React.FC = () => {
       </View>
 
       {/* Second Group */}
-      <View style={styles.groupContainer}>
+      <View
+        style={[
+          styles.groupContainer,
+          Platform.select({ ios: styles.iosGroupContainer }),
+        ]}
+      >
         {secondGroupOptions.map((option, index) =>
           renderOption(option, index === secondGroupOptions.length - 1),
         )}

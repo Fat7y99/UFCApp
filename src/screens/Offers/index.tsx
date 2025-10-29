@@ -95,6 +95,7 @@ const Offers: React.FC = () => {
             title={offer.title}
             description={offer.description}
             isOdd={offer.isOdd}
+            onPress={() => navigation.navigate('offerDetails', { offer })}
           />
         ))}
       </ScrollView>

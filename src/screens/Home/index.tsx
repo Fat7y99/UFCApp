@@ -44,9 +44,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    paddingTop: ResponsiveDimensions.vs(180), // Space for fixed header
+    paddingTop: ResponsiveDimensions.percentHeight(3), // Space for fixed header
   },
   scrollViewContent: {
-    paddingBottom: ResponsiveDimensions.vs(20), // Reduced padding since no fixed bottom nav
+    flexGrow: 1,
+    paddingBottom: ResponsiveDimensions.percentHeight(10), // Reduced padding since no fixed bottom nav
   },
 });

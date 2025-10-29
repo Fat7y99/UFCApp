@@ -10,6 +10,7 @@ import {
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import { CalendarLogo } from 'modules/assets/src';
 
 interface ProfileData {
   username: string;
@@ -177,7 +178,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             )}
             placeholderTextColor="#B0B0B0"
           />
-          <Text style={styles.calendarIcon}>📅</Text>
+          <CalendarLogo />
         </View>
         <View style={styles.separator} />
       </View>

@@ -9,7 +9,7 @@ import {
   QueryClientManager,
   reactotronReactQuery,
 } from 'reactotron-react-query';
-import { getCurrentRouteName, push } from '@src/navigation';
+
 import { localStorage } from '@modules/core';
 import { queryClient } from '@modules/utils';
 import type { ReactotronReactNative } from 'reactotron-react-native';
@@ -23,10 +23,7 @@ export const useLogInitialization = () => {
 
     configureLog?.({
       appName: appName,
-      firebaseLogLevels:
-        Config.ENABLE_FIREBASE_LOG === 'true'
-          ? ['LOG', 'WARN', 'ERROR']
-          : undefined,
+
       isLocalLogEnable: isLocalLogEnable,
       pluginCreators: [
         mmkvPlugin<ReactotronReactNative>({ storage: localStorage }),

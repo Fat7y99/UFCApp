@@ -11,11 +11,7 @@ export const styles = StyleSheet.create({
     paddingBottom: ResponsiveDimensions.vs(20),
     borderBottomEndRadius: ResponsiveDimensions.vs(12),
     borderBottomStartRadius: ResponsiveDimensions.vs(12),
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1000,
+    marginBottom: ResponsiveDimensions.vs(20),
   },
   statusBar: {
     flexDirection: 'row',
@@ -71,5 +67,14 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+  },
+  notificationButton: {
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notificationIcon: {
+    width: ResponsiveDimensions.vs(24),
+    height: ResponsiveDimensions.vs(24),
   },
 });

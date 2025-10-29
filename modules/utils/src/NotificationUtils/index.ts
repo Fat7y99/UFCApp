@@ -5,7 +5,6 @@ import { store } from '@src/store';
 import { getBundleId } from 'react-native-device-info';
 import type { Notification } from '@modules/core';
 import { clearNotifications, processUserNotification } from './Helpers';
-import type { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 const getLogMessage = (message: string) => `## NotificationUtils:: ${message}`;
 
@@ -86,9 +85,7 @@ export const openNotificationRelatedScreen = (
  *
  * @param remoteMessage - The remote message containing notification data.
  */
-export const displayLocalNotification = (
-  remoteMessage: FirebaseMessagingTypes.RemoteMessage,
-) => {
+export const displayLocalNotification = (remoteMessage: any) => {
   console.info(getLogMessage('displayLocalNotification'), remoteMessage);
 
   const dataTitle =

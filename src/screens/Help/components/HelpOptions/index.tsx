@@ -21,7 +21,9 @@ const HelpOptions: React.FC = () => {
   const handleOptionPress = (optionId: string) => {
     console.log(`${optionId} pressed`);
     // Handle navigation to specific help screens
-    if (optionId === 'contactUs') {
+    if (optionId === 'faqs') {
+      navigation.navigate('faqs');
+    } else if (optionId === 'contactUs') {
       navigation.navigate('contactUs');
     }
   };

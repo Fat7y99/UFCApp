@@ -6,9 +6,10 @@ import { NavigationContainer } from '@src/navigation';
 import { ToastManager, ErrorDialog, LoadingDialog } from '@modules/components';
 import { useAppTheme } from '@modules/theme';
 import { clientPersister, queryClient } from '@modules/utils';
-import { useFirebaseMessagingInitialization } from './useFirebaseMessagingInitialization';
+
 import { useForegroundMessagesListener } from './useForegroundMessagesListener';
 import { useLocalizationInitialization } from './useLocalizationInitialization';
+
 import { useLogInitialization } from './useLogInitialization';
 import { useNetworkListener } from './useNetworkListener';
 import { useNotificationsInteraction } from './useNotificationsInteraction';
@@ -23,7 +24,7 @@ export default React.memo(() => {
   useNetworkListener();
   useReactQueryFocusManager();
   useReactQueryOnlineManager();
-  useFirebaseMessagingInitialization();
+  // useFirebaseMessagingInitialization();
   useForegroundMessagesListener();
   useNotificationsInteraction();
   const theme = useAppTheme();

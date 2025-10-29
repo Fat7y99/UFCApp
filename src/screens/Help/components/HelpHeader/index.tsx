@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
+import { NotificationButton } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -17,27 +18,12 @@ const HelpHeader: React.FC = () => {
     navigation.goBack();
   };
 
-  const handleNotificationPress = () => {
-    // Handle notification press
-    console.log('Notifications pressed');
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={AppColors.themeLight.primary_1}
       />
-
-      {/* Status Bar Area */}
-      <View style={styles.statusBar}>
-        <Text style={styles.timeText}>9:09</Text>
-        <View style={styles.statusIcons}>
-          <Text style={styles.statusIcon}>📶</Text>
-          <Text style={styles.statusIcon}>📶</Text>
-          <Text style={styles.statusIcon}>🔋</Text>
-        </View>
-      </View>
 
       {/* Header Content */}
       <View style={styles.headerContent}>
@@ -49,18 +35,7 @@ const HelpHeader: React.FC = () => {
           {translate(`${TranslationNamespaces.HELP}:title`)}
         </Text>
 
-        <TouchableOpacity
-          style={styles.notificationButton}
-          onPress={handleNotificationPress}
-        >
-          <Image
-            source={AppImages.notificationIcon}
-            style={styles.notificationIcon}
-          />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.badgeText}>3</Text>
-          </View>
-        </TouchableOpacity>
+        <NotificationButton />
       </View>
     </View>
   );

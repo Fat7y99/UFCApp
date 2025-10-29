@@ -1,16 +1,7 @@
 import notifee, { EventType } from '@notifee/react-native';
-import { getMessaging, onMessage } from '@react-native-firebase/messaging';
 import * as React from 'react';
-import {
-  useAppDispatch,
-  setUnreadNotificationsCount as setStateUnreadNotificationsCount,
-} from '@src/store';
-import {
-  getApiToken,
-  getUnreadNotificationsCount,
-  setUnreadNotificationsCount as setLocalStorageUnreadNotificationsCount,
-} from '@modules/core';
-import { displayLocalNotification, processNotification } from '@modules/utils';
+
+import { processNotification } from '@modules/utils';
 
 export const useForegroundMessagesListener = () => {
   // #region Logger
@@ -19,37 +10,37 @@ export const useForegroundMessagesListener = () => {
   // #endregion
 
   // #region Redux
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   // #endregion
 
-  React.useEffect(() => {
-    const unsubscribe = onMessage(getMessaging(), remoteMessage => {
-      console.info(getLogMessage('onMessage'), remoteMessage);
-      const apiToken = getApiToken();
+  // React.useEffect(() => {
+  //   const unsubscribe = onMessage(getMessaging(), remoteMessage => {
+  //     console.info(getLogMessage('onMessage'), remoteMessage);
+  //     const apiToken = getApiToken();
 
-      if (apiToken) {
-        console.info(getLogMessage('User Available'));
+  //     if (apiToken) {
+  //       console.info(getLogMessage('User Available'));
 
-        // Increase notifications count.
-        const unreadNotificationsCount =
-          (getUnreadNotificationsCount() ?? 0) + 1;
+  //       // Increase notifications count.
+  //       const unreadNotificationsCount =
+  //         (getUnreadNotificationsCount() ?? 0) + 1;
 
-        console.info(
-          getLogMessage('unreadNotificationsCount'),
-          unreadNotificationsCount,
-        );
+  //       console.info(
+  //         getLogMessage('unreadNotificationsCount'),
+  //         unreadNotificationsCount,
+  //       );
 
-        // Set unread notifications count to local storage and redux.
-        setLocalStorageUnreadNotificationsCount(unreadNotificationsCount);
-        dispatch(setStateUnreadNotificationsCount(unreadNotificationsCount));
+  //       // Set unread notifications count to local storage and redux.
+  //       setLocalStorageUnreadNotificationsCount(unreadNotificationsCount);
+  //       dispatch(setStateUnreadNotificationsCount(unreadNotificationsCount));
 
-        // Show local notification.
-        displayLocalNotification(remoteMessage);
-      }
-    });
+  //       // Show local notification.
+  //       displayLocalNotification(remoteMessage);
+  //     }
+  //   });
 
-    return unsubscribe;
-  }, [dispatch]);
+  //   return unsubscribe;
+  // }, [dispatch]);
 
   React.useEffect(() => {
     const unsubscribe = notifee.onForegroundEvent(({ type, detail }) => {

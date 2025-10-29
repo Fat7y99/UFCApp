@@ -6,12 +6,15 @@ import {
   Splash,
   NetworkLogs,
   Notifications,
+  NotificationDetails,
   Landing,
   Signup,
   SignIn,
   ForgotPassword,
   OtpVerification,
   Help,
+  FAQs,
+  FAQDetails,
   ContactUs,
   ChangePassword,
   EditProfile,
@@ -26,6 +29,8 @@ import {
   PersonalStep2,
   PersonalStep3,
   Offers,
+  OfferDetails,
+  ApplyToOffer,
 } from '@src/screens';
 import TabNavigator from './TabNavigator';
 
@@ -46,10 +51,13 @@ export default React.memo(() => (
     <stack.Screen name="signup" component={Signup} />
     <stack.Screen name="home" component={TabNavigator} />
     <stack.Screen name="notifications" component={Notifications} />
+    <stack.Screen name="notificationDetails" component={NotificationDetails} />
     <stack.Screen name="landing" component={Landing} />
     <stack.Screen name="forgotPassword" component={ForgotPassword} />
     <stack.Screen name="otpVerification" component={OtpVerification} />
     <stack.Screen name="help" component={Help} />
+    <stack.Screen name="faqs" component={FAQs} />
+    <stack.Screen name="faqDetails" component={FAQDetails} />
     <stack.Screen name="contactUs" component={ContactUs} />
     <stack.Screen name="changePassword" component={ChangePassword} />
     <stack.Screen name="editProfile" component={EditProfile} />
@@ -64,6 +72,8 @@ export default React.memo(() => (
     <stack.Screen name="personalStep2" component={PersonalStep2} />
     <stack.Screen name="personalStep3" component={PersonalStep3} />
     <stack.Screen name="offers" component={Offers} />
+    <stack.Screen name="offerDetails" component={OfferDetails} />
+    <stack.Screen name="applyToOffer" component={ApplyToOffer} />
     {/* Navigators */}
     {/* TODO: Add nested navigators here. */}
 

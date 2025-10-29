@@ -3,6 +3,7 @@ import { default as Config } from 'react-native-config';
 import { default as logger } from 'redux-logger';
 import dialogsReducer from './dialogs';
 import networkStateReducer from './networkState';
+import notificationsReducer from './notifications';
 import userReducer from './user';
 
 export const store = configureStore({
@@ -10,6 +11,7 @@ export const store = configureStore({
     user: userReducer,
     dialogs: dialogsReducer,
     networkState: networkStateReducer,
+    notifications: notificationsReducer,
   },
   middleware: getDefaultMiddleware =>
     Config.ENABLE_LOCAL_LOG === 'true'
@@ -31,3 +33,4 @@ export * from './hooks';
 export * from './dialogs';
 export * from './networkState';
 export * from './user';
+export * from './notifications';

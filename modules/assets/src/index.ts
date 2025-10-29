@@ -8,4 +8,8 @@ export { default as SMEStep1Logo } from './images/rnsvg/SMEStep1Logo';
 export { default as SMEStep2Logo } from './images/rnsvg/SMEStep2Logo';
 export { default as RealEstateStep1Logo } from './images/rnsvg/RealEstateStep1Logo';
 export { default as RealEstateAllStepsLogo } from './images/rnsvg/RealEstateAllStepsLogo';
+export { default as LoanLogo } from './images/rnsvg/LoanLogo';
+export { default as AccountLogo } from './images/rnsvg/AccountLogo';
+export { default as AlertLogo } from './images/rnsvg/AlertLogo';
+export { default as CalendarLogo } from './images/rnsvg/Calendar';
 export * from './fonts';

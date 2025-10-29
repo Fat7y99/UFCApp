@@ -7,13 +7,11 @@ import { useAppTheme, FontProvider } from '@modules/theme';
 import AppContent from './AppContent';
 import styles from './styles';
 
-export default React.memo(() => {
-  return (
-    <FontProvider defaultFont="Poppins">
-      <AppWithTheme />
-    </FontProvider>
-  );
-});
+export default React.memo(() => (
+  <FontProvider defaultFont="Poppins">
+    <AppWithTheme />
+  </FontProvider>
+));
 
 const AppWithTheme = React.memo(() => {
   const theme = useAppTheme();

@@ -16,12 +16,16 @@ import {
   getInputConstraints,
   formatPhoneNumber,
 } from '@src/utils/InputFormatting';
-import { Screen } from '@modules/components';
+import { Screen, NotificationButton } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AppImages, RealEstateAllStepsLogo } from 'modules/assets/src';
+import {
+  AppImages,
+  CalendarLogo,
+  RealEstateAllStepsLogo,
+} from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -46,12 +50,7 @@ const RealEstateStep1: React.FC = () => {
         <Text style={styles.headerTitle}>
           {translate(`${TranslationNamespaces.FINANCING}:purchaseFinancing`)}
         </Text>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Image source={AppImages.notificationIcon} style={styles.bellIcon} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>3</Text>
-          </View>
-        </TouchableOpacity>
+        <NotificationButton />
       </View>
 
       <ScrollView
@@ -120,7 +119,7 @@ const RealEstateStep1: React.FC = () => {
                 onChangeText={setDob}
                 editable={false}
               />
-              <Text style={styles.calendarIcon}>📅</Text>
+              <CalendarLogo />
             </TouchableOpacity>
           </View>
 

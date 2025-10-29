@@ -36,11 +36,16 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backButton: {
-    padding: ResponsiveDimensions.vs(8),
+    width: ResponsiveDimensions.vs(32),
+    height: ResponsiveDimensions.vs(32),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: ResponsiveDimensions.vs(12),
   },
   backIcon: {
     color: AppColors.themeLight.primaryButtonColor, // Bright blue
-    fontSize: ResponsiveDimensions.vs(24),
+    width: ResponsiveDimensions.vs(16),
+    height: ResponsiveDimensions.vs(16),
     fontWeight: 'bold',
   },
   title: {

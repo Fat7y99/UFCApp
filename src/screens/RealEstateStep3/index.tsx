@@ -17,7 +17,7 @@ import {
   formatAmount,
   formatNumber,
 } from '@src/utils/InputFormatting';
-import { Screen } from '@modules/components';
+import { Screen, NotificationButton } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -48,12 +48,7 @@ const RealEstateStep3: React.FC = () => {
         <Text style={styles.headerTitle}>
           {translate(`${TranslationNamespaces.FINANCING}:realEstateFinancing`)}
         </Text>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Image source={AppImages.notificationIcon} style={styles.bellIcon} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>3</Text>
-          </View>
-        </TouchableOpacity>
+        <NotificationButton />
       </View>
 
       <ScrollView

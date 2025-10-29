@@ -1,4 +1,4 @@
-package com.yourcompany.yourapp
+package com.ufc.ufcapp
 
 import android.os.Bundle
 import android.content.Intent
@@ -9,13 +9,10 @@ import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 
-// Added for "react-native-bootsplash".
-import com.zoontek.rnbootsplash.RNBootSplash
 
 class MainActivity : ReactActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Added for "react-native-bootsplash".
-        RNBootSplash.init(this, R.style.BootTheme)
+
 
         // Added for "react-native-screens".
         super.onCreate(null)
