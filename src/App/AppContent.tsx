@@ -2,10 +2,12 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import * as React from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { Provider as PaperProvider } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@src/navigation';
 import { ToastManager, ErrorDialog, LoadingDialog } from '@modules/components';
 import { useAppTheme } from '@modules/theme';
 import { clientPersister, queryClient } from '@modules/utils';
+import toastConfig from '@src/utils/Toast';
 
 import { useForegroundMessagesListener } from './useForegroundMessagesListener';
 import { useLocalizationInitialization } from './useLocalizationInitialization';
@@ -42,6 +44,7 @@ export default React.memo(() => {
           <LoadingDialog />
         </PersistQueryClientProvider>
         <ToastManager />
+        <Toast config={toastConfig} />
       </PaperProvider>
     </KeyboardProvider>
   ) : null;

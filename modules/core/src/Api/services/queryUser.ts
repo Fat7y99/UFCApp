@@ -19,6 +19,12 @@ const queryUser = {
     httpClient
       .put<User>('/api/user/updateProfile', request.body)
       .then(response => response.data),
+  // Update profile image
+  updateImageProfile: (request: ApiRequest<FormData>): Promise<void> =>
+    // FormData will be automatically handled by axios with correct Content-Type
+    httpClient
+      .post('/api/user/updateImageProfile', request.body)
+      .then(() => undefined),
 };
 
 export default queryUser;

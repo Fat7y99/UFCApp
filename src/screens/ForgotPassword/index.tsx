@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import {
   View,
@@ -7,26 +8,55 @@ import {
   StyleSheet,
   ImageBackground,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
+import type { RootStackParamList } from '@src/navigation';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
+import { useSendForgetPasswordOTPApi } from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { useAppTheme, AppColors } from '@modules/theme';
 import { PhoneInput, SendOtpButton } from './components';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default React.memo(() => {
   const theme = useAppTheme();
+  const navigation = useNavigation<NavigationProp>();
 
   // Form state
   const [phoneNumber, setPhoneNumber] = React.useState('');
+
+  const { mutate: sendOTP, isPending } = useSendForgetPasswordOTPApi({
+    onSuccess: () => {
+      navigation.navigate('otpVerification', {
+        phone: phoneNumber,
+        isForgetPassword: true,
+      });
+    },
+    onError: error => {
+      Toast.show({
+        type: 'fail',
+        text1: error.errorMessage ?? 'Failed to send OTP. Please try again.',
+      });
+    },
+  });
 
   const handlePhoneChange = (value: string) => {
     setPhoneNumber(value);
   };
 
   const handleSendOtp = () => {
-    // Handle send OTP logic
-    console.log('Send OTP to:', phoneNumber);
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      Toast.show({
+        type: 'fail',
+        text1: 'Please enter your phone number',
+      });
+      return;
+    }
+
+    sendOTP({ body: { phone: phoneNumber } });
   };
 
   return (
@@ -74,7 +104,7 @@ export default React.memo(() => {
             </View>
 
             {/* Send OTP Button */}
-            <SendOtpButton onPress={handleSendOtp} />
+            <SendOtpButton onPress={handleSendOtp} disabled={isPending} />
           </ScrollView>
         </View>
       </ImageBackground>

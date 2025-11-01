@@ -1,3 +1,4 @@
+import type { SuccessType } from '@src/screens/Success/types';
 import type { Notification } from '@modules/core';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -11,7 +12,22 @@ type RootStackParamList = {
   landing: undefined;
   signup: undefined;
   forgotPassword: undefined;
-  otpVerification: undefined;
+  otpVerification: {
+    phone?: string;
+    isForgetPassword?: boolean;
+    signupData?: {
+      email?: string;
+      name?: string;
+      idNumber?: string;
+      phone?: string;
+      password?: string;
+      username?: string;
+    };
+  };
+  resetPassword: {
+    phone?: string;
+    otp?: string;
+  };
   help: undefined;
   faqs: undefined;
   faqDetails: { faq: { id: string; question: string; answer: string } };
@@ -34,6 +50,9 @@ type RootStackParamList = {
   };
   applyToOffer: {
     offer: { id: string; title: string; description: string; isOdd: boolean };
+  };
+  success: {
+    type: SuccessType;
   };
 };
 

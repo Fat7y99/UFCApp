@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import {
   View,
@@ -7,6 +8,7 @@ import {
   StyleSheet,
   ImageBackground,
 } from 'react-native';
+import type { RootStackParamList } from '@src/navigation';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
@@ -18,14 +20,20 @@ import {
   SignUpLink,
   ForgotPasswordLink,
 } from './components';
+import useSignInButton from './components/SignInButton/useSignInButton';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default React.memo(() => {
   const theme = useAppTheme();
+  const navigation = useNavigation<NavigationProp>();
+  const { isSigningIn, onSignInPress } = useSignInButton();
 
   // Form state
   const [formData, setFormData] = React.useState({
-    username: '',
-    password: '',
+    username: 'remon',
+    password: '0000',
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -33,18 +41,15 @@ export default React.memo(() => {
   };
 
   const handleSignIn = () => {
-    // Handle sign in logic
-    console.log('Sign in data:', formData);
+    onSignInPress(formData);
   };
 
   const handleSignUp = () => {
-    // Navigate to sign up screen
-    console.log('Navigate to sign up');
+    navigation.navigate('signup');
   };
 
   const handleForgotPassword = () => {
-    // Navigate to forgot password screen
-    console.log('Navigate to forgot password');
+    navigation.navigate('forgotPassword');
   };
 
   return (
@@ -94,7 +99,7 @@ export default React.memo(() => {
             <ForgotPasswordLink onPress={handleForgotPassword} />
 
             {/* Sign In Button */}
-            <SignInButton onPress={handleSignIn} />
+            <SignInButton onPress={handleSignIn} disabled={isSigningIn} />
 
             {/* Sign Up Link */}
             <SignUpLink onPress={handleSignUp} />

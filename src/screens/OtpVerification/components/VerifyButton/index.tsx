@@ -1,19 +1,36 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from 'modules/theme/src';
 
 interface VerifyButtonProps {
   onPress: () => void;
+  disabled?: boolean;
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> = ({ onPress }) => (
-  <TouchableOpacity style={styles.button} onPress={onPress}>
-    <Text style={styles.buttonText}>
-      {translate(`${TranslationNamespaces.LOGIN}:verifyButton`)}
-    </Text>
+const VerifyButton: React.FC<VerifyButtonProps> = ({
+  onPress,
+  disabled = false,
+}) => (
+  <TouchableOpacity
+    style={[styles.button, disabled && styles.disabledButton]}
+    onPress={onPress}
+    disabled={disabled}
+  >
+    {disabled ? (
+      <ActivityIndicator color={AppColors.themeLight.primary_1} />
+    ) : (
+      <Text style={styles.buttonText}>
+        {translate(`${TranslationNamespaces.LOGIN}:verifyButton`)}
+      </Text>
+    )}
   </TouchableOpacity>
 );
 
@@ -30,6 +47,9 @@ const styles = StyleSheet.create({
     color: AppColors.themeLight.primary_1, // Dark blue text
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });
 

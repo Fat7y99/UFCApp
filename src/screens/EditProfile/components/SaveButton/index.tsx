@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { useAppDispatch, setErrorDialogMessage } from '@src/store';
-import { useUpdateProfileApi } from '@modules/core';
+import Toast from 'react-native-toast-message';
+import { useUpdateUserProfileApi } from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 
@@ -24,44 +24,59 @@ interface ProfileData {
 
 interface SaveButtonProps {
   profileData: ProfileData;
+  userId?: number;
 }
 
 const SaveButton: React.FC<SaveButtonProps> = ({ profileData }) => {
-  const dispatch = useAppDispatch();
-  const { mutate: updateProfile, isPending } = useUpdateProfileApi({
+  const { mutate: updateProfile, isPending } = useUpdateUserProfileApi({
     onSuccess: () => {
-      dispatch(setErrorDialogMessage('Profile updated successfully'));
+      Toast.show({
+        type: 'success',
+        text1: 'Profile updated successfully',
+      });
     },
     onError: error => {
-      dispatch(
-        setErrorDialogMessage(error.errorMessage ?? 'Failed to update profile'),
-      );
+      Toast.show({
+        type: 'fail',
+        text1: error.errorMessage ?? 'Failed to update profile',
+      });
     },
   });
 
   const handleSavePress = () => {
-    // Convert date from any format to DD-MM-YYYY if needed
-    const formatDate = (date: string): string => {
-      if (!date) return '';
-      // If date is already in DD-MM-YYYY format, return as is
-      if (date.match(/^\d{2}-\d{2}-\d{4}$/)) return date;
-      // Otherwise try to parse and convert
-      return date;
-    };
+    if (!profileData) {
+      Toast.show({
+        type: 'fail',
+        text1: 'Profile data is required',
+      });
+      return;
+    }
 
-    const body = {
-      address: profileData.address || undefined,
-      birthDate: formatDate(profileData.dateOfBirth) || undefined,
-      gender: profileData.gender.toUpperCase() as 'MALE' | 'FEMALE' | undefined,
-      preferredLanguage: 'EN' as const, // Default or get from user preferences
-    };
+    // Convert profile data to UpdateProfileBody
+    const updateProfileBody: {
+      address?: string;
+      birthDate?: string;
+      gender?: 'MALE' | 'FEMALE';
+    } = {};
 
-    // Only include fields that have values
-    const filteredBody = Object.fromEntries(
-      Object.entries(body).filter(([_, v]) => v !== undefined),
-    );
+    if (profileData.address && profileData.address.trim() !== '') {
+      updateProfileBody.address = profileData.address;
+    }
 
-    updateProfile({ body: filteredBody });
+    if (profileData.dateOfBirth && profileData.dateOfBirth.trim() !== '') {
+      updateProfileBody.birthDate = profileData.dateOfBirth;
+    }
+
+    if (
+      profileData.gender &&
+      (profileData.gender === 'male' || profileData.gender === 'female')
+    ) {
+      updateProfileBody.gender = profileData.gender.toUpperCase() as
+        | 'MALE'
+        | 'FEMALE';
+    }
+
+    updateProfile({ body: updateProfileBody });
   };
 
   return (

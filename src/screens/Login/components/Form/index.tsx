@@ -10,7 +10,7 @@ import type { FormValues } from './types';
 export default React.memo(() => {
   // #region Form
   const formMethods = useForm<FormValues>({
-    defaultValues: { username: '', password: '' },
+    defaultValues: { username: 'remon', password: '0000' },
   });
   // #endregion
 

@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -8,16 +8,14 @@ import {
   TouchableOpacity,
   StatusBar,
   Image,
-  Alert,
 } from 'react-native';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { AxiosError } from 'axios';
+
 import type { RootStackParamList } from 'navigation/RootStack.types';
 import { AppImages } from 'modules/assets/src';
-import { useLoginApi } from 'modules/core/src';
 
 const SettingsHeader: React.FC = () => {
   const navigation =
@@ -26,23 +24,7 @@ const SettingsHeader: React.FC = () => {
   const handleBackPress = () => {
     navigation.goBack();
   };
-  const { mutateAsync: login } = useLoginApi();
-  const handleLogin = async () => {
-    console.log('handleLogin');
-    login({ body: { username: 'remon', password: '0000' } })
-      .then(res => {
-        Alert.alert('Login successful', JSON.stringify(res));
-        console.log(res);
-      })
-      .catch((err: AxiosError) => {
-        Alert.alert('Login failed', JSON.stringify(err));
 
-        console.log(err);
-      });
-  };
-  useEffect(() => {
-    handleLogin();
-  }, []);
   return (
     <View style={styles.container}>
       <StatusBar

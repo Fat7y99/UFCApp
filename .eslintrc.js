@@ -130,5 +130,18 @@ module.exports = {
       files: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
       extends: ['plugin:testing-library/react'],
     },
+    {
+      // API response files - allow snake_case for OAuth2 and API responses
+      files: ['**/Api/responses/**/*.ts'],
+      rules: {
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            selector: 'typeProperty',
+            format: ['camelCase', 'snake_case'],
+          },
+        ],
+      },
+    },
   ],
 };

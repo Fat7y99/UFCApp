@@ -1,7 +1,8 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import * as React from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, View } from 'react-native';
 import { Screen } from '@modules/components';
+import { useGetCurrentUserApi } from '@modules/core';
 import { EditProfileHeader, ProfileForm, SaveButton } from './components';
 
 interface ProfileData {
@@ -15,15 +16,58 @@ interface ProfileData {
 }
 
 export default React.memo(() => {
+  const { data: currentUser, isLoading } = useGetCurrentUserApi();
+
   const [profileData, setProfileData] = React.useState<ProfileData>({
-    username: 'greatPower.G',
-    fullName: 'Ahmed Ibrahim Mahmoud',
-    email: 'Ahmed@ui.com',
-    mobileNumber: '(+966) 0547 6324 12',
+    username: '',
+    fullName: '',
+    email: '',
+    mobileNumber: '',
     gender: 'male',
     dateOfBirth: '',
     address: '',
   });
+
+  // Populate form when user data is loaded
+  React.useEffect(() => {
+    if (currentUser) {
+      const genderValue = currentUser.gender?.toLowerCase();
+      const validGender: 'male' | 'female' =
+        genderValue === 'male' || genderValue === 'female'
+          ? genderValue
+          : 'male';
+
+      setProfileData({
+        username: currentUser.username ?? '',
+        fullName: currentUser.name ?? '',
+        email: currentUser.email ?? '',
+        mobileNumber: currentUser.phone ?? '',
+        gender: validGender,
+        dateOfBirth: currentUser.birthDate ?? '',
+        address: currentUser.address ?? '',
+      });
+    }
+  }, [currentUser]);
+
+  if (isLoading) {
+    return (
+      <Screen style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" />
+        </View>
+      </Screen>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <Screen style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" />
+        </View>
+      </Screen>
+    );
+  }
 
   return (
     <Screen style={styles.container}>
@@ -58,5 +102,10 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     paddingBottom: ResponsiveDimensions.vs(20),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

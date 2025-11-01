@@ -3,7 +3,11 @@ import { translate } from '@modules/localization';
 import { setErrorDialogMessage, store } from '@src/store';
 import axios from 'axios';
 import { default as Config } from 'react-native-config';
-import type { ServerError, ServerErrorResponse } from '@modules/core';
+import {
+  queryAuth,
+  type ServerError,
+  type ServerErrorResponse,
+} from '@modules/core';
 import ConsoleColors from './ConsoleColors';
 import skip401Urls from './skip401Urls';
 import type {
@@ -16,11 +20,19 @@ const getLogMessage = (message: string) => `## HttpClient:: ${message}`;
 
 const isLoginRequest = (url?: string) =>
   url?.includes('/oauth2/token') || url?.includes('/login');
-
-const addHeaders = (config: InternalAxiosRequestConfig<any>) => {
+const isForgotPasswordRequest = (url?: string) =>
+  url?.includes('forgetPassword');
+const addHeaders = async (config: InternalAxiosRequestConfig<any>) => {
   config.headers.Accept = '*/*';
 
   // Add Basic Auth for login request only
+  if (isForgotPasswordRequest(config.url)) {
+    const response = await queryAuth.login({
+      body: { username: 'guest', password: 'ufc.guest.2025' },
+    });
+    config.headers.Authorization = `Bearer ${response?.access_token}`;
+    return;
+  }
   if (isLoginRequest(config.url)) {
     // Get client credentials from Config
     const clientId = Config.CLIENT_ID || '';
@@ -43,7 +55,10 @@ const addHeaders = (config: InternalAxiosRequestConfig<any>) => {
       config.headers.Authorization = `Bearer ${token}`;
     }
     // Set Content-Type to application/json for other requests
-    config.headers['Content-Type'] = 'application/json';
+    // Don't set Content-Type for FormData - let axios handle it automatically
+    if (!(config.data instanceof FormData)) {
+      config.headers['Content-Type'] = 'application/json';
+    }
   }
 };
 
@@ -151,10 +166,10 @@ const handleAxiosError = (error: AxiosError<ServerErrorResponse>) => {
   return Promise.reject(severError);
 };
 
-const requestFulfilledInterceptor = (
+const requestFulfilledInterceptor = async (
   config: InternalAxiosRequestConfig<any>,
 ) => {
-  addHeaders(config);
+  await addHeaders(config);
   const method = config.method?.toUpperCase();
   const methodColor = getLogMethodColor(method);
 

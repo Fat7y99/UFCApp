@@ -4,3 +4,4 @@ export {
   default as useUpdateUserProfileApi,
   useUpdateProfileApi,
 } from './useUpdateUserProfileApi';
+export { default as useUpdateImageProfileApi } from './useUpdateImageProfileApi';

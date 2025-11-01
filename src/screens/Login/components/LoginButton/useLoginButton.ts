@@ -1,11 +1,23 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keyboard } from 'react-native';
+import { reset } from '@src/navigation';
 import type { FormValues } from '@src/screens/Login/components';
-import { useAppDispatch, setErrorDialogMessage } from '@src/store';
-import { useLoginApi } from '@modules/core';
+import {
+  useAppDispatch,
+  setErrorDialogMessage,
+  setApiToken as setStateApiToken,
+  setUnreadCount,
+  store,
+} from '@src/store';
+import {
+  useLoginApi,
+  useGetUserDetailsApi,
+  queryNotifications,
+  setUnreadNotificationsCount as setLocalStorageUnreadNotificationsCount,
+} from '@modules/core';
 import { TranslationNamespaces } from '@modules/localization';
-import { saveUserDataOpenHome } from '@modules/utils';
+import { saveApiToken, saveUserData } from '@modules/utils';
 
 const useLoginButton = () => {
   // #region Logger
@@ -22,36 +34,38 @@ const useLoginButton = () => {
   const dispatch = useAppDispatch();
   // #endregion
 
+  // #region State
+  const [accessToken, setAccessToken] = React.useState<string | null>(null);
+  const [shouldFetchUser, setShouldFetchUser] = React.useState(false);
+  // #endregion
+
   // #region API
-  const {
-    mutate: callLoginApi,
-    isPending,
-    isSuccess,
-    isError,
-    data: loginResponse,
-    error,
-  } = useLoginApi();
+  const { mutate: callLoginApi, isPending: isLoggingIn } = useLoginApi({
+    onSuccess: loginResponse => {
+      console.info(getLogMessage('handleSuccess'), loginResponse);
 
-  const handleSuccess = React.useCallback(() => {
-    console.info(getLogMessage('handleSuccess'), loginResponse);
+      if (loginResponse?.access_token) {
+        // Save access token
+        const token = loginResponse.access_token;
+        saveApiToken(token);
+        dispatch(setStateApiToken(token));
 
-    if (loginResponse?.user && loginResponse?.token) {
-      saveUserDataOpenHome(loginResponse.user, loginResponse.token);
-    } else {
-      dispatch(
-        setErrorDialogMessage(
-          translate(`${TranslationNamespaces.COMMON}:errorWhileAction`, {
-            action: translate(`${TranslationNamespaces.LOGIN}:login`),
-          }),
-        ),
-      );
-    }
-  }, [loginResponse, translate, dispatch]);
+        // Trigger user details fetch
+        setAccessToken(token);
+        setShouldFetchUser(true);
+      } else {
+        dispatch(
+          setErrorDialogMessage(
+            translate(`${TranslationNamespaces.COMMON}:errorWhileAction`, {
+              action: translate(`${TranslationNamespaces.LOGIN}:login`),
+            }),
+          ),
+        );
+      }
+    },
+    onError: error => {
+      console.error(getLogMessage('handleError'), error);
 
-  const handleError = React.useCallback(() => {
-    console.error(getLogMessage('handleError'), error);
-
-    if (error) {
       dispatch(
         setErrorDialogMessage(
           error.errorMessage ??
@@ -60,8 +74,58 @@ const useLoginButton = () => {
             }),
         ),
       );
+    },
+  });
+
+  const {
+    data: userData,
+    isSuccess: isUserFetched,
+    isError: isUserError,
+  } = useGetUserDetailsApi({ enabled: shouldFetchUser });
+
+  // Handle user data after successful fetch
+  React.useEffect(() => {
+    if (isUserFetched && userData && accessToken) {
+      console.info(getLogMessage('User fetched successfully'), userData);
+      saveUserData(userData);
+      reset('home');
+
+      // Fetch unread notifications count asynchronously after login
+      queryNotifications
+        .getUnreadNotificationsCount()
+        .then((count: number) => {
+          setLocalStorageUnreadNotificationsCount(count);
+          store.dispatch(setUnreadCount(count));
+        })
+        .catch((error: unknown) => {
+          console.error(
+            getLogMessage('Failed to fetch unread notifications count'),
+            error,
+          );
+          // Silently fail - we don't want to block login if notifications fail
+        });
+
+      // Reset states
+      setShouldFetchUser(false);
+      setAccessToken(null);
     }
-  }, [error, dispatch, translate]);
+  }, [isUserFetched, userData, accessToken]);
+
+  // Handle user fetch error
+  React.useEffect(() => {
+    if (isUserError) {
+      console.error(getLogMessage('Failed to fetch user details'));
+      dispatch(
+        setErrorDialogMessage(
+          translate(`${TranslationNamespaces.COMMON}:errorWhileAction`, {
+            action: 'fetching user details',
+          }),
+        ),
+      );
+      setShouldFetchUser(false);
+      setAccessToken(null);
+    }
+  }, [isUserError, dispatch, translate]);
   // #endregion
 
   // #region Press events
@@ -78,19 +142,7 @@ const useLoginButton = () => {
   );
   // #endregion
 
-  // #region Setup
-  React.useEffect(() => {
-    if (isSuccess) {
-      handleSuccess();
-    }
-
-    if (isError) {
-      handleError();
-    }
-  }, [isSuccess, isError, handleSuccess, handleError]);
-  // #endregion
-
-  return { isLoggingIn: isPending, onLoginPress };
+  return { isLoggingIn: isLoggingIn || shouldFetchUser, onLoginPress };
 };
 
 export default useLoginButton;

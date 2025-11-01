@@ -14,4 +14,5 @@ export default {
   bgEvenFrame: require('./images/bg_even_frame.png'),
   banner1: require('./images/banner_1.png'),
   searchIcon: require('./images/search_icon.png'),
+  systemSmallLight: require('./images/SystemSmallLight.png'),
 };

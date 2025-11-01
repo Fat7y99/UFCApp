@@ -9,6 +9,17 @@ export interface SignupBody {
   name?: string;
   idNumber?: string;
   phone?: string;
+  otp?: string;
   password?: string;
   username?: string;
+}
+
+export interface SendOTPBody {
+  phone: string;
+}
+
+export interface ForgetPasswordBody {
+  otp: string;
+  password: string;
+  phone: string;
 }

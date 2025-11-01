@@ -1,9 +1,10 @@
-import type { User } from '@modules/core';
-
-// TODO: Construct login response based on API.
+// OAuth2 token response structure (matches API response format)
 interface LoginResponse {
-  user?: User;
-  token?: string;
+  access_token: string;
+  refresh_token?: string;
+  scope?: string;
+  token_type?: string;
+  expires_in?: number;
 }
 
 export default LoginResponse;

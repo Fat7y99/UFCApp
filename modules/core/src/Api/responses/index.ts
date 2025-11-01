@@ -3,6 +3,8 @@ export type { default as LogoutResponse } from './LogoutResponse';
 export type { default as MarkNotificationReadResponse } from './MarkNotificationReadResponse';
 export type { default as NotificationsResponse } from './NotificationsResponse';
 export type { default as PagingResponse } from './PagingResponse';
+export type { default as SendOTPResponse } from './SendOTPResponse';
 export type { default as ServerErrorResponse } from './ServerErrorResponse';
 export type { default as SignupResponse } from './SignupResponse';
+export type { default as UnreadNotificationsCountResponse } from './UnreadNotificationsCountResponse';
 export type { default as UpdateFcmTokenResponse } from './UpdateFcmTokenResponse';

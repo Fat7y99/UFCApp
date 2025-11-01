@@ -11,7 +11,7 @@ const useGetUserDetailsApi = (
     queryFn: () =>
       Config.USE_FAKE_API === 'true'
         ? fakerUser.getUserDetails()
-        : queryUser.getUserDetails(),
+        : queryUser.getCurrentUser(),
     queryKey: ['user'],
     ...(options ?? {}),
   });

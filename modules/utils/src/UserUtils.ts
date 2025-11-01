@@ -5,6 +5,8 @@ import {
   removeUnreadNotificationsCount as removeLocalStorageUnreadNotificationsCount,
   removeApiToken as removeLocalStorageApiToken,
   removeFcmToken as removeLocalStorageFcmToken,
+  queryNotifications,
+  setUnreadNotificationsCount as setLocalStorageUnreadNotificationsCount,
 } from '@modules/core';
 import { reset } from '@src/navigation';
 import {
@@ -14,6 +16,7 @@ import {
   removeUser as removeStateUser,
   removeUnreadNotificationsCount as removeStateUnreadNotificationsCount,
   removeApiToken as removeStateApiToken,
+  setUnreadCount,
 } from '@src/store';
 import type { User } from '@modules/core';
 import { queryClient } from '@modules/utils';
@@ -43,7 +46,27 @@ export const saveApiToken = (apiToken: string) => {
 };
 
 /**
+ * Fetch unread notifications count and update the store and local storage.
+ * This is called asynchronously and doesn't block navigation.
+ */
+const fetchUnreadNotificationsCount = async () => {
+  try {
+    console.info(getLogMessage('fetchUnreadNotificationsCount'));
+    const count = await queryNotifications.getUnreadNotificationsCount();
+    console.info(getLogMessage('fetchUnreadNotificationsCount success'), count);
+    // Save to local storage
+    setLocalStorageUnreadNotificationsCount(count);
+    // Update Redux store
+    store.dispatch(setUnreadCount(count));
+  } catch (error) {
+    console.error(getLogMessage('fetchUnreadNotificationsCount error'), error);
+    // Silently fail - we don't want to block login if notifications fail
+  }
+};
+
+/**
  * Save user data and navigate to the home screen.
+ * After saving user data, it fetches the unread notifications count.
  *
  * @param user - The user object containing user data.
  * * @param apiToken - The api token.
@@ -54,6 +77,8 @@ export const saveUserDataOpenHome = (user: User, apiToken: string) => {
   saveUserData(user);
   saveApiToken(apiToken);
   reset('home');
+  // Fetch unread notifications count asynchronously after login
+  fetchUnreadNotificationsCount();
 };
 
 /**

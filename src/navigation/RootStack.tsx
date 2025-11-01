@@ -12,6 +12,7 @@ import {
   SignIn,
   ForgotPassword,
   OtpVerification,
+  ResetPassword,
   Help,
   FAQs,
   FAQDetails,
@@ -31,6 +32,7 @@ import {
   Offers,
   OfferDetails,
   ApplyToOffer,
+  Success,
 } from '@src/screens';
 import TabNavigator from './TabNavigator';
 
@@ -55,6 +57,7 @@ export default React.memo(() => (
     <stack.Screen name="landing" component={Landing} />
     <stack.Screen name="forgotPassword" component={ForgotPassword} />
     <stack.Screen name="otpVerification" component={OtpVerification} />
+    <stack.Screen name="resetPassword" component={ResetPassword} />
     <stack.Screen name="help" component={Help} />
     <stack.Screen name="faqs" component={FAQs} />
     <stack.Screen name="faqDetails" component={FAQDetails} />
@@ -74,6 +77,7 @@ export default React.memo(() => (
     <stack.Screen name="offers" component={Offers} />
     <stack.Screen name="offerDetails" component={OfferDetails} />
     <stack.Screen name="applyToOffer" component={ApplyToOffer} />
+    <stack.Screen name="success" component={Success} />
     {/* Navigators */}
     {/* TODO: Add nested navigators here. */}
 

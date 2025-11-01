@@ -111,6 +111,14 @@ export const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
   },
+  addButtonDisabled: {
+    opacity: 0.5,
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: ResponsiveDimensions.vs(50),
+  },
   rightSection: {
     flex: 1,
   },
