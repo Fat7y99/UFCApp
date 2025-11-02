@@ -1,5 +1,9 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import * as React from 'react';
 import {
   View,
@@ -10,7 +14,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
-import { SuccessType } from '@src/screens/Success/types';
+
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { useSignupApi } from '@modules/core';
@@ -38,20 +42,21 @@ export default React.memo(() => {
       password?: string;
       username?: string;
     };
+    resendOtpHandler?: () => void;
   };
   const phoneNumber = params?.phone ?? '';
   const isForgetPassword = params?.isForgetPassword ?? false;
   const signupData = params?.signupData;
 
   // OTP state
-  const [otpCode, setOtpCode] = React.useState(['', '', '', '', '', '']);
-  const [timeLeft, setTimeLeft] = React.useState(120); // 2 minutes in seconds
+  const [otpCode, setOtpCode] = React.useState(['', '', '', '']);
+  const [timeLeft, setTimeLeft] = React.useState(60); // 2 minutes in seconds
 
   const { mutate: signup, isPending: isSigningUp } = useSignupApi({
     onSuccess: () => {
-      navigation.navigate('success', {
-        type: SuccessType.SIGNUP,
-      });
+      navigation.dispatch(
+        CommonActions.reset({ index: 0, routes: [{ name: 'signUpSuccess' }] }),
+      );
     },
     onError: error => {
       Toast.show({
@@ -69,7 +74,7 @@ export default React.memo(() => {
 
   const handleVerify = () => {
     const fullOtp = otpCode.join('');
-    if (fullOtp.length !== 6) {
+    if (fullOtp.length !== 4) {
       Toast.show({
         type: 'fail',
         text1: 'Please enter complete OTP code',
@@ -112,7 +117,7 @@ export default React.memo(() => {
   };
 
   const handleResendOtp = () => {
-    console.log('Resend OTP');
+    // params?.resendOtpHandler?.();
     setTimeLeft(120); // Reset timer
   };
 
@@ -151,7 +156,10 @@ export default React.memo(() => {
             </View>
 
             {/* Verify Button */}
-            <VerifyButton onPress={handleVerify} disabled={isSigningUp} />
+            <VerifyButton
+              onPress={handleVerify}
+              disabled={isSigningUp || timeLeft < 1}
+            />
           </ScrollView>
         </View>
       </ImageBackground>

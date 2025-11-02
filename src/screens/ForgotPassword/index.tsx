@@ -33,6 +33,20 @@ export default React.memo(() => {
       navigation.navigate('otpVerification', {
         phone: phoneNumber,
         isForgetPassword: true,
+        resendOtpHandler: () => {
+          sendOTP(
+            { body: { phone: phoneNumber } },
+            {
+              onSuccess: () => {},
+              onError: error => {
+                Toast.show({
+                  type: 'fail',
+                  text1: error.errorMessage ?? 'Failed to send OTP',
+                });
+              },
+            },
+          );
+        },
       });
     },
     onError: error => {

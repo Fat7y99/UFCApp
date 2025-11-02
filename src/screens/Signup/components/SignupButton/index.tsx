@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
   TouchableOpacity,
@@ -6,9 +7,11 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
-import useSignupButton from './useSignupButton';
+
+import { useSendOTPApi } from 'modules/core/src';
 import { AppColors } from 'modules/theme/src';
 
 interface SignupButtonProps {
@@ -25,23 +28,44 @@ interface SignupButtonProps {
 }
 
 const SignupButton: React.FC<SignupButtonProps> = ({
-  onPress,
   disabled = false,
   formData,
 }) => {
-  const { isPending, onSignupPress } = useSignupButton();
-
+  const { isPending, mutate: sendOTP } = useSendOTPApi();
+  const navigation = useNavigation();
   const handlePress = () => {
     if (!disabled && !isPending) {
-      onSignupPress({
-        email: formData.email,
-        name: formData.name,
-        idNumber: formData.idNumber,
-        phone: formData.mobileNumber,
-        password: formData.password,
-        username: formData.username,
-      });
-      onPress();
+      sendOTP(
+        { body: { phone: formData.mobileNumber } },
+        {
+          onSuccess: () => {
+            navigation.navigate('otpVerification', {
+              phone: formData.mobileNumber,
+              signupData: formData,
+              resendOtpHandler: () => {
+                sendOTP(
+                  { body: { phone: formData.mobileNumber } },
+                  {
+                    onSuccess: () => {},
+                    onError: error => {
+                      Toast.show({
+                        type: 'fail',
+                        text1: error.errorMessage ?? 'Failed to send OTP',
+                      });
+                    },
+                  },
+                );
+              },
+            });
+          },
+          onError: error => {
+            Toast.show({
+              type: 'fail',
+              text1: error.errorMessage ?? 'Failed to send OTP',
+            });
+          },
+        },
+      );
     }
   };
 

@@ -19,13 +19,13 @@ export default React.memo(() => {
 
   // Form state
   const [formData, setFormData] = React.useState({
-    name: '',
-    username: '',
-    mobileNumber: '',
-    email: '',
-    idNumber: '',
-    password: '',
-    confirmPassword: '',
+    name: 'Fathy',
+    username: 'Cathy',
+    mobileNumber: '+201273965628',
+    email: 'Fathy.nabil2022@gmail.com',
+    idNumber: '29901280102837',
+    password: '1234',
+    confirmPassword: '1231',
   });
 
   const [termsAccepted, setTermsAccepted] = React.useState(false);

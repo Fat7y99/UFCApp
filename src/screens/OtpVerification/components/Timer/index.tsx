@@ -11,7 +11,7 @@ interface TimerProps {
 
 const Timer: React.FC<TimerProps> = ({ timeLeft, onResend }) => {
   const [currentTime, setCurrentTime] = useState(timeLeft);
-
+  console.log('timeLeft', timeLeft, currentTime);
   useEffect(() => {
     setCurrentTime(timeLeft);
   }, [timeLeft]);

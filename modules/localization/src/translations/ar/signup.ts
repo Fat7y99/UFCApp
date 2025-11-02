@@ -12,4 +12,5 @@ export default {
   signupButton: 'إنشاء حساب',
   signInText: 'لديك حساب بالفعل؟',
   signInLink: 'تسجيل الدخول',
+  registeredSuccessfully: 'تم التسجيل بنجاح',
 };

@@ -12,4 +12,5 @@ export default {
   signupButton: 'SIGN UP',
   signInText: 'Have an account?',
   signInLink: 'Sign In',
+  registeredSuccessfully: 'Registered successfully',
 };

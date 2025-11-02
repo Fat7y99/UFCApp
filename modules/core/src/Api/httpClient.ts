@@ -21,9 +21,12 @@ const getLogMessage = (message: string) => `## HttpClient:: ${message}`;
 const isLoginRequest = (url?: string) =>
   url?.includes('/oauth2/token') || url?.includes('/login');
 const isForgotPasswordRequest = (url?: string) =>
-  url?.includes('forgetPassword');
+  url?.includes('sendOTP') ||
+  url?.endsWith('addEndUser') ||
+  url?.endsWith('forgetPassword');
 const addHeaders = async (config: InternalAxiosRequestConfig<any>) => {
   config.headers.Accept = '*/*';
+  console.log('url', config.url, isForgotPasswordRequest(config.url));
 
   // Add Basic Auth for login request only
   if (isForgotPasswordRequest(config.url)) {

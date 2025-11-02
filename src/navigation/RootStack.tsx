@@ -35,6 +35,7 @@ import {
   ApplyToOffer,
   Success,
 } from '@src/screens';
+import SignUpSuccess from '@src/screens/SignUpSuccess';
 import TabNavigator from './TabNavigator';
 
 const stack = createNativeStackNavigator<RootStackParamList, 'RootStack'>();
@@ -83,6 +84,7 @@ export default React.memo(() => (
     <stack.Screen name="offerDetails" component={OfferDetails} />
     <stack.Screen name="applyToOffer" component={ApplyToOffer} />
     <stack.Screen name="success" component={Success} />
+    <stack.Screen name="signUpSuccess" component={SignUpSuccess} />
     {/* Navigators */}
     {/* TODO: Add nested navigators here. */}
 

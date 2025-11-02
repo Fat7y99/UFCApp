@@ -13,6 +13,7 @@ type RootStackParamList = {
   signup: undefined;
   forgotPassword: undefined;
   otpVerification: {
+    resendOtpHandler?: () => void;
     phone?: string;
     isForgetPassword?: boolean;
     signupData?: {
@@ -55,6 +56,7 @@ type RootStackParamList = {
   success: {
     type: SuccessType;
   };
+  signUpSuccess: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =
