@@ -30,13 +30,19 @@ const EditProfileHeader: React.FC = () => {
     onSuccess: () => {
       Toast.show({
         type: 'success',
-        text1: 'Profile image updated successfully',
+        text1: translate(
+          `${TranslationNamespaces.EDIT_PROFILE}:profileImageUpdatedSuccessfully`,
+        ),
       });
     },
     onError: error => {
       Toast.show({
         type: 'fail',
-        text1: error.errorMessage ?? 'Failed to update profile image',
+        text1:
+          error.errorMessage ??
+          translate(
+            `${TranslationNamespaces.EDIT_PROFILE}:failedToUpdateProfileImage`,
+          ),
       });
     },
   });

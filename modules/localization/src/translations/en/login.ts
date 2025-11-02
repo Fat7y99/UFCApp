@@ -17,4 +17,8 @@ export default {
   resendOtp: 'Resend OTP',
   signUpText: "Doesn't Have an account?",
   signUpLink: 'Sign Up',
+  pleaseEnterPhoneNumber: 'Please enter your phone number',
+  pleaseEnterCompleteOtp: 'Please enter complete OTP code',
+  phoneNumberRequired: 'Phone number is required',
+  failedToSendOtp: 'Failed to send OTP. Please try again.',
 };

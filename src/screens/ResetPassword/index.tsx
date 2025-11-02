@@ -7,13 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   ImageBackground,
-  TextInput,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
-import { SuccessType } from '@src/screens/Success/types';
+import { FormInput } from '@src/screens/SignIn/components';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { useForgetPasswordApi } from '@modules/core';
@@ -43,14 +42,16 @@ export default React.memo(() => {
 
   const { mutate: resetPassword, isPending } = useForgetPasswordApi({
     onSuccess: () => {
-      navigation.navigate('success', {
-        type: SuccessType.PASSWORD_RESET,
-      });
+      navigation.navigate('resetPasswordSuccess');
     },
     onError: error => {
       Toast.show({
         type: 'fail',
-        text1: error.errorMessage ?? 'Failed to reset password',
+        text1:
+          error.errorMessage ??
+          translate(
+            `${TranslationNamespaces.CHANGE_PASSWORD}:failedToResetPassword`,
+          ),
       });
     },
   });
@@ -59,7 +60,9 @@ export default React.memo(() => {
     if (!password || password.trim() === '') {
       Toast.show({
         type: 'fail',
-        text1: 'Please enter your new password',
+        text1: translate(
+          `${TranslationNamespaces.CHANGE_PASSWORD}:pleaseEnterNewPassword`,
+        ),
       });
       return;
     }
@@ -67,7 +70,9 @@ export default React.memo(() => {
     if (!confirmPassword || confirmPassword.trim() === '') {
       Toast.show({
         type: 'fail',
-        text1: 'Please confirm your password',
+        text1: translate(
+          `${TranslationNamespaces.CHANGE_PASSWORD}:pleaseConfirmPassword`,
+        ),
       });
       return;
     }
@@ -75,7 +80,9 @@ export default React.memo(() => {
     if (password !== confirmPassword) {
       Toast.show({
         type: 'fail',
-        text1: 'Passwords do not match',
+        text1: translate(
+          `${TranslationNamespaces.CHANGE_PASSWORD}:passwordsDoNotMatch`,
+        ),
       });
       return;
     }
@@ -83,7 +90,7 @@ export default React.memo(() => {
     if (!phoneNumber) {
       Toast.show({
         type: 'fail',
-        text1: 'Phone number is required',
+        text1: translate(`${TranslationNamespaces.LOGIN}:phoneNumberRequired`),
       });
       return;
     }
@@ -91,7 +98,9 @@ export default React.memo(() => {
     if (!otpCode) {
       Toast.show({
         type: 'fail',
-        text1: 'OTP code is required',
+        text1: translate(
+          `${TranslationNamespaces.CHANGE_PASSWORD}:otpCodeRequired`,
+        ),
       });
       return;
     }
@@ -127,48 +136,31 @@ export default React.memo(() => {
             <Text
               style={[styles.resetPasswordHeading, theme.fonts.headlineLarge]}
             >
-              {translate(`${TranslationNamespaces.LOGIN}:resetPassword`) ||
-                'Reset Password'}
+              {translate(
+                `${TranslationNamespaces.CHANGE_PASSWORD}:newPasswordCapitalized`,
+              )}
             </Text>
 
             {/* Password Fields Section */}
             <View style={styles.passwordSection}>
-              <Text style={[styles.passwordLabel, theme.fonts.titleMedium]}>
-                {translate(`${TranslationNamespaces.LOGIN}:newPassword`)}
-              </Text>
-
-              <TextInput
-                style={styles.passwordInput}
-                value={password}
-                onChangeText={setPassword}
+              {/* New Password Input */}
+              <FormInput
                 placeholder={translate(
-                  `${TranslationNamespaces.LOGIN}:passwordPlaceholder`,
+                  `${TranslationNamespaces.CHANGE_PASSWORD}:newPassword`,
                 )}
-                placeholderTextColor="#B0B0B0"
+                value={password}
+                onChangeText={value => setPassword(value)}
                 secureTextEntry
-                autoCapitalize="none"
               />
 
-              <Text
-                style={[
-                  styles.passwordLabel,
-                  theme.fonts.titleMedium,
-                  styles.passwordLabelMargin,
-                ]}
-              >
-                {translate(`${TranslationNamespaces.LOGIN}:confirmPassword`)}
-              </Text>
-
-              <TextInput
-                style={styles.passwordInput}
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
+              {/* Confirm New Password Input */}
+              <FormInput
                 placeholder={translate(
-                  `${TranslationNamespaces.LOGIN}:confirmPasswordPlaceholder`,
+                  `${TranslationNamespaces.CHANGE_PASSWORD}:confirmPassword`,
                 )}
-                placeholderTextColor="#B0B0B0"
+                value={confirmPassword}
+                onChangeText={value => setConfirmPassword(value)}
                 secureTextEntry
-                autoCapitalize="none"
               />
             </View>
 
@@ -182,7 +174,9 @@ export default React.memo(() => {
                 <ActivityIndicator color={AppColors.themeLight.primary_1} />
               ) : (
                 <Text style={styles.resetButtonText}>
-                  {translate(`${TranslationNamespaces.LOGIN}:resetPassword`)}
+                  {translate(
+                    `${TranslationNamespaces.CHANGE_PASSWORD}:changeButton`,
+                  )}
                 </Text>
               )}
             </TouchableOpacity>
@@ -203,7 +197,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    marginTop: ResponsiveDimensions.percentHeight(17),
+    marginTop: ResponsiveDimensions.percentHeight(25),
     marginBottom: ResponsiveDimensions.percentHeight(6),
   },
   scrollView: {
@@ -227,6 +221,7 @@ const styles = StyleSheet.create({
   },
   passwordSection: {
     marginBottom: ResponsiveDimensions.vs(40),
+    gap: ResponsiveDimensions.vs(8),
   },
   passwordLabel: {
     color: 'white',
@@ -262,4 +257,3 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
 });
-

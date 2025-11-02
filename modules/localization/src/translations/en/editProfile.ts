@@ -12,4 +12,9 @@ export default {
   address: 'Address',
   addressPlaceholder: 'Enter your address',
   saveButton: 'SAVE',
+  profileUpdatedSuccessfully: 'Profile updated successfully',
+  profileImageUpdatedSuccessfully: 'Profile image updated successfully',
+  failedToUpdateProfile: 'Failed to update profile',
+  failedToUpdateProfileImage: 'Failed to update profile image',
+  profileDataRequired: 'Profile data is required',
 };

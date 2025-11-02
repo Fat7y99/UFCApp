@@ -17,4 +17,8 @@ export default {
   resendOtp: 'إعادة إرسال الرمز',
   signUpText: 'ليس لديك حساب؟',
   signUpLink: 'إنشاء حساب',
+  pleaseEnterPhoneNumber: 'الرجاء إدخال رقم هاتفك',
+  pleaseEnterCompleteOtp: 'الرجاء إدخال رمز OTP كامل',
+  phoneNumberRequired: 'رقم الهاتف مطلوب',
+  failedToSendOtp: 'فشل إرسال رمز التحقق. يرجى المحاولة مرة أخرى.',
 };

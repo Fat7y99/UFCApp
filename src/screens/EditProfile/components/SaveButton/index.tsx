@@ -32,13 +32,19 @@ const SaveButton: React.FC<SaveButtonProps> = ({ profileData }) => {
     onSuccess: () => {
       Toast.show({
         type: 'success',
-        text1: 'Profile updated successfully',
+        text1: translate(
+          `${TranslationNamespaces.EDIT_PROFILE}:profileUpdatedSuccessfully`,
+        ),
       });
     },
     onError: error => {
       Toast.show({
         type: 'fail',
-        text1: error.errorMessage ?? 'Failed to update profile',
+        text1:
+          error.errorMessage ??
+          translate(
+            `${TranslationNamespaces.EDIT_PROFILE}:failedToUpdateProfile`,
+          ),
       });
     },
   });
@@ -47,7 +53,9 @@ const SaveButton: React.FC<SaveButtonProps> = ({ profileData }) => {
     if (!profileData) {
       Toast.show({
         type: 'fail',
-        text1: 'Profile data is required',
+        text1: translate(
+          `${TranslationNamespaces.EDIT_PROFILE}:profileDataRequired`,
+        ),
       });
       return;
     }

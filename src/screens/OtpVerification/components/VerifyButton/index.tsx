@@ -27,9 +27,9 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({
     {disabled ? (
       <ActivityIndicator color={AppColors.themeLight.primary_1} />
     ) : (
-      <Text style={styles.buttonText}>
-        {translate(`${TranslationNamespaces.LOGIN}:verifyButton`)}
-      </Text>
+    <Text style={styles.buttonText}>
+      {translate(`${TranslationNamespaces.LOGIN}:verifyButton`)}
+    </Text>
     )}
   </TouchableOpacity>
 );

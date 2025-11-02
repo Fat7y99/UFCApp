@@ -4,4 +4,12 @@ export default {
   newPassword: 'New Password',
   confirmPassword: 'Confirm New Password',
   changeButton: 'CHANGE PASSWORD',
+  newPasswordCapitalized: 'NEW PASSWORD',
+  passwordChangedSuccessfully: 'Password Changed successfully',
+  resetPassword: 'RESET PASSWORD',
+  pleaseEnterNewPassword: 'Please enter your new password',
+  pleaseConfirmPassword: 'Please confirm your password',
+  passwordsDoNotMatch: 'Passwords do not match',
+  failedToResetPassword: 'Failed to reset password',
+  otpCodeRequired: 'OTP code is required',
 };

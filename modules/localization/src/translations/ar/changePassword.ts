@@ -4,4 +4,12 @@ export default {
   newPassword: 'كلمة المرور الجديدة',
   confirmPassword: 'تأكيد كلمة المرور الجديدة',
   changeButton: 'تغيير كلمة المرور',
+  newPasswordCapitalized: 'كلمة المرور الجديدة',
+  passwordChangedSuccessfully: 'تم تغيير كلمة المرور بنجاح',
+  resetPassword: 'إعادة تعيين كلمة المرور',
+  pleaseEnterNewPassword: 'الرجاء إدخال كلمة المرور الجديدة',
+  pleaseConfirmPassword: 'الرجاء تأكيد كلمة المرور',
+  passwordsDoNotMatch: 'كلمات المرور غير متطابقة',
+  failedToResetPassword: 'فشل إعادة تعيين كلمة المرور',
+  otpCodeRequired: 'رمز التحقق مطلوب',
 };

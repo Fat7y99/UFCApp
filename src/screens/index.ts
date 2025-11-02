@@ -5,6 +5,7 @@ export { default as SignIn } from './SignIn';
 export { default as ForgotPassword } from './ForgotPassword';
 export { default as OtpVerification } from './OtpVerification';
 export { default as ResetPassword } from './ResetPassword';
+export { default as ResetPasswordSuccess } from './ResetPasswordSuccess';
 export { default as Home } from './Home';
 export { default as Notifications } from './Notifications';
 export { default as NotificationDetails } from './NotificationDetails';

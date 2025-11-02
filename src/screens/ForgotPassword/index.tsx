@@ -38,7 +38,9 @@ export default React.memo(() => {
     onError: error => {
       Toast.show({
         type: 'fail',
-        text1: error.errorMessage ?? 'Failed to send OTP. Please try again.',
+        text1:
+          error.errorMessage ??
+          translate(`${TranslationNamespaces.LOGIN}:failedToSendOtp`),
       });
     },
   });
@@ -51,7 +53,9 @@ export default React.memo(() => {
     if (!phoneNumber || phoneNumber.trim() === '') {
       Toast.show({
         type: 'fail',
-        text1: 'Please enter your phone number',
+        text1: translate(
+          `${TranslationNamespaces.LOGIN}:pleaseEnterPhoneNumber`,
+        ),
       });
       return;
     }

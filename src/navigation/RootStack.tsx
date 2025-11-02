@@ -13,6 +13,7 @@ import {
   ForgotPassword,
   OtpVerification,
   ResetPassword,
+  ResetPasswordSuccess,
   Help,
   FAQs,
   FAQDetails,
@@ -58,6 +59,10 @@ export default React.memo(() => (
     <stack.Screen name="forgotPassword" component={ForgotPassword} />
     <stack.Screen name="otpVerification" component={OtpVerification} />
     <stack.Screen name="resetPassword" component={ResetPassword} />
+    <stack.Screen
+      name="resetPasswordSuccess"
+      component={ResetPasswordSuccess}
+    />
     <stack.Screen name="help" component={Help} />
     <stack.Screen name="faqs" component={FAQs} />
     <stack.Screen name="faqDetails" component={FAQDetails} />

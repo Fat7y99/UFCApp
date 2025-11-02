@@ -28,6 +28,7 @@ type RootStackParamList = {
     phone?: string;
     otp?: string;
   };
+  resetPasswordSuccess: undefined;
   help: undefined;
   faqs: undefined;
   faqDetails: { faq: { id: string; question: string; answer: string } };

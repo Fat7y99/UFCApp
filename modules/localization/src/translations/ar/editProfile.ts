@@ -12,4 +12,9 @@ export default {
   address: 'العنوان',
   addressPlaceholder: 'أدخل عنوانك',
   saveButton: 'حفظ',
+  profileUpdatedSuccessfully: 'تم تحديث الملف الشخصي بنجاح',
+  profileImageUpdatedSuccessfully: 'تم تحديث صورة الملف الشخصي بنجاح',
+  failedToUpdateProfile: 'فشل تحديث الملف الشخصي',
+  failedToUpdateProfileImage: 'فشل تحديث صورة الملف الشخصي',
+  profileDataRequired: 'بيانات الملف الشخصي مطلوبة',
 };
