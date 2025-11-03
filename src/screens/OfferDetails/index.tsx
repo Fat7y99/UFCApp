@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import type { RootStackScreenProps } from '@src/navigation';
 import { AppImages } from '@modules/assets';
-import { Screen, NotificationButton } from '@modules/components';
+import { Screen } from '@modules/components';
 import { AppColors } from '@modules/theme';
 import styles from './styles';
 
@@ -31,7 +31,6 @@ export default React.memo((props: RootStackScreenProps<'offerDetails'>) => {
           <Image source={AppImages.leftArrow} style={styles.backIcon} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{offer.title} Rate</Text>
-        <NotificationButton />
       </View>
 
       {/* Content */}

@@ -11,7 +11,7 @@ import {
 import type { RootStackScreenProps } from '@src/navigation';
 import { getInputConstraints, formatAmount } from '@src/utils/InputFormatting';
 import { AppImages, CalendarLogo } from '@modules/assets';
-import { Screen, NotificationButton } from '@modules/components';
+import { Screen } from '@modules/components';
 
 import { AppColors } from '@modules/theme';
 import styles from './styles';
@@ -49,7 +49,6 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           <Image source={AppImages.leftArrow} style={styles.backIcon} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{offer.title} Rate</Text>
-        <NotificationButton />
       </View>
 
       <ScrollView

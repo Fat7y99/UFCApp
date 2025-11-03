@@ -16,7 +16,7 @@ import {
   getInputConstraints,
   formatPhoneNumber,
 } from '@src/utils/InputFormatting';
-import { Screen, NotificationButton } from '@modules/components';
+import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -47,7 +47,6 @@ const PersonalStep1: React.FC = () => {
         <Text style={styles.headerTitle}>
           {translate(`${TranslationNamespaces.FINANCING}:personalFinancing`)}
         </Text>
-        <NotificationButton />
       </View>
 
       <ScrollView

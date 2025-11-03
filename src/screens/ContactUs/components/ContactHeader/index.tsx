@@ -2,10 +2,10 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
+
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
-import { NotificationButton } from '@modules/components';
 import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
@@ -34,8 +34,6 @@ const ContactHeader: React.FC = () => {
         <Text style={styles.title}>
           {translate(`${TranslationNamespaces.CONTACT}:title`)}
         </Text>
-
-        <NotificationButton />
       </View>
     </View>
   );

@@ -15,4 +15,8 @@ export default {
   banner1: require('./images/banner_1.png'),
   searchIcon: require('./images/search_icon.png'),
   systemSmallLight: require('./images/SystemSmallLight.png'),
+  outlinedFavIcon: require('./images/outlined_fav_icon.png'),
+  outlinedHomeIcon: require('./images/outlined_home_icon.png'),
+  outlinedSettingsIcon: require('./images/outlined_settings_icon.png'),
+  outlinedSearchIcon: require('./images/outlined_search_icon.png'),
 };

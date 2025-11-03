@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { Text } from 'react-native';
+import { Image } from 'react-native';
 import { Home, Settings } from '@src/screens';
+import { AppImages } from '@modules/assets';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -38,7 +39,12 @@ const TabNavigator: React.FC = () => (
       name="Settings"
       component={Settings}
       options={{
-        tabBarIcon: ({}) => <Text style={{ fontSize: 20 }}>⚙️</Text>,
+        tabBarIcon: ({ color }) => (
+          <Image
+            source={AppImages.outlinedSettingsIcon}
+            style={{ width: 24, height: 24, tintColor: color }}
+          />
+        ),
         tabBarLabel: '',
       }}
     />
@@ -46,7 +52,12 @@ const TabNavigator: React.FC = () => (
       name="Search"
       component={Home} // Using Home as placeholder for now
       options={{
-        tabBarIcon: ({}) => <Text style={{ fontSize: 20 }}>🔍</Text>,
+        tabBarIcon: ({ color }) => (
+          <Image
+            source={AppImages.outlinedSearchIcon}
+            style={{ width: 24, height: 24, tintColor: color }}
+          />
+        ),
         tabBarLabel: '',
       }}
     />
@@ -54,7 +65,12 @@ const TabNavigator: React.FC = () => (
       name="Favorites"
       component={Home} // Using Home as placeholder for now
       options={{
-        tabBarIcon: ({}) => <Text style={{ fontSize: 20 }}>🤍</Text>,
+        tabBarIcon: ({ color }) => (
+          <Image
+            source={AppImages.outlinedFavIcon}
+            style={{ width: 24, height: 24, tintColor: color }}
+          />
+        ),
         tabBarLabel: '',
       }}
     />
@@ -62,7 +78,12 @@ const TabNavigator: React.FC = () => (
       name="Home"
       component={Home}
       options={{
-        tabBarIcon: ({}) => <Text style={{ fontSize: 20 }}>🏠</Text>,
+        tabBarIcon: ({ color }) => (
+          <Image
+            source={AppImages.outlinedHomeIcon}
+            style={{ width: 24, height: 24, tintColor: color }}
+          />
+        ),
         tabBarLabel: translate(`${TranslationNamespaces.HOME}:home`),
       }}
     />
