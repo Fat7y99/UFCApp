@@ -32,12 +32,12 @@ const queryNotifications = {
     httpClient
       .post<UpdateFcmTokenResponse>('/update-fcm-token', request.body)
       .then(response => response.data),
-  // TODO: Change params, endpoint, method, and response mapping based on API requirements.
-  markNotificationRead: (request: ApiRequest<any, string | number>) =>
+  // Mark notification as read
+  markNotificationRead: (request: ApiRequest<any, number>) =>
     httpClient
-      .post<MarkNotificationReadResponse>(
-        `/mark-notification-read/${request.pathVar}`,
-      )
+      .post<MarkNotificationReadResponse>('/api/user/notification/read', null, {
+        params: { id: request.pathVar },
+      })
       .then(response => response.data),
   // Get unread notifications count
   getUnreadNotificationsCount: (): Promise<UnreadNotificationsCountResponse> =>

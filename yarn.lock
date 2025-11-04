@@ -3410,6 +3410,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/datetimepicker@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "@react-native-community/datetimepicker@npm:8.5.0"
+  dependencies:
+    invariant: ^2.2.4
+  peerDependencies:
+    expo: ">=52.0.0"
+    react: "*"
+    react-native: "*"
+    react-native-windows: "*"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+    react-native-windows:
+      optional: true
+  checksum: 0359355e241061611bce46e4a355f20b046826b97723f439f6bd120f564ae344d8a79d0b866bc56b2ff61e4e0a8efa7a2eee40d75a628fe8399cba7d0a4759b8
+  languageName: node
+  linkType: hard
+
 "@react-native-community/netinfo@npm:^11.4.1":
   version: 11.4.1
   resolution: "@react-native-community/netinfo@npm:11.4.1"
@@ -4758,6 +4777,7 @@ __metadata:
     "@react-native-community/cli": 20.0.0
     "@react-native-community/cli-platform-android": 20.0.0
     "@react-native-community/cli-platform-ios": 20.0.0
+    "@react-native-community/datetimepicker": ^8.5.0
     "@react-native-community/netinfo": ^11.4.1
     "@react-native-firebase/analytics": ^23.3.1
     "@react-native-firebase/app": ^23.3.1
@@ -4818,6 +4838,7 @@ __metadata:
     react-native-keyboard-controller: ^1.18.6
     react-native-localize: ^3.5.2
     react-native-mmkv: ^3.3.3
+    react-native-modal-datetime-picker: ^18.0.0
     react-native-network-logger: ^2.0.1
     react-native-orientation-locker: ^1.7.0
     react-native-paper: ^5.14.5
@@ -12021,6 +12042,18 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 2f4f6ba36f2c00a1374cd3c0303207e7c0a0b7b2504c4f1986a423a3d8295eb817299fc1ca11e37c425df60648c5a0d02be882f1890924167724775433dd2598
+  languageName: node
+  linkType: hard
+
+"react-native-modal-datetime-picker@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "react-native-modal-datetime-picker@npm:18.0.0"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    "@react-native-community/datetimepicker": ">=6.7.0"
+    react-native: ">=0.65.0"
+  checksum: 30d28a8e599c7a36df4c3e93928aa246087edb95a82a98cb1162b045d18db47447c4e28a89190c83a8258f080066531b2b67805a9aeb007b135d62abfccf8c4c
   languageName: node
   linkType: hard
 

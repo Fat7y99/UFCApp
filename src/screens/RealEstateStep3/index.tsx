@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
@@ -9,25 +9,51 @@ import {
   ScrollView,
   TextInput,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
+import { SuccessType } from '@src/screens/Success/types';
 import {
   getInputConstraints,
   formatAmount,
   formatNumber,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
+import {
+  useAddRealEstateApplicationApi,
+  type ApiRequest,
+  type RealEstateApplicationRequestBody,
+} from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, RealEstateAllStepsLogo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type RealEstateStep3RouteProp = RouteProp<
+  RootStackParamList,
+  'realEstateStep3'
+>;
 
 const RealEstateStep3: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<RealEstateStep3RouteProp>();
+  const serviceId = route.params?.serviceId || 7;
+  const customerBaseInfo = route.params?.customerBaseInfo;
+  const customerLiability = route.params?.customerLiability;
+
+  const addRealEstateApplicationMutation = useAddRealEstateApplicationApi({
+    onSuccess: () => {
+      navigation.navigate('success', { type: SuccessType.OFFER_APPLIED });
+    },
+    onError: error => {
+      console.error('Error submitting real estate application:', error);
+      // Handle error - you might want to show an error message
+    },
+  });
   const [realEstateFinancingType, setRealEstateFinancingType] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [propertyValue, setPropertyValue] = useState('');
@@ -155,10 +181,46 @@ const RealEstateStep3: React.FC = () => {
         </View>
 
         {/* Apply Button */}
-        <TouchableOpacity style={styles.applyButton}>
-          <Text style={styles.applyButtonText}>
-            {translate(`${TranslationNamespaces.FINANCING}:apply`)}
-          </Text>
+        <TouchableOpacity
+          style={[
+            styles.applyButton,
+            addRealEstateApplicationMutation.isPending &&
+              styles.applyButtonDisabled,
+          ]}
+          onPress={() => {
+            // Collect all form data and submit
+            const request: ApiRequest<RealEstateApplicationRequestBody> = {
+              body: {
+                serviceId,
+                appRealStateFinance: {
+                  financingType: realEstateFinancingType || undefined,
+                  propertyType: propertyType || undefined,
+                  propertyValue: propertyValue
+                    ? parseFloat(propertyValue.replace(/,/g, ''))
+                    : undefined,
+                  propertyAgeYears: propertyAge
+                    ? parseInt(propertyAge, 10)
+                    : undefined,
+                  propertyCity: propertyCity || undefined,
+                  annualPropertyIncome: annualPropertyIncome
+                    ? parseFloat(annualPropertyIncome.replace(/,/g, ''))
+                    : undefined,
+                },
+                customerBaseInfo: customerBaseInfo || undefined,
+                customerLiability: customerLiability || undefined,
+              },
+            };
+            addRealEstateApplicationMutation.mutate(request);
+          }}
+          disabled={addRealEstateApplicationMutation.isPending}
+        >
+          {addRealEstateApplicationMutation.isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.applyButtonText}>
+              {translate(`${TranslationNamespaces.FINANCING}:apply`)}
+            </Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </Screen>
@@ -283,6 +345,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
+  },
+  applyButtonDisabled: {
+    opacity: 0.6,
   },
   iconContainer: {
     alignItems: 'center',

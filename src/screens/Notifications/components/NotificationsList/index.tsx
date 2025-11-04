@@ -8,98 +8,88 @@ import {
 } from '@src/screens/Notifications/components';
 import { useAppDispatch, setUnreadCount } from '@src/store';
 import { ListEmptyComponent, ListLoadingMore } from '@modules/components';
-// import { useGetNotificationsApi } from '@modules/core';
+import {
+  useGetNotificationListV2Api,
+  type ApiRequest,
+  type NotificationItemV2,
+  type NotificationListV2RequestBody,
+} from '@modules/core';
 import { TranslationNamespaces } from '@modules/localization';
-// import { useFocusNotifyOnChangeProps } from '@modules/utils';
 import styles from './styles';
 
-// Static notifications data from screenshot
-const staticNotifications = [
-  {
-    id: '1',
-    title: 'Loan Approval',
-    message:
-      'Loan Request no. 632479852 is approved. Please check your account for details.',
-    type: 'loan',
-    createdAt: new Date().toISOString(),
-    isRead: false,
-  },
-  {
-    id: '2',
-    title: 'Account',
-    message:
-      'Your account is limited. Please follow the instructions to verify your identity.',
-    type: 'account',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Yesterday
-    isRead: false,
-  },
-  {
-    id: '3',
-    title: 'Alert',
-    message:
-      'Your application is pending due to missing documents. Please upload the required files.',
-    type: 'alert',
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-    isRead: false,
-  },
-  {
-    id: '4',
-    title: 'Account is verified',
-    message:
-      'Your account is verified. Please contact our support team for any assistance.',
-    type: 'account',
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-    isRead: true,
-  },
-];
+// Transform NotificationItemV2 to the format expected by NotificationItem component
+const transformNotificationItem = (
+  item: NotificationItemV2,
+  language: string = 'en',
+) => {
+  const notification = item.notification;
+  const isEnglish = language.toLowerCase().startsWith('en');
+
+  return {
+    key: `notification_${item.id ?? ''}`,
+    id: item.id?.toString() || '',
+    title: isEnglish
+      ? notification?.titleEn || notification?.title || ''
+      : notification?.title || notification?.titleEn || '',
+    message: isEnglish
+      ? notification?.bodyEn || notification?.body || ''
+      : notification?.body || notification?.bodyEn || '',
+    type: 'loan', // Default type, can be extracted from notification if available
+    createdAt: notification?.creationDate || new Date().toISOString(),
+    isRead: item.checked || false,
+    // Keep original item for navigation if needed
+    originalItem: item,
+  };
+};
 
 export default React.memo(() => {
-  const { t: translate } = useTranslation(TranslationNamespaces.NOTIFICATIONS);
+  const { t: translate, i18n } = useTranslation(
+    TranslationNamespaces.NOTIFICATIONS,
+  );
   const dispatch = useAppDispatch();
-  // const notifyOnChangeProps = useFocusNotifyOnChangeProps();
 
-  // Commented out real API calls
-  // const {
-  //   data: allPages,
-  //   isLoading,
-  //   isFetching,
-  //   isFetchingNextPage,
-  //   refetch,
-  //   fetchNextPage,
-  //   error,
-  //   isLoadingError,
-  // } = useGetNotificationsApi({ notifyOnChangeProps: notifyOnChangeProps?.() });
+  // Create API request for fetching all notifications (both read and unread)
+  const request: ApiRequest<NotificationListV2RequestBody> = React.useMemo(
+    () => ({
+      body: {
+        pagingRequest: {
+          pageNumber: 1,
+          pageSize: 50,
+        },
+        // Don't filter by read status - get all notifications
+        // readed: undefined means get all
+      },
+    }),
+    [],
+  );
 
-  // const notificationsList = allPages?.pages
-  //   ?.map(page => page.data ?? [])
-  //   ?.flat();
+  const {
+    data: allPages,
+    isLoading,
+    isFetching,
+    isFetchingNextPage,
+    refetch,
+    fetchNextPage,
+    error,
+    isError: isLoadingError,
+  } = useGetNotificationListV2Api(request);
 
-  // Using static data instead
-  const notificationsList = staticNotifications;
-  const isLoading = false;
-  const isFetching = false;
-  const isFetchingNextPage = false;
-  const error = null;
-  const isLoadingError = false;
+  // Transform and flatten the notification data
+  const notificationsList = React.useMemo(() => {
+    if (!allPages?.pages) return [];
 
-  const refetch = () => {
-    // Static data - no refetch needed
-    console.log('Refetch called - using static data');
-  };
+    const allItems = allPages.pages
+      .map(page => page.list || [])
+      .flat()
+      .filter(item => item.notification); // Filter out items without notification details
 
-  const fetchNextPage = () => {
-    // Static data - no pagination needed
-    console.log('Fetch next page called - using static data');
-  };
+    return allItems.map(item => transformNotificationItem(item, i18n.language));
+  }, [allPages, i18n.language]);
 
   // Update Redux store with unread count
   React.useEffect(() => {
-    const unreadCount = notificationsList.filter(
-      n => !(n as any).isRead,
-    ).length;
-    // Set initial count to 3 for static data
-    const count = unreadCount > 0 ? unreadCount : 3;
-    dispatch(setUnreadCount(count));
+    const unreadCount = notificationsList.filter(n => !n.isRead).length;
+    dispatch(setUnreadCount(unreadCount));
   }, [notificationsList, dispatch]);
 
   return isLoading ? (
@@ -118,7 +108,11 @@ export default React.memo(() => {
         }
         onRefresh={() => refetch()}
         refreshing={isFetching && !isFetchingNextPage}
-        onEndReached={() => fetchNextPage()}
+        onEndReached={() => {
+          if (!isFetchingNextPage && fetchNextPage) {
+            fetchNextPage();
+          }
+        }}
         contentContainerStyle={
           !notificationsList?.length ? styles.emptyList : undefined
         }

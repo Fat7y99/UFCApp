@@ -7,6 +7,8 @@ import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { EditProfileIcon } from 'modules/assets/src';
+import { useGetCurrentUserApi } from 'modules/core/src/Api/hooks';
 
 const ProfileSection: React.FC = () => {
   const navigation =
@@ -16,10 +18,12 @@ const ProfileSection: React.FC = () => {
     navigation.navigate('editProfile');
   };
 
+  const { data: currentUser } = useGetCurrentUserApi();
+
   return (
     <View style={styles.container}>
       {/* Username */}
-      <Text style={styles.username}>greatPower.G</Text>
+      <Text style={styles.username}> {currentUser?.username}</Text>
 
       {/* Edit Profile */}
       <TouchableOpacity
@@ -29,7 +33,7 @@ const ProfileSection: React.FC = () => {
         <Text style={styles.editProfileText}>
           {translate(`${TranslationNamespaces.SETTINGS}:editProfile`)}
         </Text>
-        <Text style={styles.editIcon}>✏️</Text>
+        <EditProfileIcon />
       </TouchableOpacity>
     </View>
   );

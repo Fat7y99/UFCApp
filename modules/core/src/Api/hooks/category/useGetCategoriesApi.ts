@@ -1,6 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import type { ApiRequest, ServerError, Category } from '@modules/core';
-import { queryCategory } from '@modules/core';
+import type {
+  ApiRequest,
+  ServerError,
+  queryCategory,
+  type Service,
+} from '@modules/core';
 import type { UseMutationOptions } from '@tanstack/react-query';
 
 interface PagingRequest {
@@ -22,7 +26,7 @@ interface CategoryPaging {
 }
 
 interface CategoryListResponse {
-  list?: Category[];
+  list?: Service[];
   paging?: CategoryPaging;
 }
 

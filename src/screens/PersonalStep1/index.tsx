@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
@@ -10,6 +10,7 @@ import {
   TextInput,
   Image,
 } from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import type { RootStackParamList } from '@src/navigation';
 import {
@@ -20,19 +21,78 @@ import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, CalendarLogo, PersonalStep1Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type PersonalStep1RouteProp = RouteProp<RootStackParamList, 'personalStep1'>;
 
 const PersonalStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<PersonalStep1RouteProp>();
+  const serviceId = route.params?.serviceId || 12; // Default to 12 for Personal Loan
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [dob, setDob] = useState('');
   const [employer, setEmployer] = useState('');
   const [jobTitle, setJobTitle] = useState('');
   const [serviceStartDate, setServiceStartDate] = useState('');
+  const [handleOpenCalendar, setHandleOpenCalendar] = useState<string | null>(
+    null,
+  );
+
+  type CalendarType = 'dob' | 'serviceStartDate';
+
+  const formatDateString = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const getDatePickerValue = (calendarType: CalendarType): Date => {
+    const dateString = calendarType === 'dob' ? dob : serviceStartDate;
+    if (dateString) {
+      const [day, month, year] = dateString.split('-');
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+      );
+    }
+    return new Date();
+  };
+
+  const getDatePickerMinDate = (calendarType: CalendarType): Date => {
+    if (calendarType === 'dob') {
+      const date = new Date();
+      date.setFullYear(date.getFullYear() - 100);
+      return date;
+    }
+    return new Date(1900, 0, 1);
+  };
+
+  const getDatePickerMaxDate = (calendarType: CalendarType): Date => {
+    if (calendarType === 'dob') {
+      return new Date();
+    }
+    return new Date(2100, 11, 31);
+  };
+
+  const handleDateChange = (date: Date, calendarType: CalendarType) => {
+    const formattedDate = formatDateString(date);
+    if (calendarType === 'dob') {
+      setDob(formattedDate);
+    } else if (calendarType === 'serviceStartDate') {
+      setServiceStartDate(formattedDate);
+    }
+    setHandleOpenCalendar(null);
+  };
+
+  const onCancelDate = () => {
+    setHandleOpenCalendar(null);
+  };
 
   return (
     <Screen style={styles.container}>
@@ -104,7 +164,10 @@ const PersonalStep1: React.FC = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <TouchableOpacity style={styles.dateInputContainer}>
+            <TouchableOpacity
+              style={styles.dateInputContainer}
+              onPress={() => setHandleOpenCalendar('dob')}
+            >
               <TextInput
                 style={styles.dateInput}
                 placeholder={translate(
@@ -146,7 +209,10 @@ const PersonalStep1: React.FC = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <TouchableOpacity style={styles.dateInputContainer}>
+            <TouchableOpacity
+              style={styles.dateInputContainer}
+              onPress={() => setHandleOpenCalendar('serviceStartDate')}
+            >
               <TextInput
                 style={styles.dateInput}
                 placeholder={translate(
@@ -165,13 +231,38 @@ const PersonalStep1: React.FC = () => {
         {/* Next Button */}
         <TouchableOpacity
           style={styles.nextButton}
-          onPress={() => navigation.navigate('personalStep2')}
+          onPress={() => {
+            navigation.navigate('personalStep2', {
+              serviceId,
+              customerBaseInfo: {
+                name: name || undefined,
+                phone: mobile || undefined,
+                birthDate: dob || undefined,
+                employer: employer || undefined,
+                jobTitle: jobTitle || undefined,
+                serviceStartDate: serviceStartDate || undefined,
+              },
+            });
+          }}
         >
           <Text style={styles.nextButtonText}>
             {translate(`${TranslationNamespaces.FINANCING}:next`)}
           </Text>
         </TouchableOpacity>
       </ScrollView>
+      {handleOpenCalendar && (
+        <DateTimePickerModal
+          date={getDatePickerValue(handleOpenCalendar as CalendarType)}
+          isVisible={!!handleOpenCalendar}
+          mode="date"
+          onCancel={onCancelDate}
+          minimumDate={getDatePickerMinDate(handleOpenCalendar as CalendarType)}
+          maximumDate={getDatePickerMaxDate(handleOpenCalendar as CalendarType)}
+          onConfirm={(date: Date) => {
+            handleDateChange(date, handleOpenCalendar as CalendarType);
+          }}
+        />
+      )}
     </Screen>
   );
 };

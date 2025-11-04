@@ -19,8 +19,25 @@ interface CategoryPaging {
   totalPages?: number;
 }
 
+export interface Service {
+  id?: number;
+  category?: Category;
+  code?: string | null;
+  nameAr?: string;
+  nameEn?: string;
+  descriptionAr?: string | null;
+  descriptionEn?: string | null;
+  requiredPayment?: boolean;
+  baseFee?: number | null;
+  taxRate?: number | null;
+  slaDays?: number | null;
+  active?: boolean;
+  requiredDocs?: any;
+  termsUrl?: string | null;
+}
+
 interface CategoryListResponse {
-  list?: Category[];
+  list?: Service[];
   paging?: CategoryPaging;
 }
 

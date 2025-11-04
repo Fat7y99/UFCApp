@@ -45,8 +45,8 @@ const NotificationButton: React.FC<NotificationButtonProps> = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   bellIcon: {
-    width: ResponsiveDimensions.vs(24),
-    height: ResponsiveDimensions.vs(24),
+    width: ResponsiveDimensions.vs(20),
+    height: ResponsiveDimensions.vs(20),
   },
   badge: {
     position: 'absolute',
@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     right: ResponsiveDimensions.vs(2),
     backgroundColor: AppColors.themeLight.primary_1,
     borderRadius: ResponsiveDimensions.vs(10),
-    minWidth: ResponsiveDimensions.vs(20),
-    height: ResponsiveDimensions.vs(20),
+    minWidth: ResponsiveDimensions.vs(16),
+    height: ResponsiveDimensions.vs(16),
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: 'white',
-    fontSize: ResponsiveDimensions.vs(12),
+    fontSize: ResponsiveDimensions.vs(10),
     fontWeight: 'bold',
   },
   notificationButton: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    position: 'relative',
+    // position: 'relative',
     width: ResponsiveDimensions.vs(24),
     height: ResponsiveDimensions.vs(24),
     justifyContent: 'center',

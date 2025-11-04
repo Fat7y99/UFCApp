@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 import type { RootStackParamList } from '@src/navigation';
 import { LoanLogo, AccountLogo, AlertLogo } from '@modules/assets';
+import { useMarkNotificationReadApi, type ApiRequest } from '@modules/core';
 import { processNotification } from '@modules/utils';
 import styles from './styles';
 import type { NotificationItemProps } from './types';
@@ -20,10 +21,20 @@ export default React.memo((props: NotificationItemProps) => {
 
   const { item: notification } = props;
   const navigation = useNavigation<NavigationProp>();
+  const markAsReadMutation = useMarkNotificationReadApi();
 
   const onNotificationPress = () => {
     console.info(getLogMessage('onNotificationPress'), notification);
     processNotification(notification, true);
+
+    // Mark notification as read if it's unread
+    if (!notification.isRead && notification.originalItem?.id) {
+      const request: ApiRequest<any, number> = {
+        pathVar: notification.originalItem.id,
+      };
+      markAsReadMutation.mutate(request);
+    }
+
     navigation.navigate('notificationDetails', { notification });
   };
 

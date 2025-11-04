@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -31,8 +32,47 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   profileData,
   setProfileData,
 }) => {
+  const [handleOpenCalendar, setHandleOpenCalendar] = useState<boolean>(false);
+
   const handleGenderSelect = (selectedGender: 'male' | 'female') => {
     setProfileData(prev => ({ ...prev, gender: selectedGender }));
+  };
+
+  const formatDateString = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const getDatePickerValue = (): Date => {
+    if (profileData.dateOfBirth) {
+      const [day, month, year] = profileData.dateOfBirth.split('-');
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+      );
+    }
+    return new Date();
+  };
+
+  const getDatePickerMinDate = (): Date => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 100);
+    return date;
+  };
+
+  const getDatePickerMaxDate = (): Date => new Date();
+
+  const handleDateChange = (date: Date) => {
+    const formattedDate = formatDateString(date);
+    setProfileData(prev => ({ ...prev, dateOfBirth: formattedDate }));
+    setHandleOpenCalendar(false);
+  };
+
+  const onCancelDate = () => {
+    setHandleOpenCalendar(false);
   };
 
   return (
@@ -166,7 +206,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         <Text style={styles.fieldLabel}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:dateOfBirth`)}
         </Text>
-        <View style={styles.dateInputContainer}>
+        <TouchableOpacity
+          style={styles.dateInputContainer}
+          onPress={() => setHandleOpenCalendar(true)}
+        >
           <TextInput
             style={styles.dateInput}
             value={profileData.dateOfBirth}
@@ -177,9 +220,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
               `${TranslationNamespaces.EDIT_PROFILE}:datePlaceholder`,
             )}
             placeholderTextColor="#B0B0B0"
+            editable={false}
           />
           <CalendarLogo />
-        </View>
+        </TouchableOpacity>
         <View style={styles.separator} />
       </View>
 
@@ -201,6 +245,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
         <View style={styles.separator} />
       </View>
+      <DateTimePickerModal
+        date={getDatePickerValue()}
+        isVisible={handleOpenCalendar}
+        mode="date"
+        onCancel={onCancelDate}
+        minimumDate={getDatePickerMinDate()}
+        maximumDate={getDatePickerMaxDate()}
+        onConfirm={handleDateChange}
+      />
     </View>
   );
 };

@@ -8,6 +8,7 @@ import {
   TextInput,
   Image,
 } from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import type { RootStackScreenProps } from '@src/navigation';
 import { getInputConstraints, formatAmount } from '@src/utils/InputFormatting';
 import { AppImages, CalendarLogo } from '@modules/assets';
@@ -28,6 +29,61 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
   const [serviceStartDate, setServiceStartDate] = useState('');
   const [netSalary, setNetSalary] = useState('');
   const [currentSalaryBank, setCurrentSalaryBank] = useState('');
+  const [handleOpenCalendar, setHandleOpenCalendar] = useState<string | null>(
+    null,
+  );
+
+  type CalendarType = 'dob' | 'serviceStartDate';
+
+  const formatDateString = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const getDatePickerValue = (calendarType: CalendarType): Date => {
+    const dateString = calendarType === 'dob' ? dob : serviceStartDate;
+    if (dateString) {
+      const [day, month, year] = dateString.split('-');
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+      );
+    }
+    return new Date();
+  };
+
+  const getDatePickerMinDate = (calendarType: CalendarType): Date => {
+    if (calendarType === 'dob') {
+      const date = new Date();
+      date.setFullYear(date.getFullYear() - 100);
+      return date;
+    }
+    return new Date(1900, 0, 1);
+  };
+
+  const getDatePickerMaxDate = (calendarType: CalendarType): Date => {
+    if (calendarType === 'dob') {
+      return new Date();
+    }
+    return new Date(2100, 11, 31);
+  };
+
+  const handleDateChange = (date: Date, calendarType: CalendarType) => {
+    const formattedDate = formatDateString(date);
+    if (calendarType === 'dob') {
+      setDob(formattedDate);
+    } else if (calendarType === 'serviceStartDate') {
+      setServiceStartDate(formattedDate);
+    }
+    setHandleOpenCalendar(null);
+  };
+
+  const onCancelDate = () => {
+    setHandleOpenCalendar(null);
+  };
 
   const handleGetOffer = () => {
     // Handle form submission
@@ -70,7 +126,10 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           </View>
 
           <View style={styles.inputContainer}>
-            <TouchableOpacity style={styles.dateInputContainer}>
+            <TouchableOpacity
+              style={styles.dateInputContainer}
+              onPress={() => setHandleOpenCalendar('dob')}
+            >
               <TextInput
                 style={styles.dateInput}
                 placeholder="Date Of Birth"
@@ -112,7 +171,10 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           </View>
 
           <View style={styles.inputContainer}>
-            <TouchableOpacity style={styles.dateInputContainer}>
+            <TouchableOpacity
+              style={styles.dateInputContainer}
+              onPress={() => setHandleOpenCalendar('serviceStartDate')}
+            >
               <TextInput
                 style={styles.dateInput}
                 placeholder="Service Start Date"
@@ -132,7 +194,6 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
               placeholderTextColor="#999"
               value={netSalary}
               onChangeText={text => setNetSalary(formatAmount(text))}
-              keyboardType="numeric"
               {...getInputConstraints('number')}
             />
           </View>
@@ -157,6 +218,17 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           <Text style={styles.getOfferButtonText}>GET OFFER</Text>
         </TouchableOpacity>
       </ScrollView>
+      {handleOpenCalendar && (
+        <DateTimePickerModal
+          date={getDatePickerValue(handleOpenCalendar as CalendarType)}
+          isVisible={handleOpenCalendar !== null}
+          mode="date"
+          onCancel={onCancelDate}
+          onConfirm={(date: Date) => {
+            handleDateChange(date, handleOpenCalendar as CalendarType);
+          }}
+        />
+      )}
     </Screen>
   );
 });

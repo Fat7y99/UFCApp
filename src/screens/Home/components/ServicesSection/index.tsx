@@ -38,7 +38,7 @@ const ServicesSection: React.FC = () => {
       title: 'Personal',
       icon: () => <PersonalLogo />,
       description: 'Personal Finance Solutions',
-      onPress: () => navigation.navigate('personalStep1'),
+      onPress: () => navigation.navigate('personalStep1', { serviceId: 12 }),
     },
   ];
 

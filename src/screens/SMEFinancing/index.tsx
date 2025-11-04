@@ -29,38 +29,38 @@ interface FinancingType {
 const SMEFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
-  const financingTypes: FinancingType[] = [
+  const services: FinancingType[] = [
     {
       id: 1,
       title: translate(`${TranslationNamespaces.FINANCING}:invoice`),
-      onPress: () => navigation.navigate('smeStep1'),
+      onPress: () => navigation.navigate('smeStep1', { serviceId: 1 }),
     },
     {
       id: 2,
       title: translate(`${TranslationNamespaces.FINANCING}:project`),
-      onPress: () => {},
+      onPress: () => navigation.navigate('smeStep1', { serviceId: 2 }),
     },
     {
       id: 3,
       title: translate(`${TranslationNamespaces.FINANCING}:pos`),
-      onPress: () => {},
+      onPress: () => navigation.navigate('smeStep1', { serviceId: 3 }),
     },
     {
       id: 4,
       title: translate(`${TranslationNamespaces.FINANCING}:bankGuarantee`),
-      onPress: () => {},
+      onPress: () => navigation.navigate('smeStep1', { serviceId: 4 }),
     },
     {
       id: 5,
       title: translate(`${TranslationNamespaces.FINANCING}:workingCapital`),
-      onPress: () => {},
+      onPress: () => navigation.navigate('smeStep1', { serviceId: 5 }),
     },
     {
       id: 6,
       title: translate(
         `${TranslationNamespaces.FINANCING}:smeSecuredByProperty`,
       ),
-      onPress: () => {},
+      onPress: () => navigation.navigate('smeStep1', { serviceId: 6 }),
     },
   ];
 
@@ -97,7 +97,7 @@ const SMEFinancing: React.FC = () => {
 
         {/* Financing Type Buttons */}
         <View style={styles.buttonsContainer}>
-          {financingTypes.map((type: FinancingType) => (
+          {services.map((type: FinancingType) => (
             <TouchableOpacity
               key={type.id}
               style={styles.financingButton}
@@ -139,9 +139,9 @@ const styles = StyleSheet.create({
     padding: ResponsiveDimensions.vs(8),
   },
   backIcon: {
-    color: 'white',
-    fontSize: ResponsiveDimensions.vs(24),
-    fontWeight: 'bold',
+    width: ResponsiveDimensions.vs(16),
+    height: ResponsiveDimensions.vs(16),
+    tintColor: 'white',
   },
   headerTitle: {
     color: 'white',

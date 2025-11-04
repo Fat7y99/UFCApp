@@ -34,22 +34,22 @@ const RealEstateFinancing: React.FC = () => {
     {
       id: 1,
       title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
-      onPress: () => navigation.navigate('realEstateStep1'),
+      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 7 }),
     },
     {
       id: 2,
       title: translate(`${TranslationNamespaces.FINANCING}:mortgage`),
-      onPress: () => navigation.navigate('realEstateStep1'),
+      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 8 }),
     },
     {
       id: 3,
       title: translate(`${TranslationNamespaces.FINANCING}:refinance`),
-      onPress: () => navigation.navigate('realEstateStep1'),
+      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 9 }),
     },
     {
       id: 4,
       title: translate(`${TranslationNamespaces.FINANCING}:selfBuild`),
-      onPress: () => navigation.navigate('realEstateStep1'),
+      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 10 }),
     },
     {
       id: 5,
@@ -57,7 +57,7 @@ const RealEstateFinancing: React.FC = () => {
       subtitle: translate(
         `${TranslationNamespaces.FINANCING}:commercialBuildings`,
       ),
-      onPress: () => navigation.navigate('realEstateStep1'),
+      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 11 }),
     },
   ];
 

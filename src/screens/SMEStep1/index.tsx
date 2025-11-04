@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
@@ -17,13 +17,17 @@ import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, SMEStep2Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type SMEStep1RouteProp = RouteProp<RootStackParamList, 'smeStep1'>;
 
 const SMEStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<SMEStep1RouteProp>();
+  const serviceId = route.params?.serviceId || 1;
   const [liabilityType, setLiabilityType] = useState('');
   const [monthlyInstallment, setMonthlyInstallment] = useState('');
   const [bankName, setBankName] = useState('');
@@ -128,7 +132,21 @@ const SMEStep1: React.FC = () => {
         {/* Next Button */}
         <TouchableOpacity
           style={styles.nextButton}
-          onPress={() => navigation.navigate('smeStep2')}
+          onPress={() => {
+            navigation.navigate('smeStep2', {
+              serviceId,
+              customerLiability: {
+                liabilityType: liabilityType || undefined,
+                monthlyInstallment: monthlyInstallment
+                  ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+                  : undefined,
+                bankName: bankName || undefined,
+                remainingBalance: remainingBalance
+                  ? parseFloat(remainingBalance.replace(/,/g, ''))
+                  : undefined,
+              },
+            });
+          }}
         >
           <Text style={styles.nextButtonText}>
             {translate(`${TranslationNamespaces.FINANCING}:next`)}

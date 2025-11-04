@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
@@ -9,25 +9,47 @@ import {
   ScrollView,
   TextInput,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
+import { SuccessType } from '@src/screens/Success/types';
 import {
   getInputConstraints,
   formatAmount,
   formatNumber,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
+import {
+  useAddSmeApplicationApi,
+  type ApiRequest,
+  type SmeApplicationRequestBody,
+} from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type SMEStep2RouteProp = RouteProp<RootStackParamList, 'smeStep2'>;
 
 const SMEStep2: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<SMEStep2RouteProp>();
+  const serviceId = route.params?.serviceId || 1;
+  const customerLiability = route.params?.customerLiability;
+
+  const addSmeApplicationMutation = useAddSmeApplicationApi({
+    onSuccess: () => {
+      navigation.navigate('success', { type: SuccessType.OFFER_APPLIED });
+    },
+    onError: error => {
+      console.error('Error submitting SME application:', error);
+      // Handle error - you might want to show an error message
+    },
+  });
   const [businessActivityType, setBusinessActivityType] = useState('');
   const [crAge, setCrAge] = useState('');
   const [businessRegion, setBusinessRegion] = useState('');
@@ -193,11 +215,42 @@ const SMEStep2: React.FC = () => {
           </View>
         </View>
 
-        {/* Next Button */}
-        <TouchableOpacity style={styles.nextButton}>
-          <Text style={styles.nextButtonText}>
-            {translate(`${TranslationNamespaces.FINANCING}:next`)}
-          </Text>
+        {/* Submit Button */}
+        <TouchableOpacity
+          style={[
+            styles.nextButton,
+            addSmeApplicationMutation.isPending && styles.nextButtonDisabled,
+          ]}
+          onPress={() => {
+            // Collect all form data and submit
+            const request: ApiRequest<SmeApplicationRequestBody> = {
+              body: {
+                serviceId,
+                appSmeFinance: {
+                  businessActivityType: businessActivityType || undefined,
+                  businessRegion: businessRegion || undefined,
+                  businessType: businessType || undefined,
+                  posAnnualRevenue: posAnnualPropertyIncome
+                    ? parseFloat(posAnnualPropertyIncome.replace(/,/g, ''))
+                    : undefined,
+                  financialStatementsAvailable:
+                    financialStatementAvailable ===
+                    translate(`${TranslationNamespaces.FINANCING}:yes`),
+                },
+                customerLiability: customerLiability || undefined,
+              },
+            };
+            addSmeApplicationMutation.mutate(request);
+          }}
+          disabled={addSmeApplicationMutation.isPending}
+        >
+          {addSmeApplicationMutation.isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.nextButtonText}>
+              {translate(`${TranslationNamespaces.FINANCING}:apply`)}
+            </Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </Screen>
@@ -360,6 +413,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
+  },
+  nextButtonDisabled: {
+    opacity: 0.6,
   },
 });
 

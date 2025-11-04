@@ -57,7 +57,7 @@ const fakerNotifications = {
     );
   },
   markNotificationRead: (
-    request: ApiRequest<any, string | number>,
+    request: ApiRequest<any, number>,
   ): Promise<MarkNotificationReadResponse> => {
     console.info(getLogMessage('markNotificationRead'), request);
 

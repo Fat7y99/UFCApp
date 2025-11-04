@@ -37,15 +37,76 @@ type RootStackParamList = {
   changePassword: undefined;
   editProfile: undefined;
   smeFinancing: undefined;
-  smeStep1: undefined;
-  smeStep2: undefined;
+  smeStep1: { serviceId: number };
+  smeStep2: {
+    serviceId: number;
+    customerLiability?: {
+      bankName?: string;
+      currency?: string;
+      liabilityType?: string;
+      monthlyInstallment?: number;
+      remainingBalance?: number;
+    };
+  };
   realEstateFinancing: undefined;
-  realEstateStep1: undefined;
-  realEstateStep2: undefined;
-  realEstateStep3: undefined;
-  personalStep1: undefined;
-  personalStep2: undefined;
-  personalStep3: undefined;
+  realEstateStep1: { serviceId: number };
+  realEstateStep2: {
+    serviceId: number;
+    customerBaseInfo?: {
+      name?: string;
+      phone?: string;
+      birthDate?: string;
+      employer?: string;
+      jobTitle?: string;
+    };
+  };
+  realEstateStep3: {
+    serviceId: number;
+    customerBaseInfo?: {
+      name?: string;
+      phone?: string;
+      birthDate?: string;
+      employer?: string;
+      jobTitle?: string;
+    };
+    customerLiability?: {
+      bankName?: string;
+      currency?: string;
+      liabilityType?: string;
+      monthlyInstallment?: number;
+      remainingBalance?: number;
+    };
+  };
+  personalStep1: { serviceId?: number };
+  personalStep2: {
+    serviceId: number;
+    customerBaseInfo?: {
+      name?: string;
+      phone?: string;
+      birthDate?: string;
+      employer?: string;
+      jobTitle?: string;
+      serviceStartDate?: string;
+    };
+  };
+  personalStep3: {
+    serviceId: number;
+    customerBaseInfo?: {
+      name?: string;
+      phone?: string;
+      birthDate?: string;
+      employer?: string;
+      jobTitle?: string;
+      serviceStartDate?: string;
+    };
+    customerLiability?: {
+      bankName?: string;
+      currency?: string;
+      liabilityType?: string;
+      monthlyInstallment?: number;
+      remainingBalance?: number;
+    };
+  };
   offers: undefined;
   offerDetails: {
     offer: { id: string; title: string; description: string; isOdd: boolean };

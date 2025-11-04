@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
@@ -9,21 +9,44 @@ import {
   ScrollView,
   TextInput,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
+import { SuccessType } from '@src/screens/Success/types';
 import { getInputConstraints, formatAmount } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
+import {
+  useAddPersonalApplicationApi,
+  type ApiRequest,
+  type PersonalApplicationRequestBody,
+} from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
+import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, PersonalStep1Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type PersonalStep3RouteProp = RouteProp<RootStackParamList, 'personalStep3'>;
 
 const PersonalStep3: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
+  const route = useRoute<PersonalStep3RouteProp>();
+  const serviceId = route.params?.serviceId || 12;
+  const customerBaseInfoFromStep1 = route.params?.customerBaseInfo;
+  const customerLiability = route.params?.customerLiability;
+
+  const addPersonalApplicationMutation = useAddPersonalApplicationApi({
+    onSuccess: () => {
+      navigation.navigate('success', { type: SuccessType.OFFER_APPLIED });
+    },
+    onError: error => {
+      console.error('Error submitting personal application:', error);
+      // Handle error - you might want to show an error message
+    },
+  });
   const [basicSalary, setBasicSalary] = useState('');
   const [netSalary, setNetSalary] = useState('');
   const [currentBank, setCurrentBank] = useState('');
@@ -126,10 +149,42 @@ const PersonalStep3: React.FC = () => {
         </View>
 
         {/* Apply Button */}
-        <TouchableOpacity style={styles.applyButton}>
-          <Text style={styles.applyButtonText}>
-            {translate(`${TranslationNamespaces.FINANCING}:apply`)}
-          </Text>
+        <TouchableOpacity
+          style={[
+            styles.applyButton,
+            addPersonalApplicationMutation.isPending &&
+              styles.applyButtonDisabled,
+          ]}
+          onPress={() => {
+            // Combine all form data and submit
+            const request: ApiRequest<PersonalApplicationRequestBody> = {
+              body: {
+                serviceId,
+                customerBaseInfo: {
+                  ...customerBaseInfoFromStep1,
+                  basicSalary: basicSalary
+                    ? parseFloat(basicSalary.replace(/,/g, ''))
+                    : undefined,
+                  netSalary: netSalary
+                    ? parseFloat(netSalary.replace(/,/g, ''))
+                    : undefined,
+                  currentBank: currentBank || undefined,
+                  city: city || undefined,
+                },
+                customerLiability: customerLiability || undefined,
+              },
+            };
+            addPersonalApplicationMutation.mutate(request);
+          }}
+          disabled={addPersonalApplicationMutation.isPending}
+        >
+          {addPersonalApplicationMutation.isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.applyButtonText}>
+              {translate(`${TranslationNamespaces.FINANCING}:apply`)}
+            </Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </Screen>
@@ -299,6 +354,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
+  },
+  applyButtonDisabled: {
+    opacity: 0.6,
   },
 });
 

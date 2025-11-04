@@ -22,7 +22,7 @@ const SettingsHeader: React.FC = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate('Home');
   };
 
   return (
