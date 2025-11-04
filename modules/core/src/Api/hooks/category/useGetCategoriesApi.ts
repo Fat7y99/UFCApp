@@ -3,7 +3,7 @@ import type {
   ApiRequest,
   ServerError,
   queryCategory,
-  type Service,
+  Service,
 } from '@modules/core';
 import type { UseMutationOptions } from '@tanstack/react-query';
 

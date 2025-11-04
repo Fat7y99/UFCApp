@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -29,27 +29,27 @@ interface FinancingType {
 
 const RealEstateFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-
+  const [serviceId, setServiceId] = useState<number>(1);
   const financingTypes: FinancingType[] = [
     {
       id: 1,
       title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
-      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 7 }),
+      onPress: () => setServiceId(1),
     },
     {
       id: 2,
       title: translate(`${TranslationNamespaces.FINANCING}:mortgage`),
-      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 8 }),
+      onPress: () => setServiceId(2),
     },
     {
       id: 3,
       title: translate(`${TranslationNamespaces.FINANCING}:refinance`),
-      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 9 }),
+      onPress: () => setServiceId(3),
     },
     {
       id: 4,
       title: translate(`${TranslationNamespaces.FINANCING}:selfBuild`),
-      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 10 }),
+      onPress: () => setServiceId(4),
     },
     {
       id: 5,
@@ -57,7 +57,7 @@ const RealEstateFinancing: React.FC = () => {
       subtitle: translate(
         `${TranslationNamespaces.FINANCING}:commercialBuildings`,
       ),
-      onPress: () => navigation.navigate('realEstateStep1', { serviceId: 11 }),
+      onPress: () => setServiceId(5),
     },
   ];
 
@@ -100,12 +100,27 @@ const RealEstateFinancing: React.FC = () => {
               style={[
                 styles.financingButton,
                 type.id === 5 && styles.fullWidthButton,
+                serviceId === type.id && styles.activeButton,
               ]}
-              onPress={type.onPress}
+              onPress={() => {
+                setServiceId(type.id);
+              }}
             >
-              <Text style={styles.financingButtonText}>{type.title}</Text>
+              <Text
+                style={[
+                  styles.financingButtonText,
+                  serviceId === type.id && styles.activeButtonText,
+                ]}
+              >
+                {type.title}
+              </Text>
               {type.subtitle && (
-                <Text style={styles.financingButtonSubtext}>
+                <Text
+                  style={[
+                    styles.financingButtonSubtext,
+                    serviceId === type.id && styles.activeButtonText,
+                  ]}
+                >
                   {type.subtitle}
                 </Text>
               )}
@@ -114,7 +129,12 @@ const RealEstateFinancing: React.FC = () => {
         </View>
 
         {/* Next Button */}
-        <TouchableOpacity style={styles.nextButton}>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={() => {
+            navigation.navigate('realEstateStep1', { serviceId });
+          }}
+        >
           <Text style={styles.nextButtonText}>
             {translate(`${TranslationNamespaces.FINANCING}:next`)}
           </Text>
@@ -125,6 +145,12 @@ const RealEstateFinancing: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  activeButtonText: {
+    color: AppColors.themeLight.pressedButtonColor,
+  },
+  activeButton: {
+    backgroundColor: AppColors.themeLight.primaryButtonColor,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',

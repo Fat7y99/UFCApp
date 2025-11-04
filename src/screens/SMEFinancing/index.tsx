@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -28,39 +28,39 @@ interface FinancingType {
 
 const SMEFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-
+  const [serviceId, setServiceId] = useState<number>(1);
   const services: FinancingType[] = [
     {
       id: 1,
       title: translate(`${TranslationNamespaces.FINANCING}:invoice`),
-      onPress: () => navigation.navigate('smeStep1', { serviceId: 1 }),
+      onPress: () => setServiceId(1),
     },
     {
       id: 2,
       title: translate(`${TranslationNamespaces.FINANCING}:project`),
-      onPress: () => navigation.navigate('smeStep1', { serviceId: 2 }),
+      onPress: () => setServiceId(2),
     },
     {
       id: 3,
       title: translate(`${TranslationNamespaces.FINANCING}:pos`),
-      onPress: () => navigation.navigate('smeStep1', { serviceId: 3 }),
+      onPress: () => setServiceId(3),
     },
     {
       id: 4,
       title: translate(`${TranslationNamespaces.FINANCING}:bankGuarantee`),
-      onPress: () => navigation.navigate('smeStep1', { serviceId: 4 }),
+      onPress: () => setServiceId(4),
     },
     {
       id: 5,
       title: translate(`${TranslationNamespaces.FINANCING}:workingCapital`),
-      onPress: () => navigation.navigate('smeStep1', { serviceId: 5 }),
+      onPress: () => setServiceId(5),
     },
     {
       id: 6,
       title: translate(
         `${TranslationNamespaces.FINANCING}:smeSecuredByProperty`,
       ),
-      onPress: () => navigation.navigate('smeStep1', { serviceId: 6 }),
+      onPress: () => setServiceId(6),
     },
   ];
 
@@ -100,16 +100,33 @@ const SMEFinancing: React.FC = () => {
           {services.map((type: FinancingType) => (
             <TouchableOpacity
               key={type.id}
-              style={styles.financingButton}
-              onPress={type.onPress}
+              style={[
+                styles.financingButton,
+                serviceId === type.id && styles.activeButton,
+              ]}
+              onPress={() => {
+                setServiceId(type.id);
+              }}
             >
-              <Text style={styles.financingButtonText}>{type.title}</Text>
+              <Text
+                style={[
+                  styles.financingButtonText,
+                  serviceId === type.id && styles.activeButtonText,
+                ]}
+              >
+                {type.title}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Next Button */}
-        <TouchableOpacity style={styles.nextButton}>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={() => {
+            navigation.navigate('smeStep1', { serviceId });
+          }}
+        >
           <Text style={styles.nextButtonText}>
             {translate(`${TranslationNamespaces.FINANCING}:next`)}
           </Text>
@@ -120,6 +137,12 @@ const SMEFinancing: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  activeButtonText: {
+    color: AppColors.themeLight.pressedButtonColor,
+  },
+  activeButton: {
+    backgroundColor: AppColors.themeLight.primaryButtonColor,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',

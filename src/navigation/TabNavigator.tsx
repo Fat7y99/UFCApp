@@ -114,21 +114,22 @@ const TabNavigator: React.FC = () => (
     }}
   >
     <Tab.Screen
-      name="Settings"
-      component={Settings}
+      name="Home"
+      component={Home}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem
             focused={focused}
-            label="Settings"
-            outlinedIcon={OutlinedSettingsIcon}
-            filledIcon={AppImages.filledSettingsIconPng}
-            filledIconSize={24}
+            label={translate(`${TranslationNamespaces.HOME}:home`)}
+            outlinedIcon={OutlinedHomeIcon}
+            filledIcon={AppImages.filledHomeIconPng}
+            filledIconSize={22}
           />
         ),
         tabBarLabel: '',
       }}
     />
+
     <Tab.Screen
       name="Search"
       component={Home} // Using Home as placeholder for now
@@ -158,16 +159,16 @@ const TabNavigator: React.FC = () => (
       }}
     />
     <Tab.Screen
-      name="Home"
-      component={Home}
+      name="Settings"
+      component={Settings}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem
             focused={focused}
-            label={translate(`${TranslationNamespaces.HOME}:home`)}
-            outlinedIcon={OutlinedHomeIcon}
-            filledIcon={AppImages.filledHomeIconPng}
-            filledIconSize={22}
+            label="Settings"
+            outlinedIcon={OutlinedSettingsIcon}
+            filledIcon={AppImages.filledSettingsIconPng}
+            filledIconSize={24}
           />
         ),
         tabBarLabel: '',
