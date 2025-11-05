@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     height: ResponsiveDimensions.vs(32),
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: ResponsiveDimensions.vs(12),
+    marginStart: 0,
+    marginEnd: ResponsiveDimensions.vs(12),
   },
   backIcon: {
     width: ResponsiveDimensions.vs(16),
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   scrollView: {
     flex: 1,
@@ -52,11 +54,13 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: ResponsiveDimensions.vs(16),
     lineHeight: ResponsiveDimensions.vs(26),
+    textAlign: 'left',
   },
   answerText: {
     fontSize: ResponsiveDimensions.vs(16),
     color: '#666',
     lineHeight: ResponsiveDimensions.vs(24),
+    textAlign: 'left',
   },
 });
 

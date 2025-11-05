@@ -1,10 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  I18nManager,
+} from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
 import { AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
+import { translate } from '@modules/localization';
+import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import styles from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -17,39 +26,36 @@ interface FAQ {
   answer: string;
 }
 
+const isRTL = I18nManager.isRTL;
+
 const FAQsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
   const faqs: FAQ[] = [
     {
       id: '1',
-      question: 'Question number one',
-      answer:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      question: translate(`${TranslationNamespaces.HELP}:question1`),
+      answer: translate(`${TranslationNamespaces.HELP}:answer1`),
     },
     {
       id: '2',
-      question: 'Question number two',
-      answer:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      question: translate(`${TranslationNamespaces.HELP}:question2`),
+      answer: translate(`${TranslationNamespaces.HELP}:answer2`),
     },
     {
       id: '3',
-      question: 'Question number three',
-      answer:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      question: translate(`${TranslationNamespaces.HELP}:question3`),
+      answer: translate(`${TranslationNamespaces.HELP}:answer3`),
     },
     {
       id: '4',
-      question: 'Question number four',
-      answer:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+      question: translate(`${TranslationNamespaces.HELP}:question4`),
+      answer: translate(`${TranslationNamespaces.HELP}:answer4`),
     },
     {
       id: '5',
-      question: 'Question number five',
-      answer:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
+      question: translate(`${TranslationNamespaces.HELP}:question5`),
+      answer: translate(`${TranslationNamespaces.HELP}:answer5`),
     },
   ];
 
@@ -69,9 +75,14 @@ const FAQsScreen: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>FAQs</Text>
+        <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
+          {translate(`${TranslationNamespaces.HELP}:faqsTitle`)}
+        </Text>
       </View>
 
       {/* FAQs List */}
@@ -92,7 +103,10 @@ const FAQsScreen: React.FC = () => {
               <Text style={styles.questionText}>{faq.question}</Text>
               <Image
                 source={AppImages.chevronRight}
-                style={styles.chevronIcon}
+                style={[
+                  styles.chevronIcon,
+                  isRTL && { transform: [{ scaleX: -1 }] },
+                ]}
               />
             </TouchableOpacity>
           ))}

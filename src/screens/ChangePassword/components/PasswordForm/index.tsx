@@ -1,8 +1,10 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, I18nManager } from 'react-native';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
+
+const isRTL = I18nManager.isRTL;
 
 const PasswordForm: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -23,6 +25,7 @@ const PasswordForm: React.FC = () => {
         secureTextEntry
         autoCapitalize="none"
         autoCorrect={false}
+        textAlign={isRTL ? 'right' : 'left'}
       />
 
       {/* New Password Input */}
@@ -37,6 +40,7 @@ const PasswordForm: React.FC = () => {
         secureTextEntry
         autoCapitalize="none"
         autoCorrect={false}
+        textAlign={isRTL ? 'right' : 'left'}
       />
 
       {/* Confirm New Password Input */}
@@ -51,6 +55,7 @@ const PasswordForm: React.FC = () => {
         secureTextEntry
         autoCapitalize="none"
         autoCorrect={false}
+        textAlign={isRTL ? 'right' : 'left'}
       />
     </View>
   );

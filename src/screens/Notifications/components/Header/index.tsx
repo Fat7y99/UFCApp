@@ -3,12 +3,19 @@ import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  I18nManager,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import type { RootStackScreenProps } from '@src/navigation';
-import { TranslationNamespaces } from '@modules/localization';
+import { translate, TranslationNamespaces } from '@modules/localization';
 import { AppImages } from 'modules/assets/src';
 import { AppColors } from 'modules/theme/src';
-
+const isRTL = I18nManager.isRTL;
 export default React.memo(() => {
   // #region Logger
   const getLogMessage = (message: string) =>
@@ -31,9 +38,14 @@ export default React.memo(() => {
         style={styles.backButton}
         onPress={() => navigation.goBack()}
       >
-        <Image source={AppImages.leftArrow} style={styles.backIcon} />
+        <Image
+          source={AppImages.leftArrow}
+          style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+        />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>Notifications</Text>
+      <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
+        {translate(`${TranslationNamespaces.NOTIFICATIONS}:notifications`)}
+      </Text>
     </View>
   );
 });

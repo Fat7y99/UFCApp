@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, I18nManager } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 
 import { translate } from '@modules/localization';
@@ -9,7 +9,7 @@ import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { EditProfileIcon } from 'modules/assets/src';
 import { useGetCurrentUserApi } from 'modules/core/src/Api/hooks';
-
+const isRTL = I18nManager.isRTL;
 const ProfileSection: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -23,7 +23,10 @@ const ProfileSection: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Username */}
-      <Text style={styles.username}> {currentUser?.username}</Text>
+      <Text style={[styles.username, isRTL && { textAlign: 'left' }]}>
+        {isRTL ? ' ' : ''}
+        {currentUser?.username}
+      </Text>
 
       {/* Edit Profile */}
       <TouchableOpacity

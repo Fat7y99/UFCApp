@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   Image,
+  I18nManager,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
@@ -23,7 +24,7 @@ import { AppImages, SMEStep2Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type SMEStep1RouteProp = RouteProp<RootStackParamList, 'smeStep1'>;
-
+const isRTL = I18nManager.isRTL;
 const SMEStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<SMEStep1RouteProp>();
@@ -41,7 +42,10 @@ const SMEStep1: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
           {translate(`${TranslationNamespaces.FINANCING}:invoiceFinancing`)}
@@ -165,7 +169,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -226,6 +230,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     marginBottom: ResponsiveDimensions.vs(16),
+    textAlign: 'left',
   },
   progressBarContainer: {
     width: '100%',
@@ -295,6 +300,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     marginBottom: ResponsiveDimensions.vs(24),
+    textAlign: 'left',
   },
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
@@ -308,6 +314,7 @@ const styles = StyleSheet.create({
     color: '#333',
     borderWidth: 1,
     borderColor: '#8C8C8C',
+    textAlign: isRTL ? 'right' : 'left',
   },
   nextButton: {
     backgroundColor: '#4CAF50',

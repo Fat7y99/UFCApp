@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  I18nManager,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
@@ -25,6 +26,7 @@ interface FinancingType {
   title: string;
   onPress: () => void;
 }
+const isRTL = I18nManager.isRTL;
 
 const SMEFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -63,7 +65,6 @@ const SMEFinancing: React.FC = () => {
       onPress: () => setServiceId(6),
     },
   ];
-
   return (
     <Screen style={styles.container}>
       {/* Header */}
@@ -72,7 +73,10 @@ const SMEFinancing: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
           {translate(`${TranslationNamespaces.FINANCING}:smeFinancing`)}
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -225,6 +229,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     marginBottom: ResponsiveDimensions.vs(24),
+    textAlign: 'left',
   },
   buttonsContainer: {
     gap: ResponsiveDimensions.vs(16),

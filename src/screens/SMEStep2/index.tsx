@@ -10,6 +10,7 @@ import {
   TextInput,
   Image,
   ActivityIndicator,
+  I18nManager,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
@@ -30,11 +31,11 @@ import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AppImages } from 'modules/assets/src';
+import { AppImages, DropDownArrow } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type SMEStep2RouteProp = RouteProp<RootStackParamList, 'smeStep2'>;
-
+const isRTL = I18nManager.isRTL;
 const SMEStep2: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<SMEStep2RouteProp>();
@@ -43,7 +44,9 @@ const SMEStep2: React.FC = () => {
 
   const addSmeApplicationMutation = useAddSmeApplicationApi({
     onSuccess: () => {
-      navigation.navigate('success', { type: SuccessType.OFFER_APPLIED });
+      navigation.navigate('success', {
+        type: SuccessType.APPLICATION_SUBMITTED,
+      });
     },
     onError: error => {
       console.error('Error submitting SME application:', error);
@@ -67,7 +70,10 @@ const SMEStep2: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
           {translate(`${TranslationNamespaces.FINANCING}:invoiceFinancing`)}
@@ -179,7 +185,7 @@ const SMEStep2: React.FC = () => {
                 value={financialStatementAvailable}
                 editable={false}
               />
-              <Text style={styles.dropdownIcon}>▼</Text>
+              <DropDownArrow />
             </TouchableOpacity>
 
             {showDropdown && (
@@ -265,7 +271,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -284,6 +290,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
+    textAlign: isRTL ? 'left' : 'right',
   },
   notificationButton: {
     position: 'relative',
@@ -326,6 +333,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     marginBottom: ResponsiveDimensions.vs(16),
+    textAlign: 'left',
   },
   progressBarContainer: {
     width: '100%',
@@ -350,6 +358,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     marginBottom: ResponsiveDimensions.vs(24),
+    textAlign: 'left',
   },
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
@@ -363,6 +372,7 @@ const styles = StyleSheet.create({
     color: '#333',
     borderWidth: 1,
     borderColor: '#8C8C8C',
+    textAlign: isRTL ? 'right' : 'left',
   },
   dropdownContainer: {
     flexDirection: 'row',
@@ -378,6 +388,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+    textAlign: isRTL ? 'right' : 'left',
   },
   dropdownIcon: {
     fontSize: ResponsiveDimensions.vs(12),

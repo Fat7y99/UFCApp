@@ -1,5 +1,7 @@
 import { getLanguage, setLanguage } from '@modules/core';
+import { navigationRef } from '@src/navigation/NavigationUtils';
 import * as i18next from 'i18next';
+
 import { initReactI18next } from 'react-i18next';
 import { Platform, Settings, I18nManager } from 'react-native';
 import { default as Config } from 'react-native-config';
@@ -34,6 +36,8 @@ const handleRestart = (locale: string) => {
   if (locale === AppLanguages.ENGLISH && I18nManager.isRTL) {
     setTimeout(() => RNRestart.Restart(), 500);
   }
+  //then navigate to the login screen
+  navigationRef.navigate('login');
 };
 
 export const setI18nConfig = async () => {

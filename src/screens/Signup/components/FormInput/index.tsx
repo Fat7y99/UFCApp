@@ -8,6 +8,7 @@ interface FormInputProps {
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
+  textAlign?: 'left' | 'right';
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -15,6 +16,7 @@ const FormInput: React.FC<FormInputProps> = ({
   value,
   onChangeText,
   secureTextEntry = false,
+  textAlign,
 }) => (
   <View style={styles.container}>
     <TextInput
@@ -24,6 +26,7 @@ const FormInput: React.FC<FormInputProps> = ({
       value={value}
       onChangeText={onChangeText}
       secureTextEntry={secureTextEntry}
+      textAlign={textAlign}
     />
   </View>
 );

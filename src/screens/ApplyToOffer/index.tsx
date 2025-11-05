@@ -7,13 +7,15 @@ import {
   ScrollView,
   TextInput,
   Image,
+  I18nManager,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import type { RootStackScreenProps } from '@src/navigation';
 import { getInputConstraints, formatAmount } from '@src/utils/InputFormatting';
-import { AppImages, CalendarLogo } from '@modules/assets';
+import { AppImages, CalendarLogo, DropDownArrow } from '@modules/assets';
 import { Screen } from '@modules/components';
-
+import { translate } from '@modules/localization';
+import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import styles from './styles';
 
@@ -21,6 +23,7 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
   const { route } = props;
   const navigation = useNavigation();
   const { offer } = route.params;
+  const isRTL = I18nManager.isRTL;
 
   const [name, setName] = useState('');
   const [dob, setDob] = useState('');
@@ -102,9 +105,14 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={isRTL ? AppImages.rightArrow : AppImages.leftArrow}
+            style={styles.backIcon}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{offer.title} Rate</Text>
+        <Text style={styles.headerTitle}>
+          {offer.title} {translate(`${TranslationNamespaces.HOME}:rate`)}
+        </Text>
       </View>
 
       <ScrollView
@@ -117,10 +125,11 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Name"
+              placeholder={translate(`${TranslationNamespaces.HOME}:name`)}
               placeholderTextColor="#999"
               value={name}
               onChangeText={setName}
+              textAlign={isRTL ? 'right' : 'left'}
               {...getInputConstraints('text')}
             />
           </View>
@@ -132,11 +141,14 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
             >
               <TextInput
                 style={styles.dateInput}
-                placeholder="Date Of Birth"
+                placeholder={translate(
+                  `${TranslationNamespaces.HOME}:dateOfBirth`,
+                )}
                 placeholderTextColor="#999"
                 value={dob}
                 onChangeText={setDob}
                 editable={false}
+                textAlign={isRTL ? 'right' : 'left'}
               />
               <CalendarLogo />
             </TouchableOpacity>
@@ -146,13 +158,16 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
             <TouchableOpacity style={styles.dropdownContainer}>
               <TextInput
                 style={styles.dropdownInput}
-                placeholder="Workplace"
+                placeholder={translate(
+                  `${TranslationNamespaces.HOME}:workplace`,
+                )}
                 placeholderTextColor="#999"
                 value={workplace}
                 onChangeText={setWorkplace}
+                textAlign={isRTL ? 'right' : 'left'}
                 editable={false}
               />
-              <Text style={styles.dropdownIcon}>⌄</Text>
+              <DropDownArrow />
             </TouchableOpacity>
           </View>
 
@@ -160,13 +175,14 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
             <TouchableOpacity style={styles.dropdownContainer}>
               <TextInput
                 style={styles.dropdownInput}
-                placeholder="Job Type"
+                placeholder={translate(`${TranslationNamespaces.HOME}:jobType`)}
                 placeholderTextColor="#999"
                 value={jobType}
                 onChangeText={setJobType}
                 editable={false}
+                textAlign={isRTL ? 'right' : 'left'}
               />
-              <Text style={styles.dropdownIcon}>⌄</Text>
+              <DropDownArrow />
             </TouchableOpacity>
           </View>
 
@@ -177,11 +193,14 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
             >
               <TextInput
                 style={styles.dateInput}
-                placeholder="Service Start Date"
+                placeholder={translate(
+                  `${TranslationNamespaces.HOME}:serviceStartDate`,
+                )}
                 placeholderTextColor="#999"
                 value={serviceStartDate}
                 onChangeText={setServiceStartDate}
                 editable={false}
+                textAlign={isRTL ? 'right' : 'left'}
               />
               <CalendarLogo />
             </TouchableOpacity>
@@ -190,9 +209,10 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Net Salary"
+              placeholder={translate(`${TranslationNamespaces.HOME}:netSalary`)}
               placeholderTextColor="#999"
               value={netSalary}
+              textAlign={isRTL ? 'right' : 'left'}
               onChangeText={text => setNetSalary(formatAmount(text))}
               {...getInputConstraints('number')}
             />
@@ -201,9 +221,12 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="Current Salary Bank"
+              placeholder={translate(
+                `${TranslationNamespaces.HOME}:currentSalaryBank`,
+              )}
               placeholderTextColor="#999"
               value={currentSalaryBank}
+              textAlign={isRTL ? 'right' : 'left'}
               onChangeText={setCurrentSalaryBank}
               {...getInputConstraints('text')}
             />
@@ -215,7 +238,9 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           style={styles.getOfferButton}
           onPress={handleGetOffer}
         >
-          <Text style={styles.getOfferButtonText}>GET OFFER</Text>
+          <Text style={styles.getOfferButtonText}>
+            {translate(`${TranslationNamespaces.HOME}:getOffer`)}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
       {handleOpenCalendar && (
@@ -223,6 +248,8 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
           date={getDatePickerValue(handleOpenCalendar as CalendarType)}
           isVisible={handleOpenCalendar !== null}
           mode="date"
+          minimumDate={getDatePickerMinDate(handleOpenCalendar as CalendarType)}
+          maximumDate={getDatePickerMaxDate(handleOpenCalendar as CalendarType)}
           onCancel={onCancelDate}
           onConfirm={(date: Date) => {
             handleDateChange(date, handleOpenCalendar as CalendarType);

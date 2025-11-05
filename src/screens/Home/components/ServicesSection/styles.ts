@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     color: '#666',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
+    textAlign: 'left',
   },
   financingContainer: {
     gap: ResponsiveDimensions.vs(12),
@@ -31,12 +32,20 @@ export const styles = StyleSheet.create({
   },
   financingIcon: {
     fontSize: ResponsiveDimensions.vs(24),
-    marginRight: ResponsiveDimensions.vs(16),
+    marginStart: ResponsiveDimensions.vs(16),
+    marginEnd: 0,
   },
   financingTitle: {
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     flex: 1,
+    textAlign: 'left',
+    marginStart: ResponsiveDimensions.vs(16),
+    marginEnd: ResponsiveDimensions.vs(16),
+  },
+  arrowIcon: {
+    width: ResponsiveDimensions.vs(16),
+    height: ResponsiveDimensions.vs(16),
   },
 });

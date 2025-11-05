@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Image,
+  I18nManager,
 } from 'react-native';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -16,7 +17,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import type { RootStackParamList } from 'navigation/RootStack.types';
 import { AppImages } from 'modules/assets/src';
-
+const isRTL = I18nManager.isRTL;
 const SettingsHeader: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -38,9 +39,12 @@ const SettingsHeader: React.FC = () => {
       <View style={styles.headerContent}>
         <View style={styles.leftSection}>
           <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-            <Image source={AppImages.leftArrow} />
+            <Image
+              source={AppImages.leftArrow}
+              style={[isRTL && { transform: [{ scaleX: -1 }] }]}
+            />
           </TouchableOpacity>
-          <Text style={styles.title}>
+          <Text style={[styles.title, isRTL && { textAlign: 'left' }]}>
             {translate(`${TranslationNamespaces.SETTINGS}:title`)}
           </Text>
         </View>
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: 'absolute',
-    left: '48%',
+    [isRTL ? 'right' : 'left']: '48%',
     bottom: -ResponsiveDimensions.vs(80), // Position at bottom edge of header
     transform: [{ translateX: -ResponsiveDimensions.vs(40) }], // Center horizontally only
     zIndex: 10,

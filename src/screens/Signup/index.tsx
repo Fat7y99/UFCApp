@@ -1,4 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import {
   View,
@@ -6,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   ImageBackground,
+  I18nManager,
 } from 'react-native';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
@@ -13,23 +16,23 @@ import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { useAppTheme, AppColors } from '@modules/theme';
 import { FormInput, Checkbox, SignupButton, SignInLink } from './components';
-
+const isRTL = I18nManager.isRTL;
 export default React.memo(() => {
   const theme = useAppTheme();
 
   // Form state
   const [formData, setFormData] = React.useState({
-    name: 'Fathy',
-    username: 'Cathy',
-    mobileNumber: '+201273965628',
-    email: 'Fathy.nabil2022@gmail.com',
-    idNumber: '29901280102837',
-    password: '1234',
-    confirmPassword: '1231',
+    name: '',
+    username: '',
+    mobileNumber: '',
+    email: ' ',
+    idNumber: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const [termsAccepted, setTermsAccepted] = React.useState(false);
-
+  const navigation = useNavigation();
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -44,8 +47,7 @@ export default React.memo(() => {
   };
 
   const handleSignIn = () => {
-    // Navigate to sign in screen
-    console.log('Navigate to sign in');
+    navigation.goBack();
   };
 
   const handleTermsPress = () => {
@@ -82,9 +84,11 @@ export default React.memo(() => {
                 placeholder={translate(`${TranslationNamespaces.SIGNUP}:name`)}
                 value={formData.name}
                 onChangeText={value => handleInputChange('name', value)}
+                textAlign={isRTL ? 'right' : 'left'}
               />
 
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.SIGNUP}:username`,
                 )}
@@ -93,6 +97,7 @@ export default React.memo(() => {
               />
 
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.SIGNUP}:mobileNumber`,
                 )}
@@ -101,12 +106,14 @@ export default React.memo(() => {
               />
 
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(`${TranslationNamespaces.SIGNUP}:email`)}
                 value={formData.email}
                 onChangeText={value => handleInputChange('email', value)}
               />
 
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.SIGNUP}:idNumber`,
                 )}
@@ -115,6 +122,7 @@ export default React.memo(() => {
               />
 
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.SIGNUP}:password`,
                 )}
@@ -124,6 +132,7 @@ export default React.memo(() => {
               />
 
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.SIGNUP}:confirmPassword`,
                 )}

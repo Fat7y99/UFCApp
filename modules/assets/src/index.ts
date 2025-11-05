@@ -17,4 +17,5 @@ export { default as OutlinedHomeIcon } from './images/rnsvg/OutlinedHomeIcon';
 export { default as OutlinedSettingsIcon } from './images/rnsvg/OutlinedSettingsIcon';
 export { default as OutlinedSearchIcon } from './images/rnsvg/OutlinedSearchIcon';
 export { default as EditProfileIcon } from './images/rnsvg/EditProfileIcon';
+export { default as DropDownArrow } from './images/rnsvg/DropDownArrow';
 export * from './fonts';

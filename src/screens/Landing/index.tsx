@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { AppImages, LogoIcon } from '@modules/assets';
 import { Screen } from '@modules/components';
-import { translate } from '@modules/localization';
+import { translate, updateLanguage, AppLanguages } from '@modules/localization';
 import styles from './styles';
 import { TranslationNamespaces } from 'modules/localization/src/enums';
 import { AppColors } from 'modules/theme/src';
@@ -46,6 +46,14 @@ export default React.memo(() => {
         : AppColors.themeLight.primary_1,
     [isPressed2],
   );
+
+  const handleEnglishPress = async () => {
+    await updateLanguage(AppLanguages.ENGLISH);
+  };
+
+  const handleArabicPress = async () => {
+    await updateLanguage(AppLanguages.ARABIC);
+  };
   return (
     <Screen style={{ backgroundColor: AppColors.themeLight.primary_1 }}>
       <ImageBackground
@@ -63,13 +71,7 @@ export default React.memo(() => {
           <View style={{ marginVertical: ResponsiveDimensions.vs(48) }}>
             <LogoIcon />
           </View>
-          <View
-            style={
-              {
-                // paddingTop: ResponsiveDimensions.vs(28),
-              }
-            }
-          >
+          <View>
             <Text style={styles.landingNoteText}>
               {translate(`${TranslationNamespaces.LANDING}:landingNote`)}
             </Text>
@@ -91,15 +93,11 @@ export default React.memo(() => {
               )}
               onPressIn={() => {
                 setIsPressed1(true);
-                console.log('Button pressed - color changed');
               }}
               onPressOut={() => {
                 setIsPressed1(false);
-                console.log('Button released - color reset');
               }}
-              onPress={() => {
-                console.log('Button clicked');
-              }}
+              onPress={handleEnglishPress}
             >
               <Text style={[styles.btnText, { color: buttonTextColor1 }]}>
                 {translate(`${TranslationNamespaces.LANDING}:english`)}
@@ -114,15 +112,11 @@ export default React.memo(() => {
               )}
               onPressIn={() => {
                 setIsPressed2(true);
-                console.log('Button pressed - color changed');
               }}
               onPressOut={() => {
                 setIsPressed2(false);
-                console.log('Button released - color reset');
               }}
-              onPress={() => {
-                console.log('Button clicked');
-              }}
+              onPress={handleArabicPress}
             >
               <Text
                 style={[

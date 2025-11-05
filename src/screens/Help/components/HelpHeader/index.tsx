@@ -1,6 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StatusBar,
+  Image,
+  I18nManager,
+} from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 
 import { translate } from '@modules/localization';
@@ -9,6 +16,8 @@ import { AppColors } from '@modules/theme';
 import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
+
+const isRTL = I18nManager.isRTL;
 
 const HelpHeader: React.FC = () => {
   const navigation =
@@ -28,7 +37,7 @@ const HelpHeader: React.FC = () => {
       {/* Header Content */}
       <View style={styles.headerContent}>
         <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Image source={AppImages.leftArrow} />
+          <Image source={isRTL ? AppImages.rightArrow : AppImages.leftArrow} />
         </TouchableOpacity>
 
         <Text style={styles.title}>

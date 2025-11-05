@@ -36,6 +36,9 @@ type RootStackParamList = {
   contactUs: undefined;
   changePassword: undefined;
   editProfile: undefined;
+  settings: undefined;
+  privacyPolicy: undefined;
+  termsAndConditions: undefined;
   smeFinancing: undefined;
   smeStep1: { serviceId: number };
   smeStep2: {

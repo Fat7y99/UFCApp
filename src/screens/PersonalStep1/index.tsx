@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   View,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   Image,
+  I18nManager,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
@@ -21,17 +22,15 @@ import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
-import type { RouteProp } from '@react-navigation/native';
+
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, CalendarLogo, PersonalStep1Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-type PersonalStep1RouteProp = RouteProp<RootStackParamList, 'personalStep1'>;
-
+const isRTL = I18nManager.isRTL;
 const PersonalStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const route = useRoute<PersonalStep1RouteProp>();
-  const serviceId = route.params?.serviceId || 12; // Default to 12 for Personal Loan
+  const serviceId = 12; // Default to 12 for Personal Loan
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [dob, setDob] = useState('');
@@ -102,9 +101,12 @@ const PersonalStep1: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
+        <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.FINANCING}:personalFinancing`)}
         </Text>
       </View>
@@ -116,7 +118,7 @@ const PersonalStep1: React.FC = () => {
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
-          <Text style={styles.progressTitle}>
+          <Text style={[styles.progressTitle, isRTL && { textAlign: 'left' }]}>
             {translate(`${TranslationNamespaces.FINANCING}:progress`)}
           </Text>
           <View style={styles.progressBarContainer}>
@@ -133,7 +135,9 @@ const PersonalStep1: React.FC = () => {
 
         {/* Base Registration Fields Section */}
         <View style={styles.registrationSection}>
-          <Text style={styles.registrationTitle}>
+          <Text
+            style={[styles.registrationTitle, isRTL && { textAlign: 'left' }]}
+          >
             {translate(
               `${TranslationNamespaces.FINANCING}:baseRegistrationFields`,
             )}
@@ -276,7 +280,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -419,6 +423,7 @@ const styles = StyleSheet.create({
     color: '#333',
     borderWidth: 1,
     borderColor: '#8C8C8C',
+    textAlign: isRTL ? 'right' : 'left',
   },
   dateInputContainer: {
     flexDirection: 'row',
@@ -434,6 +439,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+    textAlign: isRTL ? 'right' : 'left',
   },
   calendarIcon: {
     fontSize: ResponsiveDimensions.vs(16),

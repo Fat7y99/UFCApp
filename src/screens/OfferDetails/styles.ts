@@ -1,6 +1,8 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, I18nManager } from 'react-native';
 import { AppColors } from '@modules/theme';
+
+const isRTL = !I18nManager.isRTL;
 
 const styles = StyleSheet.create({
   container: {
@@ -23,7 +25,8 @@ const styles = StyleSheet.create({
     height: ResponsiveDimensions.vs(32),
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: ResponsiveDimensions.vs(12),
+    marginStart: 0,
+    marginEnd: ResponsiveDimensions.vs(12),
   },
   backIcon: {
     width: ResponsiveDimensions.vs(16),
@@ -34,6 +37,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   scrollView: {
     flex: 1,
@@ -67,23 +71,34 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  // bgImage: {
-  //   width: '100%',
-  //   height: '100%',
-  // },
+  bgOddImage: {
+    position: 'absolute',
+    top: 0,
+    left: isRTL ? undefined : 0,
+    right: isRTL ? 0 : undefined,
+    transform: isRTL ? [{ scaleX: -1 }] : undefined,
+  },
+  bgEvenImage: {
+    position: 'absolute',
+    top: 0,
+    left: isRTL ? 0 : undefined,
+    right: isRTL ? undefined : 0,
+    transform: isRTL ? [{ scaleX: -1 }] : undefined,
+  },
   offerTitle: {
     fontSize: ResponsiveDimensions.vs(48),
     fontWeight: '900',
     color: 'white',
     marginBottom: ResponsiveDimensions.vs(12),
     fontFamily: 'Poppins-Black',
+    textAlign: 'left',
   },
   offerDescription: {
     fontSize: ResponsiveDimensions.vs(14),
     color: 'white',
-    // textAlign: 'center',
     lineHeight: ResponsiveDimensions.vs(20),
     fontFamily: 'Poppins-Medium',
+    textAlign: 'left',
   },
   detailsSection: {
     marginTop: ResponsiveDimensions.vs(20),
@@ -96,11 +111,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#CACACA',
     marginBottom: ResponsiveDimensions.vs(12),
+    textAlign: 'left',
   },
   detailsText: {
     fontSize: ResponsiveDimensions.vs(14),
     color: '#CACACA',
     lineHeight: ResponsiveDimensions.vs(20),
+    textAlign: 'left',
   },
   getOfferButton: {
     backgroundColor: AppColors.themeLight.primaryButtonColor,

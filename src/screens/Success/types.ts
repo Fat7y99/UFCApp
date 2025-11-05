@@ -5,6 +5,7 @@ export enum SuccessType {
   MESSAGE_SENT = 'MESSAGE_SENT',
   OFFER_APPLIED = 'OFFER_APPLIED',
   PROFILE_UPDATED = 'PROFILE_UPDATED',
+  APPLICATION_SUBMITTED = 'APPLICATION_SUBMITTED',
 }
 
 export interface SuccessScreenConfig {

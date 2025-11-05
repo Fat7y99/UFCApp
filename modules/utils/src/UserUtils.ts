@@ -119,7 +119,7 @@ export const removeUserData = async (onFinish?: () => void): Promise<void> => {
   console.info(getLogMessage('removeUserData'));
   removeLocalStorageUserData();
   // await deleteToken(getMessaging());
-  removeReduxUserData();
+  // removeReduxUserData();
   onFinish?.();
 };
 

@@ -4,6 +4,8 @@ import * as React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { Screen } from '@modules/components';
+import { translate } from '@modules/localization';
+import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { useAppTheme, AppColors } from '@modules/theme';
 import { SuccessHeader, SuccessIcon, SuccessButton } from './components';
 import { SuccessType, type SuccessScreenConfig } from './types';
@@ -13,49 +15,75 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const getSuccessConfig = (type: string): SuccessScreenConfig => {
   switch (type) {
+    case SuccessType.APPLICATION_SUBMITTED:
+      return {
+        title: translate(`${TranslationNamespaces.COMMON}:successful`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:successfullyApplied`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
+      };
     case SuccessType.PASSWORD_CHANGED:
       return {
-        title: 'Successful',
-        message: 'Successfully Changed',
-        primaryButtonText: 'HOME',
+        title: translate(`${TranslationNamespaces.COMMON}:successful`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:successfullyChanged`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
       };
     case SuccessType.PASSWORD_RESET:
       return {
-        title: 'Successful',
-        message: 'Password reset successfully',
-        primaryButtonText: 'HOME',
+        title: translate(`${TranslationNamespaces.COMMON}:successful`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:passwordResetSuccessfully`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
       };
     case SuccessType.SIGNUP:
       return {
-        title: 'Successful',
-        message: 'Account created successfully',
-        primaryButtonText: 'HOME',
+        title: translate(`${TranslationNamespaces.COMMON}:successful`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:accountCreatedSuccessfully`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
       };
     case SuccessType.MESSAGE_SENT:
       return {
-        title: 'Successful',
-        message: 'Message sent successfully',
-        primaryButtonText: 'HOME',
-        secondaryButtonText: 'GET OFFER',
+        title: translate(`${TranslationNamespaces.COMMON}:successful`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:messageSentSuccessfully`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
+        secondaryButtonText: translate(
+          `${TranslationNamespaces.HOME}:getOffer`,
+        ),
       };
     case SuccessType.OFFER_APPLIED:
       return {
-        title: 'Offer success',
-        message: 'Successfully applied',
-        primaryButtonText: 'HOME',
-        secondaryButtonText: 'GET OFFER',
+        title: translate(`${TranslationNamespaces.COMMON}:offerSuccess`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:successfullyApplied`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
+        secondaryButtonText: translate(
+          `${TranslationNamespaces.HOME}:getOffer`,
+        ),
       };
     case SuccessType.PROFILE_UPDATED:
       return {
-        title: 'Successful',
-        message: 'Profile updated successfully',
-        primaryButtonText: 'HOME',
+        title: translate(`${TranslationNamespaces.COMMON}:successful`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:profileUpdatedSuccessfully`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
       };
     default:
       return {
-        title: 'Successful',
-        message: 'Operation completed successfully',
-        primaryButtonText: 'HOME',
+        title: translate(`${TranslationNamespaces.COMMON}:successful`),
+        message: translate(
+          `${TranslationNamespaces.COMMON}:operationCompletedSuccessfully`,
+        ),
+        primaryButtonText: translate(`${TranslationNamespaces.COMMON}:home`),
       };
   }
 };
@@ -70,7 +98,7 @@ export default React.memo(() => {
   const config = getSuccessConfig(successType);
 
   const handlePrimaryButtonPress = () => {
-    navigation.navigate('home');
+    navigation.popTo('home');
   };
 
   const handleSecondaryButtonPress = () => {
@@ -147,6 +175,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   buttonsContainer: {
+    marginTop: ResponsiveDimensions.vs(120),
     width: '100%',
     alignItems: 'center',
     gap: ResponsiveDimensions.vs(16),

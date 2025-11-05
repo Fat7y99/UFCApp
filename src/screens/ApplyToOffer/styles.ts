@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     height: ResponsiveDimensions.vs(32),
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: ResponsiveDimensions.vs(12),
+    marginStart: 0,
+    marginEnd: ResponsiveDimensions.vs(12),
   },
   backIcon: {
     width: ResponsiveDimensions.vs(16),
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
+    textAlign: 'left',
   },
   scrollView: {
     flex: 1,
@@ -56,6 +58,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
     borderWidth: 1,
+    textAlign: 'left',
     borderColor: '#8C8C8C',
   },
   dateInputContainer: {
@@ -72,11 +75,13 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+    textAlign: 'left',
   },
   calendarIcon: {
     fontSize: ResponsiveDimensions.vs(16),
     color: '#007AFF',
-    marginLeft: ResponsiveDimensions.vs(8),
+    marginStart: ResponsiveDimensions.vs(8),
+    marginEnd: 0,
   },
   dropdownContainer: {
     flexDirection: 'row',
@@ -92,11 +97,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+    // textAlign: 'left',
+    direction: 'ltr',
   },
   dropdownIcon: {
     fontSize: ResponsiveDimensions.vs(20),
     color: '#8C8C8C',
-    marginLeft: ResponsiveDimensions.vs(8),
+    marginStart: ResponsiveDimensions.vs(8),
+    marginEnd: 0,
   },
   getOfferButton: {
     backgroundColor: '#00B45E',

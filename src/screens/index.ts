@@ -18,6 +18,8 @@ export { default as FAQDetails } from './FAQDetails';
 export { default as ContactUs } from './ContactUs';
 export { default as ChangePassword } from './ChangePassword';
 export { default as EditProfile } from './EditProfile';
+export { default as PrivacyPolicy } from './PrivacyPolicy';
+export { default as TermsAndConditions } from './TermsAndConditions';
 export { default as SMEFinancing } from './SMEFinancing';
 export { default as SMEStep1 } from './SMEStep1';
 export { default as SMEStep2 } from './SMEStep2';

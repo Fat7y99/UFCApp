@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { StyleSheet } from 'react-native';
-
+import { I18nManager, StyleSheet } from 'react-native';
+const isRTL = I18nManager.isRTL;
 export const styles = StyleSheet.create({
   container: {
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -12,14 +12,16 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#B8B8B8', // Dark gray as per design
     marginBottom: ResponsiveDimensions.vs(12),
-    paddingEnd: ResponsiveDimensions.vs(20),
+    [isRTL ? 'paddingStart' : 'paddingEnd']: ResponsiveDimensions.vs(20),
+    textAlign: 'left',
   },
   instruction: {
     fontSize: ResponsiveDimensions.vs(14),
     color: '#B8B8B8', // Light gray as per design
     marginBottom: ResponsiveDimensions.vs(24),
     lineHeight: ResponsiveDimensions.vs(20),
-    paddingEnd: ResponsiveDimensions.vs(20),
+    [isRTL ? 'paddingStart' : 'paddingEnd']: ResponsiveDimensions.vs(20),
+    textAlign: 'left',
   },
   emailInput: {
     borderWidth: 1,
@@ -31,6 +33,7 @@ export const styles = StyleSheet.create({
     color: '#2C2C2C',
     backgroundColor: 'white',
     marginBottom: ResponsiveDimensions.vs(20),
+    textAlign: isRTL ? 'right' : 'left',
   },
   messageInput: {
     borderWidth: 1,
@@ -44,5 +47,6 @@ export const styles = StyleSheet.create({
     height: ResponsiveDimensions.vs(100),
     textAlignVertical: 'top',
     marginBottom: ResponsiveDimensions.vs(20),
+    textAlign: isRTL ? 'right' : 'left',
   },
 });

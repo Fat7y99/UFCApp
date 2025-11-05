@@ -1,7 +1,14 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  I18nManager,
+} from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -13,7 +20,7 @@ interface HelpOption {
   title: string;
   onPress: () => void;
 }
-
+const isRTL = I18nManager.isRTL;
 const HelpOptions: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -47,8 +54,13 @@ const HelpOptions: React.FC = () => {
       style={[styles.optionContainer, !isLast && styles.optionBorder]}
       onPress={option.onPress}
     >
-      <Text style={styles.optionText}>{option.title}</Text>
-      <Image source={AppImages.chevronRight} />
+      <Text style={[styles.optionText, isRTL && { textAlign: 'left' }]}>
+        {option.title}
+      </Text>
+      <Image
+        source={AppImages.chevronRight}
+        style={[isRTL && { transform: [{ scaleX: -1 }] }]}
+      />
     </TouchableOpacity>
   );
 

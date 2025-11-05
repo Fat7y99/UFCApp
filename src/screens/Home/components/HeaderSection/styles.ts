@@ -1,7 +1,7 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { StyleSheet } from 'react-native';
+import { I18nManager, StyleSheet } from 'react-native';
 import { AppColors } from '@modules/theme';
-
+const isRTL = I18nManager.isRTL;
 export const styles = StyleSheet.create({
   container: {
     height: ResponsiveDimensions.vs(140),
@@ -67,6 +67,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+    textAlign: isRTL ? 'right' : 'left',
   },
   notificationButton: {
     backgroundColor: 'transparent',

@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
+  I18nManager,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
@@ -22,7 +23,7 @@ import { useAppTheme, AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
+const isRTL = I18nManager.isRTL;
 export default React.memo(() => {
   const theme = useAppTheme();
   const navigation = useNavigation<NavigationProp>();
@@ -151,6 +152,7 @@ export default React.memo(() => {
                 value={password}
                 onChangeText={value => setPassword(value)}
                 secureTextEntry
+                textAlign={isRTL ? 'right' : 'left'}
               />
 
               {/* Confirm New Password Input */}
@@ -161,6 +163,7 @@ export default React.memo(() => {
                 value={confirmPassword}
                 onChangeText={value => setConfirmPassword(value)}
                 secureTextEntry
+                textAlign={isRTL ? 'right' : 'left'}
               />
             </View>
 

@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   Platform,
+  I18nManager,
 } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 
@@ -17,7 +18,7 @@ import { styles } from './styles';
 import type { SettingsOption } from './types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
-
+const isRTL = I18nManager.isRTL;
 const SettingsOptions: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -25,10 +26,17 @@ const SettingsOptions: React.FC = () => {
   const handleOptionPress = (optionId: string) => {
     console.log(`${optionId} pressed`);
     // Handle navigation to specific settings screens
+    // All screens are in the same MainStackNavigator, so we can navigate directly
     if (optionId === 'help') {
       navigation.navigate('help');
     } else if (optionId === 'changePassword') {
       navigation.navigate('changePassword');
+    } else if (optionId === 'privacyPolicy') {
+      navigation.navigate('privacyPolicy');
+    } else if (optionId === 'termsAndConditions') {
+      navigation.navigate('termsAndConditions');
+    } else if (optionId === 'language') {
+      navigation.navigate('landing');
     }
   };
   const handleSignOut = () => {
@@ -37,11 +45,11 @@ const SettingsOptions: React.FC = () => {
       '',
       [
         {
-          text: 'Cancel',
+          text: translate(`${TranslationNamespaces.COMMON}:cancel`),
           style: 'cancel',
         },
         {
-          text: 'Sign out',
+          text: translate(`${TranslationNamespaces.SETTINGS}:signOut`),
           style: 'destructive',
           onPress: () => removeUserDataLogout(),
         },
@@ -93,7 +101,10 @@ const SettingsOptions: React.FC = () => {
       onPress={option.onPress}
     >
       <Text style={styles.optionText}>{option.title}</Text>
-      <Image source={AppImages.chevronRight} />
+      <Image
+        source={AppImages.chevronRight}
+        style={[isRTL && { transform: [{ scaleX: -1 }] }]}
+      />
     </TouchableOpacity>
   );
 

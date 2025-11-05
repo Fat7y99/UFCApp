@@ -10,6 +10,7 @@ import {
   TextInput,
   Image,
   ActivityIndicator,
+  I18nManager,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
@@ -38,6 +39,7 @@ type RealEstateStep3RouteProp = RouteProp<
   'realEstateStep3'
 >;
 
+const isRTL = I18nManager.isRTL;
 const RealEstateStep3: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RealEstateStep3RouteProp>();
@@ -47,7 +49,9 @@ const RealEstateStep3: React.FC = () => {
 
   const addRealEstateApplicationMutation = useAddRealEstateApplicationApi({
     onSuccess: () => {
-      navigation.navigate('success', { type: SuccessType.OFFER_APPLIED });
+      navigation.navigate('success', {
+        type: SuccessType.APPLICATION_SUBMITTED,
+      });
     },
     onError: error => {
       console.error('Error submitting real estate application:', error);
@@ -69,9 +73,12 @@ const RealEstateStep3: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
+        <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.FINANCING}:realEstateFinancing`)}
         </Text>
       </View>
@@ -83,7 +90,7 @@ const RealEstateStep3: React.FC = () => {
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
-          <Text style={styles.progressTitle}>
+          <Text style={[styles.progressTitle, isRTL && { textAlign: 'left' }]}>
             {translate(`${TranslationNamespaces.FINANCING}:progress`)}
           </Text>
           <View style={styles.progressBarContainer}>
@@ -97,7 +104,12 @@ const RealEstateStep3: React.FC = () => {
         </View>
         {/* Additional Fields Section */}
         <View style={styles.additionalFieldsSection}>
-          <Text style={styles.additionalFieldsTitle}>
+          <Text
+            style={[
+              styles.additionalFieldsTitle,
+              isRTL && { textAlign: 'left' },
+            ]}
+          >
             {translate(`${TranslationNamespaces.FINANCING}:additionalFields`)}
           </Text>
 
@@ -235,7 +247,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -333,6 +345,7 @@ const styles = StyleSheet.create({
     color: '#333',
     borderWidth: 1,
     borderColor: '#8C8C8C',
+    textAlign: isRTL ? 'right' : 'left',
   },
   applyButton: {
     backgroundColor: '#4CAF50',

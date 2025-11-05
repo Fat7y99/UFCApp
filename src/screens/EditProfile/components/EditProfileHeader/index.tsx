@@ -8,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   Platform,
+  I18nManager,
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
@@ -20,7 +21,7 @@ import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { ImagePickerResponse, MediaType } from 'react-native-image-picker';
 import { AppImages } from 'modules/assets/src';
-
+const isRTL = I18nManager.isRTL;
 const EditProfileHeader: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -113,9 +114,12 @@ const EditProfileHeader: React.FC = () => {
       <View style={styles.headerContent}>
         <View style={styles.leftSection}>
           <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-            <Image source={AppImages.leftArrow} />
+            <Image
+              source={AppImages.leftArrow}
+              style={[isRTL && { transform: [{ scaleX: -1 }] }]}
+            />
           </TouchableOpacity>
-          <Text style={styles.title}>
+          <Text style={[styles.title, isRTL && { textAlign: 'left' }]}>
             {translate(`${TranslationNamespaces.EDIT_PROFILE}:title`)}
           </Text>
         </View>

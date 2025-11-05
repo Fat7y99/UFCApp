@@ -22,11 +22,11 @@ export const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    textAlign: 'center',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     color: AppColors.themeLight.primaryButtonColor,
     marginLeft: ResponsiveDimensions.vs(16),
+    textAlign: 'left',
   },
   rightSection: {
     width: ResponsiveDimensions.vs(40),

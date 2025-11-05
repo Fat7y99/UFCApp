@@ -2,6 +2,8 @@ import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-compo
 import { StyleSheet } from 'react-native';
 import { AppColors } from '@modules/theme';
 
+const isRTL = true;
+
 export const styles = StyleSheet.create({
   container: {
     marginBottom: ResponsiveDimensions.vs(32),
@@ -23,6 +25,7 @@ export const styles = StyleSheet.create({
     color: AppColors.themeLight.primary_1,
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
+    textAlign: isRTL ? 'right' : 'left',
   },
   offersContainer: {
     paddingHorizontal: ResponsiveDimensions.vs(10),
@@ -48,12 +51,16 @@ export const styles = StyleSheet.create({
   oddFrame: {
     position: 'absolute',
     top: 0,
-    left: 0,
+    left: isRTL ? 0 : undefined,
+    right: isRTL ? undefined : 0,
+    transform: !isRTL ? [{ scaleX: -1 }] : undefined,
   },
   evenFrame: {
     position: 'absolute',
     top: 0,
-    right: 0,
+    left: isRTL ? undefined : 0,
+    right: isRTL ? 0 : undefined,
+    transform: !isRTL ? [{ scaleX: -1 }] : undefined,
   },
   offerCardContent: {
     alignItems: 'center',
@@ -65,6 +72,7 @@ export const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(33),
     fontWeight: '900',
     marginBottom: ResponsiveDimensions.vs(12),
+    textAlign: isRTL ? 'left' : 'right',
   },
   offerDescription: {
     fontFamily: 'Poppins-Medium',
@@ -73,5 +81,6 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: ResponsiveDimensions.vs(20),
     paddingEnd: ResponsiveDimensions.vs(20),
+    textAlign: isRTL ? 'left' : 'right',
   },
 });

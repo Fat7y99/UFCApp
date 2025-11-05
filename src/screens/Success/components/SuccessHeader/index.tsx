@@ -1,6 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, TouchableOpacity, StatusBar, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StatusBar,
+  Image,
+  I18nManager,
+} from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { AppImages } from '@modules/assets';
 import { AppColors } from '@modules/theme';
@@ -12,7 +19,7 @@ interface SuccessHeaderProps {
 }
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
+const isRTL = I18nManager.isRTL;
 const SuccessHeader: React.FC<SuccessHeaderProps> = ({ title }) => {
   const navigation = useNavigation<NavigationProp>();
 
@@ -27,7 +34,10 @@ const SuccessHeader: React.FC<SuccessHeaderProps> = ({ title }) => {
         backgroundColor={AppColors.themeLight.primary_1}
       />
       <View style={styles.headerContent}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+        <TouchableOpacity
+          style={[styles.backButton, isRTL && { transform: [{ scaleX: -1 }] }]}
+          onPress={handleBackPress}
+        >
           <Image source={AppImages.leftArrow} />
         </TouchableOpacity>
         <Text style={styles.title}>{title}</Text>

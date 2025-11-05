@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Image,
+  I18nManager,
 } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { translate } from '@modules/localization';
@@ -16,6 +17,7 @@ import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
 
+const isRTL = I18nManager.isRTL;
 const ChangePasswordHeader: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -34,10 +36,13 @@ const ChangePasswordHeader: React.FC = () => {
       {/* Header Content */}
       <View style={styles.headerContent}>
         <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Image source={AppImages.leftArrow} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
 
-        <Text style={styles.title}>
+        <Text style={[styles.title, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.CHANGE_PASSWORD}:title`)}
         </Text>
       </View>

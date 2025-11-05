@@ -1,7 +1,7 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { StyleSheet } from 'react-native';
+import { I18nManager, StyleSheet } from 'react-native';
 import { AppColors } from '@modules/theme';
-
+const isRTL = I18nManager.isRTL;
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: AppColors.themeLight.primary_1,
@@ -41,6 +41,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    paddingBottom: ResponsiveDimensions.vs(20),
   },
   backButton: {
     padding: ResponsiveDimensions.vs(8),
@@ -58,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: 'absolute',
-    left: '48%',
+    [isRTL ? 'right' : 'left']: '48%',
     bottom: -ResponsiveDimensions.vs(80), // Position at bottom edge of header
     transform: [{ translateX: -ResponsiveDimensions.vs(40) }], // Center horizontally only
     zIndex: 10,
@@ -88,7 +89,7 @@ export const styles = StyleSheet.create({
   addButton: {
     position: 'absolute',
     bottom: ResponsiveDimensions.vs(8),
-    right: ResponsiveDimensions.vs(8),
+    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
     width: ResponsiveDimensions.vs(32),
     height: ResponsiveDimensions.vs(32),
     borderRadius: ResponsiveDimensions.vs(16),

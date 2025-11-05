@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   Image,
+  I18nManager,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
@@ -23,7 +24,7 @@ import { AppImages, PersonalStep1Logo } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type PersonalStep2RouteProp = RouteProp<RootStackParamList, 'personalStep2'>;
-
+const isRTL = I18nManager.isRTL;
 const PersonalStep2: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<PersonalStep2RouteProp>();
@@ -42,9 +43,12 @@ const PersonalStep2: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
+        <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.FINANCING}:personalFinancing`)}
         </Text>
       </View>
@@ -56,7 +60,7 @@ const PersonalStep2: React.FC = () => {
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
-          <Text style={styles.progressTitle}>
+          <Text style={[styles.progressTitle, isRTL && { textAlign: 'left' }]}>
             {translate(`${TranslationNamespaces.FINANCING}:progress`)}
           </Text>
           <View style={styles.progressBarContainer}>
@@ -73,7 +77,9 @@ const PersonalStep2: React.FC = () => {
 
         {/* Liabilities Section */}
         <View style={styles.liabilitiesSection}>
-          <Text style={styles.liabilitiesTitle}>
+          <Text
+            style={[styles.liabilitiesTitle, isRTL && { textAlign: 'left' }]}
+          >
             {translate(`${TranslationNamespaces.FINANCING}:liabilities`)}
           </Text>
 
@@ -167,7 +173,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -310,6 +316,7 @@ const styles = StyleSheet.create({
     color: '#333',
     borderWidth: 1,
     borderColor: '#8C8C8C',
+    textAlign: isRTL ? 'right' : 'left',
   },
   nextButton: {
     backgroundColor: '#4CAF50',

@@ -7,6 +7,7 @@ export default {
   purchaseFinancing: 'تمويل الشراء',
 
   // Section Titles
+  financing: 'التمويل',
   progress: 'التقدم',
   liabilities: 'الالتزامات',
   baseRegistrationFields: 'حقول التسجيل الأساسية',
@@ -15,7 +16,7 @@ export default {
 
   // Buttons
   next: 'التالي',
-  apply: 'تطبيق',
+  apply: 'تقديم',
 
   // Financing Types
   invoice: 'فواتير',

@@ -1,5 +1,7 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, I18nManager } from 'react-native';
+
+const isRTL = !I18nManager.isRTL;
 
 export const styles = StyleSheet.create({
   card: {
@@ -35,6 +37,7 @@ export const styles = StyleSheet.create({
     marginBottom: ResponsiveDimensions.vs(8),
     textTransform: 'uppercase',
     fontWeight: '900',
+    textAlign: isRTL ? 'right' : 'left',
   },
   description: {
     marginTop: ResponsiveDimensions.vs(14),
@@ -45,13 +48,20 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     verticalAlign: 'middle',
     opacity: 0.9,
+    textAlign: isRTL ? 'right' : 'left',
   },
   bgOddImage: {
-    alignSelf: 'flex-start',
+    alignSelf: isRTL ? 'flex-end' : 'flex-start',
+    marginBottom: ResponsiveDimensions.vs(20),
+    transform: !isRTL ? [{ scaleX: -1 }] : undefined,
+  },
+  bgOddImage2: {
+    alignSelf: isRTL ? 'flex-end' : 'flex-start',
     marginBottom: ResponsiveDimensions.vs(20),
   },
   bgEvenImage: {
-    alignSelf: 'flex-end',
+    alignSelf: isRTL ? 'flex-start' : 'flex-end',
+    transform: !isRTL ? [{ scaleX: -1 }] : undefined,
   },
   bgImageContainer: {
     position: 'absolute',

@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   ImageBackground,
+  I18nManager,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
@@ -24,7 +25,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export default React.memo(() => {
   const theme = useAppTheme();
   const navigation = useNavigation<NavigationProp>();
-
+  const isRTL = I18nManager.isRTL;
   // Form state
   const [phoneNumber, setPhoneNumber] = React.useState('');
 
@@ -114,6 +115,7 @@ export default React.memo(() => {
                 )}
                 value={phoneNumber}
                 onChangeText={handlePhoneChange}
+                textAlign={isRTL ? 'right' : 'left'}
               />
 
               <Text style={[styles.otpMessage, theme.fonts.bodyMedium]}>
@@ -175,6 +177,7 @@ const styles = StyleSheet.create({
   phoneLabel: {
     color: 'white',
     marginBottom: ResponsiveDimensions.vs(16),
+    textAlign: 'left',
   },
   otpMessage: {
     color: 'white',

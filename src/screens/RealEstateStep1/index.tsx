@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   Image,
+  I18nManager,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
@@ -34,7 +35,7 @@ type RealEstateStep1RouteProp = RouteProp<
   RootStackParamList,
   'realEstateStep1'
 >;
-
+const isRTL = I18nManager.isRTL;
 const RealEstateStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RealEstateStep1RouteProp>();
@@ -91,9 +92,12 @@ const RealEstateStep1: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
+        <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.FINANCING}:purchaseFinancing`)}
         </Text>
       </View>
@@ -105,7 +109,7 @@ const RealEstateStep1: React.FC = () => {
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
-          <Text style={styles.progressTitle}>
+          <Text style={[styles.progressTitle, isRTL && { textAlign: 'left' }]}>
             {translate(`${TranslationNamespaces.FINANCING}:progress`)}
           </Text>
           <View style={styles.progressBarContainer}>
@@ -240,7 +244,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -389,6 +393,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     marginBottom: ResponsiveDimensions.vs(24),
+    textAlign: 'left',
   },
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
@@ -402,6 +407,7 @@ const styles = StyleSheet.create({
     color: '#333',
     borderWidth: 1,
     borderColor: '#8C8C8C',
+    textAlign: isRTL ? 'right' : 'left',
   },
   dateInputContainer: {
     flexDirection: 'row',
@@ -417,6 +423,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+    textAlign: isRTL ? 'right' : 'left',
   },
   calendarIcon: {
     fontSize: ResponsiveDimensions.vs(16),

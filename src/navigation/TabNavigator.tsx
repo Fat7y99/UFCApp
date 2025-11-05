@@ -1,8 +1,38 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { Image, Text, View } from 'react-native';
-import { Home, Settings } from '@src/screens';
+import type { RootStackParamList } from '@src/navigation';
+import {
+  Home,
+  Settings,
+  Notifications,
+  NotificationDetails,
+  SMEFinancing,
+  SMEStep1,
+  SMEStep2,
+  RealEstateFinancing,
+  RealEstateStep1,
+  RealEstateStep2,
+  RealEstateStep3,
+  PersonalStep1,
+  PersonalStep2,
+  PersonalStep3,
+  Offers,
+  OfferDetails,
+  ApplyToOffer,
+  Success,
+  Help,
+  FAQs,
+  FAQDetails,
+  ContactUs,
+  ChangePassword,
+  EditProfile,
+  PrivacyPolicy,
+  TermsAndConditions,
+} from '@src/screens';
+import SignUpSuccess from '@src/screens/SignUpSuccess';
 import {
   AppImages,
   OutlinedFavIcon,
@@ -91,6 +121,50 @@ const TabItem: React.FC<TabItemProps> = ({
   return <OutlinedIcon fill="none" />;
 };
 
+// Create a Stack Navigator for all main screens
+const mainStack = createNativeStackNavigator<RootStackParamList>();
+
+const MainStackNavigator: React.FC = () => (
+  <mainStack.Navigator screenOptions={{ headerShown: false }}>
+    <mainStack.Screen name="home" component={Home} />
+    <mainStack.Screen name="settings" component={Settings} />
+    <mainStack.Screen name="notifications" component={Notifications} />
+    <mainStack.Screen
+      name="notificationDetails"
+      component={NotificationDetails}
+    />
+    <mainStack.Screen name="help" component={Help} />
+    <mainStack.Screen name="faqs" component={FAQs} />
+    <mainStack.Screen name="faqDetails" component={FAQDetails} />
+    <mainStack.Screen name="contactUs" component={ContactUs} />
+    <mainStack.Screen name="changePassword" component={ChangePassword} />
+    <mainStack.Screen name="editProfile" component={EditProfile} />
+    <mainStack.Screen name="privacyPolicy" component={PrivacyPolicy} />
+    <mainStack.Screen
+      name="termsAndConditions"
+      component={TermsAndConditions}
+    />
+    <mainStack.Screen name="smeFinancing" component={SMEFinancing} />
+    <mainStack.Screen name="smeStep1" component={SMEStep1} />
+    <mainStack.Screen name="smeStep2" component={SMEStep2} />
+    <mainStack.Screen
+      name="realEstateFinancing"
+      component={RealEstateFinancing}
+    />
+    <mainStack.Screen name="realEstateStep1" component={RealEstateStep1} />
+    <mainStack.Screen name="realEstateStep2" component={RealEstateStep2} />
+    <mainStack.Screen name="realEstateStep3" component={RealEstateStep3} />
+    <mainStack.Screen name="personalStep1" component={PersonalStep1} />
+    <mainStack.Screen name="personalStep2" component={PersonalStep2} />
+    <mainStack.Screen name="personalStep3" component={PersonalStep3} />
+    <mainStack.Screen name="offers" component={Offers} />
+    <mainStack.Screen name="offerDetails" component={OfferDetails} />
+    <mainStack.Screen name="applyToOffer" component={ApplyToOffer} />
+    <mainStack.Screen name="success" component={Success} />
+    <mainStack.Screen name="signUpSuccess" component={SignUpSuccess} />
+  </mainStack.Navigator>
+);
+
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator: React.FC = () => (
@@ -115,7 +189,7 @@ const TabNavigator: React.FC = () => (
   >
     <Tab.Screen
       name="Home"
-      component={Home}
+      component={MainStackNavigator}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem
@@ -132,12 +206,12 @@ const TabNavigator: React.FC = () => (
 
     <Tab.Screen
       name="Search"
-      component={Home} // Using Home as placeholder for now
+      component={MainStackNavigator}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem
             focused={focused}
-            label="Search"
+            label={translate(`${TranslationNamespaces.HOME}:search`)}
             outlinedIcon={OutlinedSearchIcon}
           />
         ),
@@ -146,12 +220,12 @@ const TabNavigator: React.FC = () => (
     />
     <Tab.Screen
       name="Favorites"
-      component={Home} // Using Home as placeholder for now
+      component={MainStackNavigator}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem
             focused={focused}
-            label="Favorites"
+            label={translate(`${TranslationNamespaces.HOME}:favorites` as any)}
             outlinedIcon={OutlinedFavIcon}
           />
         ),
@@ -160,12 +234,12 @@ const TabNavigator: React.FC = () => (
     />
     <Tab.Screen
       name="Settings"
-      component={Settings}
+      component={MainStackNavigator}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem
             focused={focused}
-            label="Settings"
+            label={translate(`${TranslationNamespaces.SETTINGS}:title`)}
             outlinedIcon={OutlinedSettingsIcon}
             filledIcon={AppImages.filledSettingsIconPng}
             filledIconSize={24}
@@ -173,6 +247,30 @@ const TabNavigator: React.FC = () => (
         ),
         tabBarLabel: '',
       }}
+      listeners={({ navigation }) => ({
+        tabPress: e => {
+          // Prevent default navigation and navigate to settings screen in the stack
+          const state = navigation.getState();
+          const routes = state.routes;
+          const settingsTabIndex = routes.findIndex(r => r.name === 'Settings');
+          if (settingsTabIndex !== -1) {
+            const settingsTabState = routes[settingsTabIndex].state;
+            if (settingsTabState) {
+              const currentRoute =
+                settingsTabState.routes[settingsTabState.index || 0];
+              if (currentRoute?.name !== 'settings') {
+                e.preventDefault();
+                (navigation as any).navigate('Settings', {
+                  screen: 'settings',
+                });
+              }
+            } else {
+              e.preventDefault();
+              (navigation as any).navigate('Settings', { screen: 'settings' });
+            }
+          }
+        },
+      })}
     />
   </Tab.Navigator>
 );

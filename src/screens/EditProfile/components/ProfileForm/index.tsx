@@ -6,13 +6,14 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  I18nManager,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import { CalendarLogo } from 'modules/assets/src';
-
+const isRTL = I18nManager.isRTL;
 interface ProfileData {
   username: string;
   fullName: string;
@@ -79,7 +80,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     <View style={styles.container}>
       {/* Username Field */}
       <View style={styles.fieldContainer}>
-        <Text style={styles.fieldLabel}>
+        <Text style={[styles.fieldLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:username`)}
         </Text>
         <TextInput
@@ -95,7 +96,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       {/* Full Name Field */}
       <View style={styles.fieldContainer}>
-        <Text style={styles.fieldLabel}>
+        <Text style={[styles.fieldLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:fullName`)}
         </Text>
         <TextInput
@@ -111,7 +112,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       {/* Email Field */}
       <View style={styles.fieldContainer}>
-        <Text style={styles.fieldLabel}>
+        <Text style={[styles.fieldLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:email`)}
         </Text>
         <TextInput
@@ -129,7 +130,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       {/* Mobile Number Field */}
       <View style={styles.fieldContainer}>
-        <Text style={styles.fieldLabel}>
+        <Text style={[styles.fieldLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:mobileNumber`)}
         </Text>
         <TextInput
@@ -146,7 +147,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       {/* Gender Selection */}
       <View style={styles.fieldContainer}>
-        <Text style={styles.genderLabel}>
+        <Text style={[styles.genderLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:gender`)}
         </Text>
         <View style={styles.genderContainer}>
@@ -203,7 +204,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       {/* Date of Birth Field */}
       <View style={styles.fieldContainer}>
-        <Text style={styles.fieldLabel}>
+        <Text style={[styles.fieldLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:dateOfBirth`)}
         </Text>
         <TouchableOpacity
@@ -229,7 +230,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
 
       {/* Address Field */}
       <View style={styles.fieldContainer}>
-        <Text style={styles.fieldLabel}>
+        <Text style={[styles.fieldLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:address`)}
         </Text>
         <TextInput
@@ -276,6 +277,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(16),
     color: '#2C2C2C',
     paddingVertical: ResponsiveDimensions.vs(8),
+    textAlign: isRTL ? 'right' : 'left',
   },
   genderLabel: {
     fontSize: ResponsiveDimensions.vs(16),
@@ -329,6 +331,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(16),
     color: '#2C2C2C',
     paddingVertical: ResponsiveDimensions.vs(8),
+    textAlign: isRTL ? 'right' : 'left',
   },
   calendarIcon: {
     fontSize: ResponsiveDimensions.vs(20),

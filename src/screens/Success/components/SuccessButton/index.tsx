@@ -34,6 +34,7 @@ const SuccessButton: React.FC<SuccessButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
+    width: '100%',
     paddingVertical: ResponsiveDimensions.vs(16),
     paddingHorizontal: ResponsiveDimensions.vs(32),
     borderRadius: ResponsiveDimensions.vs(12),

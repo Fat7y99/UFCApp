@@ -2,7 +2,7 @@ import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-compo
 import { StyleSheet } from 'react-native';
 import { AppColors } from '@modules/theme';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -28,51 +28,51 @@ export const styles = StyleSheet.create({
   backIcon: {
     width: ResponsiveDimensions.vs(16),
     height: ResponsiveDimensions.vs(16),
+    tintColor: '#66B2FF',
   },
   headerTitle: {
     flex: 1,
-    color: 'white',
+    color: AppColors.themeLight.primaryButtonColor,
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
   },
   scrollView: {
     flex: 1,
   },
-  listContainer: {
+  scrollContent: {
+    paddingHorizontal: ResponsiveDimensions.vs(32),
+    paddingTop: ResponsiveDimensions.vs(20),
+    paddingBottom: ResponsiveDimensions.vs(40),
+  },
+  contentCard: {
     backgroundColor: 'white',
-    marginTop: ResponsiveDimensions.vs(20),
-    marginHorizontal: ResponsiveDimensions.vs(20),
-    borderRadius: ResponsiveDimensions.vs(12),
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
   },
-  questionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: ResponsiveDimensions.vs(16),
-    paddingHorizontal: ResponsiveDimensions.vs(16),
-  },
-  questionBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  questionText: {
+  headingText: {
     fontSize: ResponsiveDimensions.vs(16),
-    color: '#333',
-    flex: 1,
-    textAlign: 'left',
+    fontWeight: '800',
+    color: '#B8B8B8',
+    marginBottom: ResponsiveDimensions.vs(16),
+    marginTop: ResponsiveDimensions.vs(8),
+    fontFamily: 'Roboto',
   },
-  chevronIcon: {
-    width: ResponsiveDimensions.vs(20),
-    height: ResponsiveDimensions.vs(20),
-    tintColor: '#999',
+  bodyText: {
+    fontSize: ResponsiveDimensions.vs(16),
+    color: '#CACACA',
+    lineHeight: ResponsiveDimensions.vs(24),
+    marginBottom: ResponsiveDimensions.vs(16),
+    paddingStart: ResponsiveDimensions.vs(16),
+  },
+  bulletList: {
+    marginBottom: ResponsiveDimensions.vs(16),
+  },
+  bulletItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  bullet: {
+    fontSize: ResponsiveDimensions.vs(16),
+    color: '#CACACA',
+    lineHeight: ResponsiveDimensions.vs(24),
   },
 });
 

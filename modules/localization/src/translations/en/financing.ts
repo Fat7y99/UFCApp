@@ -7,6 +7,7 @@ export default {
   purchaseFinancing: 'Purchase Financing',
 
   // Section Titles
+  financing: 'Financing',
   progress: 'Progress',
   liabilities: 'Liabilities',
   baseRegistrationFields: 'Base Registration Fields',

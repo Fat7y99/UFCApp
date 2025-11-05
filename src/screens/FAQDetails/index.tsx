@@ -1,11 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  I18nManager,
+} from 'react-native';
 import type { RootStackScreenProps } from '@src/navigation';
 import { AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
+import { translate } from '@modules/localization';
+import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import styles from './styles';
+
+const isRTL = I18nManager.isRTL;
 
 export default React.memo((props: RootStackScreenProps<'faqDetails'>) => {
   const { route } = props;
@@ -24,9 +35,14 @@ export default React.memo((props: RootStackScreenProps<'faqDetails'>) => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>FAQs</Text>
+        <Text style={styles.headerTitle}>
+          {translate(`${TranslationNamespaces.HELP}:faqsTitle`)}
+        </Text>
       </View>
 
       {/* Content */}

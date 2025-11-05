@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(14),
     lineHeight: ResponsiveDimensions.vs(20),
+    textAlign: 'left',
   },
   linkText: {
     color: 'white',

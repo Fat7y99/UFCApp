@@ -7,12 +7,14 @@ interface PhoneInputProps {
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
+  textAlign: 'left' | 'right';
 }
 
 const PhoneInput: React.FC<PhoneInputProps> = ({
   placeholder,
   value,
   onChangeText,
+  textAlign,
 }) => (
   <View style={styles.container}>
     <TextInput
@@ -22,6 +24,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       value={value}
       onChangeText={onChangeText}
       keyboardType="phone-pad"
+      textAlign={textAlign}
     />
   </View>
 );

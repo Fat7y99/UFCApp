@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
     flex: 1,
+    textAlign: 'left',
   },
   chevronIcon: {
     fontSize: ResponsiveDimensions.vs(18),

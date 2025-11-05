@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  I18nManager,
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
@@ -26,7 +27,7 @@ interface FinancingType {
   subtitle?: string;
   onPress: () => void;
 }
-
+const isRTL = I18nManager.isRTL;
 const RealEstateFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const [serviceId, setServiceId] = useState<number>(1);
@@ -34,22 +35,22 @@ const RealEstateFinancing: React.FC = () => {
     {
       id: 1,
       title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
-      onPress: () => setServiceId(1),
+      onPress: () => setServiceId(7),
     },
     {
       id: 2,
       title: translate(`${TranslationNamespaces.FINANCING}:mortgage`),
-      onPress: () => setServiceId(2),
+      onPress: () => setServiceId(8),
     },
     {
       id: 3,
       title: translate(`${TranslationNamespaces.FINANCING}:refinance`),
-      onPress: () => setServiceId(3),
+      onPress: () => setServiceId(9),
     },
     {
       id: 4,
       title: translate(`${TranslationNamespaces.FINANCING}:selfBuild`),
-      onPress: () => setServiceId(4),
+      onPress: () => setServiceId(10),
     },
     {
       id: 5,
@@ -57,7 +58,7 @@ const RealEstateFinancing: React.FC = () => {
       subtitle: translate(
         `${TranslationNamespaces.FINANCING}:commercialBuildings`,
       ),
-      onPress: () => setServiceId(5),
+      onPress: () => setServiceId(11),
     },
   ];
 
@@ -69,7 +70,10 @@ const RealEstateFinancing: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Image source={AppImages.leftArrow} style={styles.backIcon} />
+          <Image
+            source={AppImages.leftArrow}
+            style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
           {translate(`${TranslationNamespaces.FINANCING}:realEstateFinancing`)}
@@ -238,6 +242,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: '600',
     marginBottom: ResponsiveDimensions.vs(24),
+    textAlign: 'left',
   },
   buttonsContainer: {
     gap: ResponsiveDimensions.vs(16),

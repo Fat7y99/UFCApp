@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: ResponsiveDimensions.vs(2),
-    right: ResponsiveDimensions.vs(2),
+    top: ResponsiveDimensions.vs(0),
+    left: ResponsiveDimensions.vs(8),
     backgroundColor: AppColors.themeLight.primary_1,
     borderRadius: ResponsiveDimensions.vs(10),
     minWidth: ResponsiveDimensions.vs(16),
