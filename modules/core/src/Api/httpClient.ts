@@ -15,7 +15,8 @@ import type {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-
+const CLIENT_ID = 'client';
+const CLIENT_SECRET = 'Admin.$erver';
 const getLogMessage = (message: string) => `## HttpClient:: ${message}`;
 
 const isLoginRequest = (url?: string) =>
@@ -27,7 +28,7 @@ const isForgotPasswordRequest = (url?: string) =>
 const addHeaders = async (config: InternalAxiosRequestConfig<any>) => {
   config.headers.Accept = '*/*';
   console.log('url', config.url, isForgotPasswordRequest(config.url));
-
+  console.log('config', Config.API_URL, config);
   // Add Basic Auth for login request only
   if (isForgotPasswordRequest(config.url)) {
     const response = await queryAuth.login({
@@ -38,8 +39,8 @@ const addHeaders = async (config: InternalAxiosRequestConfig<any>) => {
   }
   if (isLoginRequest(config.url)) {
     // Get client credentials from Config
-    const clientId = Config.CLIENT_ID || '';
-    const clientSecret = Config.CLIENT_SECRET || '';
+    const clientId = Config.CLIENT_ID || CLIENT_ID;
+    const clientSecret = Config.CLIENT_SECRET || CLIENT_SECRET;
 
     // Create Basic Auth header
     const basicAuthToken = Buffer.from(`${clientId}:${clientSecret}`).toString(
@@ -229,7 +230,7 @@ const responseRejectedInterceptor = (error: any) => {
 };
 
 const httpClient = axios.create({
-  baseURL: Config.API_URL,
+  baseURL: Config.API_URL || 'http://34.166.196.89:8080/',
   timeout: 60 * 1 * 1000,
   timeoutErrorMessage: translate('networkError'),
 });
