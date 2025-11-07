@@ -13,4 +13,15 @@ export default {
   signInText: 'Have an account?',
   signInLink: 'Sign In',
   registeredSuccessfully: 'Registered successfully',
+  mobileNumberMustBe20Digits: 'Mobile number must be 20 digits',
+  pleaseAcceptTerms: 'Please accept the terms and conditions',
+  fieldRequired: '{{field}} is required',
+  passwordsDoNotMatch: 'Passwords do not match',
+  phoneNumberMustStartWithPlus:
+    'Phone number must start with + followed by country code',
+  invalidEmail: 'Please enter a valid email address',
+  maxLength50Characters: 'The {{field}} must be less than 50 characters',
+  onlyLettersAndSpacesAllowed:
+    'The name must contain at least one letter and no other characters',
+  minimum9Digits: 'The mobile number must be at least 9 digits',
 };

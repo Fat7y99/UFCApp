@@ -10,12 +10,14 @@ import {
   ImageBackground,
   I18nManager,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { useAppTheme, AppColors } from '@modules/theme';
 import { FormInput, Checkbox, SignupButton, SignInLink } from './components';
+
 const isRTL = I18nManager.isRTL;
 export default React.memo(() => {
   const theme = useAppTheme();
@@ -25,7 +27,7 @@ export default React.memo(() => {
     name: '',
     username: '',
     mobileNumber: '',
-    email: ' ',
+    email: '',
     idNumber: '',
     password: '',
     confirmPassword: '',
@@ -33,17 +35,77 @@ export default React.memo(() => {
 
   const [termsAccepted, setTermsAccepted] = React.useState(false);
   const navigation = useNavigation();
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
 
-  const handleSignup = () => {
-    if (!termsAccepted) {
-      // Show error or validation message
+  // Check if all required fields are filled and passwords match
+  const isFormValid = React.useMemo(
+    () =>
+      formData?.name?.trim() !== '' &&
+      formData?.username?.trim() !== '' &&
+      formData?.mobileNumber?.trim() !== '' &&
+      formData?.email?.trim() !== '' &&
+      formData?.idNumber?.trim() !== '' &&
+      formData?.password?.trim() !== '' &&
+      formData?.confirmPassword?.trim() !== '' &&
+      termsAccepted,
+    [formData, termsAccepted],
+  );
+  const handleInputChange = (field: string, value: string) => {
+    //max length 50 characters
+    if (value.length > 50) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(
+          `${TranslationNamespaces.SIGNUP}:maxLength50Characters`,
+          {
+            field: field,
+          },
+        ),
+      });
       return;
     }
-    // Handle signup logic
-    console.log('Signup data:', formData);
+    if (field === 'username') {
+      // Remove non-English characters
+      const englishValue = value.replace(/[^a-zA-Z0-9]/g, '');
+      setFormData(prev => ({ ...prev, [field]: englishValue }));
+      return;
+    } //
+    else if (field === 'email') {
+      const emailValue = value.replace(/[^a-zA-Z0-9@.]/g, '');
+      setFormData(prev => ({ ...prev, [field]: emailValue }));
+      return;
+    } else if (field === 'mobileNumber') {
+      // Only allow numbers and one plus sign at the beginning
+      let mobileNumberValue = value.replace(/[^\d+]/g, ''); // Remove everything except digits and +
+
+      // Ensure only one plus sign at the beginning
+      if (mobileNumberValue.startsWith('+')) {
+        // Keep the + at the start and remove all other + signs
+        mobileNumberValue =
+          '+' + mobileNumberValue.substring(1).replace(/\+/g, '');
+      } else {
+        // Remove all + signs if not at the beginning
+        mobileNumberValue = mobileNumberValue.replace(/\+/g, '');
+      }
+
+      // Count only digits (excluding the + sign)
+      const digitsOnly = mobileNumberValue.replace(/\+/g, '');
+      if (digitsOnly.length > 20) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:mobileNumberMustBe20Digits`,
+          ),
+        });
+        return;
+      }
+      setFormData(prev => ({ ...prev, [field]: mobileNumberValue }));
+      return;
+    } else if (field === 'idNumber') {
+      const idNumberValue = value.replace(/[^0-9]/g, '');
+      setFormData(prev => ({ ...prev, [field]: idNumberValue }));
+      return;
+    }
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSignIn = () => {
@@ -155,8 +217,9 @@ export default React.memo(() => {
 
             {/* Sign Up Button */}
             <SignupButton
-              onPress={handleSignup}
-              disabled={!termsAccepted}
+              confirmPassword={formData.confirmPassword}
+              isTermsAccepted={termsAccepted}
+              disabled={!isFormValid}
               formData={{
                 email: formData.email,
                 name: formData.name,

@@ -11,6 +11,7 @@ import {
   OtpVerification,
   ResetPassword,
   ResetPasswordSuccess,
+  Signup,
 } from '@src/screens';
 
 import SignUpSuccess from '@src/screens/SignUpSuccess';
@@ -31,7 +32,7 @@ export default React.memo(() => (
     ) : null}
     {/* Auth screens - no tab bar */}
     <stack.Screen name="login" component={SignIn} />
-    <stack.Screen name="signup" component={OtpVerification} />
+    <stack.Screen name="signup" component={Signup} />
     <stack.Screen name="landing" component={Landing} />
     <stack.Screen name="forgotPassword" component={ForgotPassword} />
     <stack.Screen name="otpVerification" component={OtpVerification} />

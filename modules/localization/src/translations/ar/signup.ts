@@ -13,4 +13,15 @@ export default {
   signInText: 'لديك حساب بالفعل؟',
   signInLink: 'تسجيل الدخول',
   registeredSuccessfully: 'تم التسجيل بنجاح',
+  mobileNumberMustBe20Digits: 'يجب أن يكون رقم الهاتف المحمول 20 رقمًا',
+  pleaseAcceptTerms: 'الرجاء الموافقة على الشروط والأحكام',
+  fieldRequired: '{{field}} مطلوب',
+  passwordsDoNotMatch: 'كلمات المرور غير متطابقة',
+  phoneNumberMustStartWithPlus:
+    'يجب أن يبدأ رقم الهاتف بـ + متبوعًا برمز الدولة',
+  invalidEmail: 'الرجاء إدخال عنوان بريد إلكتروني صحيح',
+  maxLength50Characters: 'يجب أن يكون {{field}} أقل من 50 حرفًا',
+  onlyLettersAndSpacesAllowed:
+    'يجب أن يحتوي الاسم على حرف واحد على الأقل ولا يحتوي على أي أحرف أخرى',
+  minimum9Digits: 'يجب أن يكون رقم الهاتف المحمول على الأقل 9 رقمًا',
 };

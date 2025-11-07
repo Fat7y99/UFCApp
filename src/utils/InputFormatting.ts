@@ -115,3 +115,8 @@ export const validateInput = (value: string, fieldType: string): boolean => {
       return value.trim().length > 0;
   }
 };
+
+export const validateEmail = (emailPass: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(emailPass);
+};

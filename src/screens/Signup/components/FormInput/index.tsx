@@ -9,6 +9,7 @@ interface FormInputProps {
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
   textAlign?: 'left' | 'right';
+  isOnlyEnglish?: boolean;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
