@@ -23,21 +23,24 @@ const ProfileSection: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Username */}
-      <Text style={[styles.username, isRTL && { textAlign: 'left' }]}>
-        {isRTL ? ' ' : ''}
-        {currentUser?.username}
-      </Text>
+      {currentUser ? (
+        <>
+          <Text style={[styles.username, isRTL && { textAlign: 'left' }]}>
+            {isRTL ? ' ' : ''}
+            {currentUser?.username}
+          </Text>
 
-      {/* Edit Profile */}
-      <TouchableOpacity
-        style={styles.editProfileContainer}
-        onPress={handleEditProfile}
-      >
-        <Text style={styles.editProfileText}>
-          {translate(`${TranslationNamespaces.SETTINGS}:editProfile`)}
-        </Text>
-        <EditProfileIcon />
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.editProfileContainer}
+            onPress={handleEditProfile}
+          >
+            <Text style={styles.editProfileText}>
+              {translate(`${TranslationNamespaces.SETTINGS}:editProfile`)}
+            </Text>
+            <EditProfileIcon />
+          </TouchableOpacity>
+        </>
+      ) : null}
     </View>
   );
 };

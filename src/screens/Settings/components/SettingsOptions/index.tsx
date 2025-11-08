@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 
+import { useAppSelector } from '@src/store';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { removeUserDataLogout } from '@modules/utils';
@@ -57,42 +58,66 @@ const SettingsOptions: React.FC = () => {
       { cancelable: true },
     );
   };
+  const { user } = useAppSelector(state => state.user);
+  const firstGroupOptions: SettingsOption[] = user
+    ? [
+        {
+          id: 'changePassword',
+          title: translate(`${TranslationNamespaces.SETTINGS}:changePassword`),
+          onPress: () => handleOptionPress('changePassword'),
+        },
+        {
+          id: 'termsAndConditions',
+          title: translate(
+            `${TranslationNamespaces.SETTINGS}:termsAndConditions`,
+          ),
+          onPress: () => handleOptionPress('termsAndConditions'),
+        },
+        {
+          id: 'privacyPolicy',
+          title: translate(`${TranslationNamespaces.SETTINGS}:privacyPolicy`),
+          onPress: () => handleOptionPress('privacyPolicy'),
+        },
+        {
+          id: 'help',
+          title: translate(`${TranslationNamespaces.SETTINGS}:help`),
+          onPress: () => handleOptionPress('help'),
+        },
+      ]
+    : [
+        {
+          id: 'termsAndConditions',
+          title: translate(
+            `${TranslationNamespaces.SETTINGS}:termsAndConditions`,
+          ),
+          onPress: () => handleOptionPress('termsAndConditions'),
+        },
+        {
+          id: 'privacyPolicy',
+          title: translate(`${TranslationNamespaces.SETTINGS}:privacyPolicy`),
+          onPress: () => handleOptionPress('privacyPolicy'),
+        },
+        {
+          id: 'help',
+          title: translate(`${TranslationNamespaces.SETTINGS}:help`),
+          onPress: () => handleOptionPress('help'),
+        },
+      ];
 
-  const firstGroupOptions: SettingsOption[] = [
-    {
-      id: 'changePassword',
-      title: translate(`${TranslationNamespaces.SETTINGS}:changePassword`),
-      onPress: () => handleOptionPress('changePassword'),
-    },
-    {
-      id: 'termsAndConditions',
-      title: translate(`${TranslationNamespaces.SETTINGS}:termsAndConditions`),
-      onPress: () => handleOptionPress('termsAndConditions'),
-    },
-    {
-      id: 'privacyPolicy',
-      title: translate(`${TranslationNamespaces.SETTINGS}:privacyPolicy`),
-      onPress: () => handleOptionPress('privacyPolicy'),
-    },
-    {
-      id: 'help',
-      title: translate(`${TranslationNamespaces.SETTINGS}:help`),
-      onPress: () => handleOptionPress('help'),
-    },
-  ];
-
-  const secondGroupOptions: SettingsOption[] = [
-    {
-      id: 'language',
-      title: translate(`${TranslationNamespaces.SETTINGS}:language`),
-      onPress: () => handleOptionPress('language'),
-    },
-    {
-      id: 'signOut',
-      title: translate(`${TranslationNamespaces.SETTINGS}:signOut`),
-      onPress: handleSignOut,
-    },
-  ];
+  const secondGroupOptions: SettingsOption[] = user
+    ? [
+        {
+          id: 'language',
+          title: translate(`${TranslationNamespaces.SETTINGS}:language`),
+          onPress: () => handleOptionPress('language'),
+        },
+        {
+          id: 'signOut',
+          title: translate(`${TranslationNamespaces.SETTINGS}:signOut`),
+          onPress: handleSignOut,
+        },
+      ]
+    : [];
 
   const renderOption = (option: SettingsOption, isLast: boolean = false) => (
     <TouchableOpacity

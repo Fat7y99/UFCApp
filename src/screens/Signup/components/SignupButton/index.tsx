@@ -143,7 +143,13 @@ const SignupButton: React.FC<SignupButtonProps> = ({
   const handlePress = () => {
     if (!disabled && !isPending) {
       sendOTP(
-        { body: { phone: formData.mobileNumber } },
+        {
+          body: {
+            phone: formData.mobileNumber,
+            username: formData.username,
+            email: formData.email,
+          },
+        },
         {
           onSuccess: () => {
             navigation.navigate('otpVerification', {

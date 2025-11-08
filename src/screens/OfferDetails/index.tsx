@@ -9,6 +9,7 @@ import {
   I18nManager,
 } from 'react-native';
 import type { RootStackScreenProps } from '@src/navigation';
+import { useAppSelector } from '@src/store';
 import { AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
@@ -21,9 +22,12 @@ export default React.memo((props: RootStackScreenProps<'offerDetails'>) => {
   const navigation = useNavigation();
   const { offer } = route.params;
   const isRTL = !I18nManager.isRTL;
-
+  const { user } = useAppSelector(state => state.user);
   const handleGetOfferPress = () => {
     navigation.navigate('applyToOffer', { offer });
+  };
+  const goSignUpScreen = () => {
+    navigation.navigate('signup');
   };
 
   return (
@@ -73,9 +77,10 @@ export default React.memo((props: RootStackScreenProps<'offerDetails'>) => {
                     ? AppImages.bgOddFrame
                     : AppImages.bgEvenFrame
                 }
-                style={
-                  offer.isOdd || isRTL ? styles.bgOddImage : styles.bgEvenImage
-                }
+                style={[
+                  offer.isOdd || isRTL ? styles.bgOddImage : styles.bgEvenImage,
+                  !isRTL ? { transform: [{ scaleX: -1 }] } : undefined,
+                ]}
               />
             </View>
             <Text style={styles.offerTitle}>{offer.title}</Text>
@@ -96,10 +101,12 @@ export default React.memo((props: RootStackScreenProps<'offerDetails'>) => {
         {/* Get Offer Button */}
         <TouchableOpacity
           style={styles.getOfferButton}
-          onPress={handleGetOfferPress}
+          onPress={user ? handleGetOfferPress : goSignUpScreen}
         >
           <Text style={styles.getOfferButtonText}>
-            {translate(`${TranslationNamespaces.HOME}:getOfferNow`)}
+            {user
+              ? translate(`${TranslationNamespaces.HOME}:getOfferNow`)
+              : translate(`${TranslationNamespaces.HOME}:signUpToGetOffer`)}
           </Text>
         </TouchableOpacity>
       </ScrollView>

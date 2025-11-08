@@ -34,4 +34,6 @@ export default {
   october: 'أكتوبر',
   november: 'نوفمبر',
   december: 'ديسمبر',
+  signUpToGetOffer: 'أنشئ حساب للحصول على العرض',
+  signUpToApply: 'أنشئ حساب للتقديم',
 };

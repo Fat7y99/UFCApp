@@ -34,4 +34,6 @@ export default {
   october: 'Oct',
   november: 'Nov',
   december: 'Dec',
+  signUpToGetOffer: 'SIGN UP TO GET OFFER',
+  signUpToApply: 'SIGN UP TO APPLY',
 };

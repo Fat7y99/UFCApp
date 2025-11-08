@@ -14,6 +14,7 @@ import {
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import type { RootStackParamList } from '@src/navigation';
+import { useAppSelector } from '@src/store';
 import {
   getInputConstraints,
   formatPhoneNumber,
@@ -91,6 +92,10 @@ const PersonalStep1: React.FC = () => {
 
   const onCancelDate = () => {
     setHandleOpenCalendar(null);
+  };
+  const { user } = useAppSelector(state => state.user);
+  const goSignUpScreen = () => {
+    navigation.navigate('signup');
   };
 
   return (
@@ -235,22 +240,28 @@ const PersonalStep1: React.FC = () => {
         {/* Next Button */}
         <TouchableOpacity
           style={styles.nextButton}
-          onPress={() => {
-            navigation.navigate('personalStep2', {
-              serviceId,
-              customerBaseInfo: {
-                name: name || undefined,
-                phone: mobile || undefined,
-                birthDate: dob || undefined,
-                employer: employer || undefined,
-                jobTitle: jobTitle || undefined,
-                serviceStartDate: serviceStartDate || undefined,
-              },
-            });
-          }}
+          onPress={
+            user
+              ? () => {
+                  navigation.navigate('personalStep2', {
+                    serviceId,
+                    customerBaseInfo: {
+                      name: name || undefined,
+                      phone: mobile || undefined,
+                      birthDate: dob || undefined,
+                      employer: employer || undefined,
+                      jobTitle: jobTitle || undefined,
+                      serviceStartDate: serviceStartDate || undefined,
+                    },
+                  });
+                }
+              : goSignUpScreen
+          }
         >
           <Text style={styles.nextButtonText}>
-            {translate(`${TranslationNamespaces.FINANCING}:next`)}
+            {user
+              ? translate(`${TranslationNamespaces.FINANCING}:next`)
+              : translate(`${TranslationNamespaces.HOME}:signUpToApply`)}
           </Text>
         </TouchableOpacity>
       </ScrollView>

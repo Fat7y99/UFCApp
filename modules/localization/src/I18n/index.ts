@@ -1,5 +1,6 @@
 import { getLanguage, setLanguage } from '@modules/core';
 import { navigationRef } from '@src/navigation/NavigationUtils';
+import { store } from '@src/store';
 import * as i18next from 'i18next';
 
 import { initReactI18next } from 'react-i18next';
@@ -29,15 +30,31 @@ const defaultLocale: string =
 const i18n = i18next.use(initReactI18next);
 
 const handleRestart = (locale: string) => {
+  let isRestarting = false;
   if (locale === AppLanguages.ARABIC && !I18nManager.isRTL) {
-    setTimeout(() => RNRestart.Restart(), 500);
+    isRestarting = true;
+
+    setTimeout(() => {
+      RNRestart.Restart();
+    }, 500);
   }
 
   if (locale === AppLanguages.ENGLISH && I18nManager.isRTL) {
-    setTimeout(() => RNRestart.Restart(), 500);
+    isRestarting = true;
+
+    setTimeout(() => {
+      RNRestart.Restart();
+    }, 500);
   }
-  //then navigate to the login screen
-  navigationRef.navigate('login');
+
+  if (!isRestarting) {
+    const stateUser = store.getState().user;
+    if (stateUser) {
+      navigationRef.navigate('home');
+    } else {
+      navigationRef.navigate('login');
+    }
+  }
 };
 
 export const setI18nConfig = async () => {

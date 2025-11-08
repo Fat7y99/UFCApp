@@ -16,6 +16,8 @@ export interface SignupBody {
 
 export interface SendOTPBody {
   phone: string;
+  username?: string;
+  email?: string;
 }
 
 export interface ForgetPasswordBody {

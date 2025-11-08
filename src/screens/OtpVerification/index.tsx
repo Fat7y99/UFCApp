@@ -117,7 +117,7 @@ export default React.memo(() => {
   };
 
   const handleResendOtp = () => {
-    // params?.resendOtpHandler?.();
+    params?.resendOtpHandler?.();
     setTimeLeft(120); // Reset timer
   };
 

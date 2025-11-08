@@ -28,6 +28,7 @@ const OfferCard: React.FC<OfferCardProps> = ({
                 : isRTL
                   ? styles.bgOddImage2
                   : styles.bgEvenImage,
+              { transform: !isRTL || isOdd ? [{ scaleX: -1 }] : undefined },
             ]}
           />
         </View>

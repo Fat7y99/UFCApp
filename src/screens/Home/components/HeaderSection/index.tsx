@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, Image } from 'react-native';
 import { useAppSelector } from '@src/store';
 import { NotificationButton } from '@modules/components';
 import { translate } from '@modules/localization';
@@ -13,7 +13,7 @@ const HeaderSection: React.FC = () => {
   const navigation = useNavigation();
   const handleSignInPress = () => {
     // Will be handled by each screen's navigation
-    navigation.navigate('Login');
+    navigation.navigate('login');
   };
 
   return (
@@ -32,16 +32,7 @@ const HeaderSection: React.FC = () => {
           <View>
             <NotificationButton />
           </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleSignInPress}
-          >
-            <Text style={styles.loginText}>
-              {translate(`${TranslationNamespaces.LOGIN}:signin`)}
-            </Text>
-          </TouchableOpacity>
-        )}
+        ) : null}
       </View>
     </View>
   );

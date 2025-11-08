@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import type { RootStackParamList } from '@src/navigation';
+import { useAppSelector } from '@src/store';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -31,6 +32,10 @@ const isRTL = I18nManager.isRTL;
 const SMEFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const [serviceId, setServiceId] = useState<number>(1);
+  const { user } = useAppSelector(state => state.user);
+  const goSignUpScreen = () => {
+    navigation.navigate('signup');
+  };
   const services: FinancingType[] = [
     {
       id: 1,
@@ -127,12 +132,18 @@ const SMEFinancing: React.FC = () => {
         {/* Next Button */}
         <TouchableOpacity
           style={styles.nextButton}
-          onPress={() => {
-            navigation.navigate('smeStep1', { serviceId });
-          }}
+          onPress={
+            user
+              ? () => {
+                  navigation.navigate('smeStep1', { serviceId });
+                }
+              : goSignUpScreen
+          }
         >
           <Text style={styles.nextButtonText}>
-            {translate(`${TranslationNamespaces.FINANCING}:next`)}
+            {user
+              ? translate(`${TranslationNamespaces.FINANCING}:next`)
+              : translate(`${TranslationNamespaces.HOME}:signUpToApply`)}
           </Text>
         </TouchableOpacity>
       </ScrollView>

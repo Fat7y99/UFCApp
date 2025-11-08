@@ -109,7 +109,7 @@ export default React.memo(() => {
   };
 
   const handleSignIn = () => {
-    navigation.goBack();
+    navigation.navigate('login');
   };
 
   const handleTermsPress = () => {
