@@ -42,11 +42,20 @@ const SignupButton: React.FC<SignupButtonProps> = ({
     value: string,
     fieldKey: keyof typeof formData,
   ): boolean => {
+    if (!value.trim()) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+          field: translate(`${TranslationNamespaces.SIGNUP}:${fieldKey}`),
+        }),
+      });
+      return false;
+    }
     if (fieldKey === 'confirmPassword') {
       if (!value.trim()) {
         Toast.show({
           type: 'fail',
-          text1: translate(`${TranslationNamespaces.SIGNUP}:fieldRequired`, {
+          text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
             field: translate(`${TranslationNamespaces.SIGNUP}:${fieldKey}`),
           }),
         });
@@ -99,15 +108,7 @@ const SignupButton: React.FC<SignupButtonProps> = ({
       }
       return true;
     }
-    if (!value.trim()) {
-      Toast.show({
-        type: 'fail',
-        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
-          field: translate(`${TranslationNamespaces.SIGNUP}:${fieldKey}`),
-        }),
-      });
-      return false;
-    }
+
     return true;
   };
 

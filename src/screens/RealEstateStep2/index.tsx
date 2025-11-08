@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Image,
   I18nManager,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { getInputConstraints, formatAmount } from '@src/utils/InputFormatting';
@@ -37,6 +38,46 @@ const RealEstateStep2: React.FC = () => {
   const [monthlyInstallment, setMonthlyInstallment] = useState('');
   const [bankName, setBankName] = useState('');
   const [remainingBalance, setRemainingBalance] = useState('');
+
+  // Filter text input to only allow English letters and spaces
+  const filterEnglishLettersAndSpaces = (text: string): string =>
+    text.replace(/[^a-zA-Z\s]/g, '');
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(
+    () =>
+      liabilityType.trim() !== '' &&
+      monthlyInstallment.trim() !== '' &&
+      bankName.trim() !== '' &&
+      remainingBalance.trim() !== '',
+    [liabilityType, monthlyInstallment, bankName, remainingBalance],
+  );
+
+  const handleNext = () => {
+    if (!isFormValid) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+          field: translate(`${TranslationNamespaces.FINANCING}:liabilities`),
+        }),
+      });
+      return;
+    }
+    navigation.navigate('realEstateStep3', {
+      serviceId,
+      customerBaseInfo,
+      customerLiability: {
+        liabilityType: liabilityType || undefined,
+        monthlyInstallment: monthlyInstallment
+          ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+          : undefined,
+        bankName: bankName || undefined,
+        remainingBalance: remainingBalance
+          ? parseFloat(remainingBalance.replace(/,/g, ''))
+          : undefined,
+      },
+    });
+  };
 
   return (
     <Screen style={styles.container}>
@@ -94,7 +135,9 @@ const RealEstateStep2: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={liabilityType}
-              onChangeText={setLiabilityType}
+              onChangeText={text =>
+                setLiabilityType(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -120,7 +163,9 @@ const RealEstateStep2: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={bankName}
-              onChangeText={setBankName}
+              onChangeText={text =>
+                setBankName(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -141,23 +186,9 @@ const RealEstateStep2: React.FC = () => {
 
         {/* Next Button */}
         <TouchableOpacity
-          style={styles.nextButton}
-          onPress={() => {
-            navigation.navigate('realEstateStep3', {
-              serviceId,
-              customerBaseInfo,
-              customerLiability: {
-                liabilityType: liabilityType || undefined,
-                monthlyInstallment: monthlyInstallment
-                  ? parseFloat(monthlyInstallment.replace(/,/g, ''))
-                  : undefined,
-                bankName: bankName || undefined,
-                remainingBalance: remainingBalance
-                  ? parseFloat(remainingBalance.replace(/,/g, ''))
-                  : undefined,
-              },
-            });
-          }}
+          style={[styles.nextButton, !isFormValid && styles.nextButtonDisabled]}
+          onPress={handleNext}
+          disabled={!isFormValid}
         >
           <Text style={styles.nextButtonText}>
             {translate(`${TranslationNamespaces.FINANCING}:next`)}
@@ -351,6 +382,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
+  },
+  nextButtonDisabled: {
+    opacity: 0.6,
   },
 });
 

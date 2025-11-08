@@ -3,7 +3,7 @@
 # Script to generate all required app icons from a source image
 # Usage: ./generate-icons.sh [source-image-path]
 
-SOURCE_IMAGE="${1:-ios/UFCApp/Images.xcassets/BootSplashLogo.imageset/bootsplash_logo@3x.png}"
+SOURCE_IMAGE="${1:-modules/assets/src/images/app_icon.svg}"
 ICON_DIR="ios/UFCApp/Images.xcassets/AppIcon.appiconset"
 
 # Check if source image exists

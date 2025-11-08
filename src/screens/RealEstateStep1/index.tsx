@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   I18nManager,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import {
@@ -84,6 +85,45 @@ const RealEstateStep1: React.FC = () => {
     setHandleOpenCalendar(false);
   };
 
+  // Filter text input to only allow English letters and spaces
+  const filterEnglishLettersAndSpaces = (text: string): string =>
+    text.replace(/[^a-zA-Z\s]/g, '');
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(
+    () =>
+      name.trim() !== '' &&
+      mobile.trim() !== '' &&
+      dob.trim() !== '' &&
+      employer.trim() !== '' &&
+      jobTitle.trim() !== '',
+    [name, mobile, dob, employer, jobTitle],
+  );
+
+  const handleNext = () => {
+    if (!isFormValid) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+          field: translate(
+            `${TranslationNamespaces.FINANCING}:baseRegistrationFields`,
+          ),
+        }),
+      });
+      return;
+    }
+    navigation.navigate('realEstateStep2', {
+      serviceId,
+      customerBaseInfo: {
+        name: name || undefined,
+        phone: mobile || undefined,
+        birthDate: dob || undefined,
+        employer: employer || undefined,
+        jobTitle: jobTitle || undefined,
+      },
+    });
+  };
+
   return (
     <Screen style={styles.container}>
       {/* Header */}
@@ -138,7 +178,9 @@ const RealEstateStep1: React.FC = () => {
               placeholder={translate(`${TranslationNamespaces.FINANCING}:name`)}
               placeholderTextColor="#999"
               value={name}
-              onChangeText={setName}
+              onChangeText={text =>
+                setName(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -183,7 +225,9 @@ const RealEstateStep1: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={employer}
-              onChangeText={setEmployer}
+              onChangeText={text =>
+                setEmployer(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -196,7 +240,9 @@ const RealEstateStep1: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={jobTitle}
-              onChangeText={setJobTitle}
+              onChangeText={text =>
+                setJobTitle(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -204,19 +250,9 @@ const RealEstateStep1: React.FC = () => {
 
         {/* Next Button */}
         <TouchableOpacity
-          style={styles.nextButton}
-          onPress={() => {
-            navigation.navigate('realEstateStep2', {
-              serviceId,
-              customerBaseInfo: {
-                name: name || undefined,
-                phone: mobile || undefined,
-                birthDate: dob || undefined,
-                employer: employer || undefined,
-                jobTitle: jobTitle || undefined,
-              },
-            });
-          }}
+          style={[styles.nextButton, !isFormValid && styles.nextButtonDisabled]}
+          onPress={handleNext}
+          disabled={!isFormValid}
         >
           <Text style={styles.nextButtonText}>
             {translate(`${TranslationNamespaces.FINANCING}:next`)}
@@ -224,6 +260,10 @@ const RealEstateStep1: React.FC = () => {
         </TouchableOpacity>
       </ScrollView>
       <DateTimePickerModal
+        style={styles.datePicker}
+        pickerStyleIOS={styles.datePicker}
+        pickerContainerStyleIOS={styles.datePicker}
+        pickerComponentStyleIOS={styles.datePicker}
         date={getDatePickerValue()}
         isVisible={handleOpenCalendar}
         mode="date"
@@ -239,6 +279,9 @@ const RealEstateStep1: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+  },
+  datePicker: {
     backgroundColor: 'white',
   },
   header: {
@@ -441,6 +484,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
+  },
+  nextButtonDisabled: {
+    opacity: 0.6,
   },
 });
 

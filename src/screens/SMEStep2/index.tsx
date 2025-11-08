@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   I18nManager,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { SuccessType } from '@src/screens/Success/types';
@@ -62,6 +63,62 @@ const SMEStep2: React.FC = () => {
     useState('');
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // Filter text input to only allow English letters and spaces
+  const filterEnglishLettersAndSpaces = (text: string): string =>
+    text.replace(/[^a-zA-Z\s]/g, '');
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(
+    () =>
+      businessActivityType.trim() !== '' &&
+      crAge.trim() !== '' &&
+      businessRegion.trim() !== '' &&
+      businessType.trim() !== '' &&
+      posAnnualPropertyIncome.trim() !== '' &&
+      financialStatementAvailable.trim() !== '',
+    [
+      businessActivityType,
+      crAge,
+      businessRegion,
+      businessType,
+      posAnnualPropertyIncome,
+      financialStatementAvailable,
+    ],
+  );
+
+  const handleApply = () => {
+    if (!isFormValid) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+          field: translate(
+            `${TranslationNamespaces.FINANCING}:additionalFields`,
+          ),
+        }),
+      });
+      return;
+    }
+    // Collect all form data and submit
+    const request: ApiRequest<SmeApplicationRequestBody> = {
+      body: {
+        serviceId,
+        appSmeFinance: {
+          businessActivityType: businessActivityType || undefined,
+          businessRegion: businessRegion || undefined,
+          businessType: businessType || undefined,
+          posAnnualRevenue: posAnnualPropertyIncome
+            ? parseFloat(posAnnualPropertyIncome.replace(/,/g, ''))
+            : undefined,
+          financialStatementsAvailable:
+            financialStatementAvailable ===
+            translate(`${TranslationNamespaces.FINANCING}:yes`),
+        },
+        customerLiability: customerLiability || undefined,
+      },
+    };
+    addSmeApplicationMutation.mutate(request);
+  };
+
   return (
     <Screen style={styles.container}>
       {/* Header */}
@@ -111,7 +168,9 @@ const SMEStep2: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={businessActivityType}
-              onChangeText={setBusinessActivityType}
+              onChangeText={text =>
+                setBusinessActivityType(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -137,7 +196,9 @@ const SMEStep2: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={businessRegion}
-              onChangeText={setBusinessRegion}
+              onChangeText={text =>
+                setBusinessRegion(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -150,7 +211,9 @@ const SMEStep2: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={businessType}
-              onChangeText={setBusinessType}
+              onChangeText={text =>
+                setBusinessType(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -225,30 +288,11 @@ const SMEStep2: React.FC = () => {
         <TouchableOpacity
           style={[
             styles.nextButton,
-            addSmeApplicationMutation.isPending && styles.nextButtonDisabled,
+            (!isFormValid || addSmeApplicationMutation.isPending) &&
+              styles.nextButtonDisabled,
           ]}
-          onPress={() => {
-            // Collect all form data and submit
-            const request: ApiRequest<SmeApplicationRequestBody> = {
-              body: {
-                serviceId,
-                appSmeFinance: {
-                  businessActivityType: businessActivityType || undefined,
-                  businessRegion: businessRegion || undefined,
-                  businessType: businessType || undefined,
-                  posAnnualRevenue: posAnnualPropertyIncome
-                    ? parseFloat(posAnnualPropertyIncome.replace(/,/g, ''))
-                    : undefined,
-                  financialStatementsAvailable:
-                    financialStatementAvailable ===
-                    translate(`${TranslationNamespaces.FINANCING}:yes`),
-                },
-                customerLiability: customerLiability || undefined,
-              },
-            };
-            addSmeApplicationMutation.mutate(request);
-          }}
-          disabled={addSmeApplicationMutation.isPending}
+          onPress={handleApply}
+          disabled={!isFormValid || addSmeApplicationMutation.isPending}
         >
           {addSmeApplicationMutation.isPending ? (
             <ActivityIndicator color="white" />

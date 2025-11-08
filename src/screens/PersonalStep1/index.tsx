@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   I18nManager,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { useAppSelector } from '@src/store';
@@ -98,6 +99,51 @@ const PersonalStep1: React.FC = () => {
     navigation.navigate('signup');
   };
 
+  // Filter text input to only allow English letters and spaces
+  const filterEnglishLettersAndSpaces = (text: string): string =>
+    text.replace(/[^a-zA-Z\s]/g, '');
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(
+    () =>
+      name.trim() !== '' &&
+      mobile.trim() !== '' &&
+      dob.trim() !== '' &&
+      employer.trim() !== '' &&
+      jobTitle.trim() !== '' &&
+      serviceStartDate.trim() !== '',
+    [name, mobile, dob, employer, jobTitle, serviceStartDate],
+  );
+
+  const handleNext = () => {
+    if (!isFormValid && Boolean(user)) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+          field: translate(
+            `${TranslationNamespaces.FINANCING}:baseRegistrationFields`,
+          ),
+        }),
+      });
+      return;
+    }
+    if (user) {
+      navigation.navigate('personalStep2', {
+        serviceId,
+        customerBaseInfo: {
+          name: name || undefined,
+          phone: mobile || undefined,
+          birthDate: dob || undefined,
+          employer: employer || undefined,
+          jobTitle: jobTitle || undefined,
+          serviceStartDate: serviceStartDate || undefined,
+        },
+      });
+    } else {
+      goSignUpScreen();
+    }
+  };
+
   return (
     <Screen style={styles.container}>
       {/* Header */}
@@ -154,7 +200,9 @@ const PersonalStep1: React.FC = () => {
               placeholder={translate(`${TranslationNamespaces.FINANCING}:name`)}
               placeholderTextColor="#999"
               value={name}
-              onChangeText={setName}
+              onChangeText={text =>
+                setName(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -199,7 +247,9 @@ const PersonalStep1: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={employer}
-              onChangeText={setEmployer}
+              onChangeText={text =>
+                setEmployer(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -212,7 +262,9 @@ const PersonalStep1: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={jobTitle}
-              onChangeText={setJobTitle}
+              onChangeText={text =>
+                setJobTitle(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -239,24 +291,12 @@ const PersonalStep1: React.FC = () => {
 
         {/* Next Button */}
         <TouchableOpacity
-          style={styles.nextButton}
-          onPress={
-            user
-              ? () => {
-                  navigation.navigate('personalStep2', {
-                    serviceId,
-                    customerBaseInfo: {
-                      name: name || undefined,
-                      phone: mobile || undefined,
-                      birthDate: dob || undefined,
-                      employer: employer || undefined,
-                      jobTitle: jobTitle || undefined,
-                      serviceStartDate: serviceStartDate || undefined,
-                    },
-                  });
-                }
-              : goSignUpScreen
-          }
+          style={[
+            styles.nextButton,
+            !isFormValid && Boolean(user) && styles.nextButtonDisabled,
+          ]}
+          onPress={handleNext}
+          disabled={!isFormValid && Boolean(user)}
         >
           <Text style={styles.nextButtonText}>
             {user
@@ -267,6 +307,10 @@ const PersonalStep1: React.FC = () => {
       </ScrollView>
       {handleOpenCalendar && (
         <DateTimePickerModal
+          style={styles.datePicker}
+          pickerStyleIOS={styles.datePicker}
+          pickerContainerStyleIOS={styles.datePicker}
+          pickerComponentStyleIOS={styles.datePicker}
           date={getDatePickerValue(handleOpenCalendar as CalendarType)}
           isVisible={!!handleOpenCalendar}
           mode="date"
@@ -287,7 +331,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-
+  datePicker: {
+    backgroundColor: 'white',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -468,6 +514,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
+  },
+  nextButtonDisabled: {
+    opacity: 0.6,
   },
 });
 

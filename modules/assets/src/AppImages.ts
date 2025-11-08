@@ -1,5 +1,5 @@
 export default {
-  bootSplashImage: require('./images/bootsplash_logo.png'),
+  bootSplashImage: require('./images/app_icon.svg'),
   // TODO: Add app images.
   logo: require('./images/logo.svg'),
   landingBg: require('./images/landing_bg.png'),
@@ -21,4 +21,5 @@ export default {
   outlinedSearchIcon: require('./images/outlined_search_icon.svg'),
   filledSettingsIconPng: require('./images/filled_settings_icon.png'),
   filledHomeIconPng: require('./images/filled_home_icon.png'),
+  appIcon: require('./images/app_icon.svg'),
 };

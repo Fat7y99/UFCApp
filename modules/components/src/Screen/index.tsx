@@ -25,7 +25,7 @@ export default React.memo((props: Props) => {
   } = props;
 
   const contentStyle = {
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'white', //theme.colors.background,
     paddingRight: !edges || edges?.includes('right') ? insets.right : 0,
     paddingLeft: !edges || edges?.includes('left') ? insets.left : 0,
   };

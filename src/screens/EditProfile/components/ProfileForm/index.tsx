@@ -247,6 +247,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         <View style={styles.separator} />
       </View>
       <DateTimePickerModal
+        style={styles.datePicker}
+        pickerStyleIOS={styles.datePicker}
+        pickerContainerStyleIOS={styles.datePicker}
+        pickerComponentStyleIOS={styles.datePicker}
         date={getDatePickerValue()}
         isVisible={handleOpenCalendar}
         mode="date"
@@ -263,6 +267,9 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: ResponsiveDimensions.vs(20),
     paddingTop: ResponsiveDimensions.vs(60), // Space for floating avatar
+    backgroundColor: 'white',
+  },
+  datePicker: {
     backgroundColor: 'white',
   },
   fieldContainer: {

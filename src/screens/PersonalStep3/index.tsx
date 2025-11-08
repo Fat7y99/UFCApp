@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   I18nManager,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { SuccessType } from '@src/screens/Success/types';
@@ -54,6 +55,53 @@ const PersonalStep3: React.FC = () => {
   const [netSalary, setNetSalary] = useState('');
   const [currentBank, setCurrentBank] = useState('');
   const [city, setCity] = useState('');
+
+  // Filter text input to only allow English letters and spaces
+  const filterEnglishLettersAndSpaces = (text: string): string =>
+    text.replace(/[^a-zA-Z\s]/g, '');
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(
+    () =>
+      basicSalary.trim() !== '' &&
+      netSalary.trim() !== '' &&
+      currentBank.trim() !== '' &&
+      city.trim() !== '',
+    [basicSalary, netSalary, currentBank, city],
+  );
+
+  const handleApply = () => {
+    if (!isFormValid) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+          field: translate(
+            `${TranslationNamespaces.FINANCING}:baseRegistrationFields`,
+          ),
+        }),
+      });
+      return;
+    }
+    // Combine all form data and submit
+    const request: ApiRequest<PersonalApplicationRequestBody> = {
+      body: {
+        serviceId,
+        customerBaseInfo: {
+          ...customerBaseInfoFromStep1,
+          basicSalary: basicSalary
+            ? parseFloat(basicSalary.replace(/,/g, ''))
+            : undefined,
+          netSalary: netSalary
+            ? parseFloat(netSalary.replace(/,/g, ''))
+            : undefined,
+          currentBank: currentBank || undefined,
+          city: city || undefined,
+        },
+        customerLiability: customerLiability || undefined,
+      },
+    };
+    addPersonalApplicationMutation.mutate(request);
+  };
 
   return (
     <Screen style={styles.container}>
@@ -139,7 +187,9 @@ const PersonalStep3: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={currentBank}
-              onChangeText={setCurrentBank}
+              onChangeText={text =>
+                setCurrentBank(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -150,7 +200,9 @@ const PersonalStep3: React.FC = () => {
               placeholder={translate(`${TranslationNamespaces.FINANCING}:city`)}
               placeholderTextColor="#999"
               value={city}
-              onChangeText={setCity}
+              onChangeText={text =>
+                setCity(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -160,31 +212,11 @@ const PersonalStep3: React.FC = () => {
         <TouchableOpacity
           style={[
             styles.applyButton,
-            addPersonalApplicationMutation.isPending &&
+            (!isFormValid || addPersonalApplicationMutation.isPending) &&
               styles.applyButtonDisabled,
           ]}
-          onPress={() => {
-            // Combine all form data and submit
-            const request: ApiRequest<PersonalApplicationRequestBody> = {
-              body: {
-                serviceId,
-                customerBaseInfo: {
-                  ...customerBaseInfoFromStep1,
-                  basicSalary: basicSalary
-                    ? parseFloat(basicSalary.replace(/,/g, ''))
-                    : undefined,
-                  netSalary: netSalary
-                    ? parseFloat(netSalary.replace(/,/g, ''))
-                    : undefined,
-                  currentBank: currentBank || undefined,
-                  city: city || undefined,
-                },
-                customerLiability: customerLiability || undefined,
-              },
-            };
-            addPersonalApplicationMutation.mutate(request);
-          }}
-          disabled={addPersonalApplicationMutation.isPending}
+          onPress={handleApply}
+          disabled={!isFormValid || addPersonalApplicationMutation.isPending}
         >
           {addPersonalApplicationMutation.isPending ? (
             <ActivityIndicator color="white" />

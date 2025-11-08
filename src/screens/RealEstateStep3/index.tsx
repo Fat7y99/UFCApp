@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   I18nManager,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { SuccessType } from '@src/screens/Success/types';
@@ -64,6 +65,64 @@ const RealEstateStep3: React.FC = () => {
   const [propertyAge, setPropertyAge] = useState('');
   const [propertyCity, setPropertyCity] = useState('');
   const [annualPropertyIncome, setAnnualPropertyIncome] = useState('');
+
+  // Filter text input to only allow English letters and spaces
+  const filterEnglishLettersAndSpaces = (text: string): string =>
+    text.replace(/[^a-zA-Z\s]/g, '');
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(
+    () =>
+      realEstateFinancingType.trim() !== '' &&
+      propertyType.trim() !== '' &&
+      propertyValue.trim() !== '' &&
+      propertyAge.trim() !== '' &&
+      propertyCity.trim() !== '' &&
+      annualPropertyIncome.trim() !== '',
+    [
+      realEstateFinancingType,
+      propertyType,
+      propertyValue,
+      propertyAge,
+      propertyCity,
+      annualPropertyIncome,
+    ],
+  );
+
+  const handleApply = () => {
+    if (!isFormValid) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+          field: translate(
+            `${TranslationNamespaces.FINANCING}:additionalFields`,
+          ),
+        }),
+      });
+      return;
+    }
+    // Collect all form data and submit
+    const request: ApiRequest<RealEstateApplicationRequestBody> = {
+      body: {
+        serviceId,
+        appRealStateFinance: {
+          financingType: realEstateFinancingType || undefined,
+          propertyType: propertyType || undefined,
+          propertyValue: propertyValue
+            ? parseFloat(propertyValue.replace(/,/g, ''))
+            : undefined,
+          propertyAgeYears: propertyAge ? parseInt(propertyAge, 10) : undefined,
+          propertyCity: propertyCity || undefined,
+          annualPropertyIncome: annualPropertyIncome
+            ? parseFloat(annualPropertyIncome.replace(/,/g, ''))
+            : undefined,
+        },
+        customerBaseInfo: customerBaseInfo || undefined,
+        customerLiability: customerLiability || undefined,
+      },
+    };
+    addRealEstateApplicationMutation.mutate(request);
+  };
 
   return (
     <Screen style={styles.container}>
@@ -121,7 +180,9 @@ const RealEstateStep3: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={realEstateFinancingType}
-              onChangeText={setRealEstateFinancingType}
+              onChangeText={text =>
+                setRealEstateFinancingType(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -134,7 +195,9 @@ const RealEstateStep3: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={propertyType}
-              onChangeText={setPropertyType}
+              onChangeText={text =>
+                setPropertyType(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -173,7 +236,9 @@ const RealEstateStep3: React.FC = () => {
               )}
               placeholderTextColor="#999"
               value={propertyCity}
-              onChangeText={setPropertyCity}
+              onChangeText={text =>
+                setPropertyCity(filterEnglishLettersAndSpaces(text))
+              }
               {...getInputConstraints('text')}
             />
           </View>
@@ -196,35 +261,11 @@ const RealEstateStep3: React.FC = () => {
         <TouchableOpacity
           style={[
             styles.applyButton,
-            addRealEstateApplicationMutation.isPending &&
+            (!isFormValid || addRealEstateApplicationMutation.isPending) &&
               styles.applyButtonDisabled,
           ]}
-          onPress={() => {
-            // Collect all form data and submit
-            const request: ApiRequest<RealEstateApplicationRequestBody> = {
-              body: {
-                serviceId,
-                appRealStateFinance: {
-                  financingType: realEstateFinancingType || undefined,
-                  propertyType: propertyType || undefined,
-                  propertyValue: propertyValue
-                    ? parseFloat(propertyValue.replace(/,/g, ''))
-                    : undefined,
-                  propertyAgeYears: propertyAge
-                    ? parseInt(propertyAge, 10)
-                    : undefined,
-                  propertyCity: propertyCity || undefined,
-                  annualPropertyIncome: annualPropertyIncome
-                    ? parseFloat(annualPropertyIncome.replace(/,/g, ''))
-                    : undefined,
-                },
-                customerBaseInfo: customerBaseInfo || undefined,
-                customerLiability: customerLiability || undefined,
-              },
-            };
-            addRealEstateApplicationMutation.mutate(request);
-          }}
-          disabled={addRealEstateApplicationMutation.isPending}
+          onPress={handleApply}
+          disabled={!isFormValid || addRealEstateApplicationMutation.isPending}
         >
           {addRealEstateApplicationMutation.isPending ? (
             <ActivityIndicator color="white" />

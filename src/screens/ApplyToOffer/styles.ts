@@ -7,6 +7,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  datePicker: {
+    backgroundColor: 'white',
+  },
   header: {
     height: ResponsiveDimensions.vs(140),
     backgroundColor: AppColors.themeLight.primary_1,
