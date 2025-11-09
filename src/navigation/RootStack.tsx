@@ -11,7 +11,6 @@ import {
   OtpVerification,
   ResetPassword,
   ResetPasswordSuccess,
-  Splash,
 } from '@src/screens';
 import TabNavigator from './TabNavigator';
 
@@ -20,11 +19,10 @@ const stack = createNativeStackNavigator<RootStackParamList, 'RootStack'>();
 export default React.memo(() => (
   <stack.Navigator
     id="RootStack"
-    initialRouteName="splash"
+    initialRouteName="landing"
     screenOptions={{ headerShown: false }}
   >
     {/* Screens */}
-    <stack.Screen name="splash" component={Splash} />
     {Config.ENABLE_LOCAL_LOG === 'true' ? (
       <stack.Screen name="networkLogs" component={NetworkLogs} />
     ) : null}

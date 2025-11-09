@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import {
   View,
@@ -6,7 +7,9 @@ import {
   Text,
   StyleSheet,
   Pressable,
+  I18nManager,
 } from 'react-native';
+import { store } from '@src/store';
 import { AppImages, LogoIcon } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { translate, updateLanguage, AppLanguages } from '@modules/localization';
@@ -16,7 +19,23 @@ import { AppColors } from 'modules/theme/src';
 export default React.memo(() => {
   const [isPressed1, setIsPressed1] = React.useState(false);
   const [isPressed2, setIsPressed2] = React.useState(false);
-
+  const navigation = useNavigation<any>();
+  const handleNavigation = React.useCallback(
+    (locale?: AppLanguages) => {
+      const isRestarting =
+        (locale === AppLanguages.ARABIC && !I18nManager.isRTL) ||
+        (locale === AppLanguages.ENGLISH && I18nManager.isRTL);
+      if (!isRestarting) {
+        const stateUser = store.getState().user;
+        if (stateUser) {
+          navigation.navigate('home');
+        } else {
+          navigation.navigate('login');
+        }
+      }
+    },
+    [navigation],
+  );
   const buttonColor1 = React.useMemo(
     () =>
       isPressed1
@@ -49,10 +68,12 @@ export default React.memo(() => {
 
   const handleEnglishPress = async () => {
     await updateLanguage(AppLanguages.ENGLISH);
+    handleNavigation(AppLanguages.ENGLISH);
   };
 
   const handleArabicPress = async () => {
     await updateLanguage(AppLanguages.ARABIC);
+    handleNavigation(AppLanguages.ARABIC);
   };
   return (
     <Screen style={{ backgroundColor: AppColors.themeLight.primary_1 }}>
