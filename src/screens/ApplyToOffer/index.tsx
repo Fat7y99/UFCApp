@@ -245,6 +245,10 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
       </ScrollView>
       {handleOpenCalendar && (
         <DateTimePickerModal
+          style={styles.datePicker}
+          pickerStyleIOS={styles.datePicker}
+          pickerContainerStyleIOS={styles.datePicker}
+          pickerComponentStyleIOS={styles.datePicker}
           date={getDatePickerValue(handleOpenCalendar as CalendarType)}
           isVisible={handleOpenCalendar !== null}
           mode="date"
