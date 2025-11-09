@@ -5,17 +5,18 @@ import { AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 
 import styles from './styles';
+import { useSplash } from './useSplash';
 
 export default React.memo((props: RootStackScreenProps<'splash'>) => {
   // #region Variables
-  const {} = props;
+  const { navigation } = props;
   // #endregion
 
-  // const isBootSplashVisible = useSplash({
-  //   navigation,
+  const isBootSplashVisible = useSplash({
+    navigation,
 
-  //   isBootSplashLogoLoaded: true,
-  // });
+    isBootSplashLogoLoaded: true,
+  });
 
   // #region UI
   return (
