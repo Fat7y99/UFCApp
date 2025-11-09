@@ -4,10 +4,11 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { Provider as PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@src/navigation';
+import { useSplash } from '@src/screens/Splash/useSplash';
+import toastConfig from '@src/utils/Toast';
 import { ToastManager, ErrorDialog, LoadingDialog } from '@modules/components';
 import { useAppTheme } from '@modules/theme';
 import { clientPersister, queryClient } from '@modules/utils';
-import toastConfig from '@src/utils/Toast';
 
 import { useForegroundMessagesListener } from './useForegroundMessagesListener';
 import { useLocalizationInitialization } from './useLocalizationInitialization';
@@ -29,6 +30,13 @@ export default React.memo(() => {
   // useFirebaseMessagingInitialization();
   useForegroundMessagesListener();
   useNotificationsInteraction();
+  const HideSplash = () => {
+    useSplash({
+      isBootSplashLogoLoaded: true,
+    });
+    return null;
+  };
+
   const theme = useAppTheme();
 
   // #region UI
@@ -40,6 +48,7 @@ export default React.memo(() => {
           persistOptions={{ persister: clientPersister }}
         >
           <NavigationContainer />
+          <HideSplash />
           <ErrorDialog />
           <LoadingDialog />
         </PersistQueryClientProvider>

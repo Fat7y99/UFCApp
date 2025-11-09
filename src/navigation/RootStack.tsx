@@ -3,18 +3,16 @@ import * as React from 'react';
 import { default as Config } from 'react-native-config';
 import type { RootStackParamList } from '@src/navigation';
 import {
-  Splash,
   NetworkLogs,
   Landing,
+  Signup,
   SignIn,
   ForgotPassword,
   OtpVerification,
   ResetPassword,
   ResetPasswordSuccess,
-  Signup,
+  Splash,
 } from '@src/screens';
-
-import SignUpSuccess from '@src/screens/SignUpSuccess';
 import TabNavigator from './TabNavigator';
 
 const stack = createNativeStackNavigator<RootStackParamList, 'RootStack'>();
@@ -41,15 +39,11 @@ export default React.memo(() => (
       name="resetPasswordSuccess"
       component={ResetPasswordSuccess}
     />
-    <stack.Screen name="signUpSuccess" component={SignUpSuccess} />
     {/* Main app with tab bar */}
     <stack.Screen name="home" component={TabNavigator} />
     {/* Navigators */}
     {/* TODO: Add nested navigators here. */}
 
     {/* Modals */}
-    <stack.Group screenOptions={{ presentation: 'transparentModal' }}>
-      <>{/* TODO: Add modals screens here. */}</>
-    </stack.Group>
   </stack.Navigator>
 ));

@@ -1,7 +1,7 @@
+import { CommonActions } from '@react-navigation/native';
 import * as React from 'react';
-import { Animated, Dimensions } from 'react-native';
 import { hide as rnBootSplashHide } from 'react-native-bootsplash';
-import { useAppSelector } from '@src/store';
+import { navigationRef } from '@src/navigation/NavigationUtils';
 import type { UseHideSplashProps } from './useHideSplash.types';
 
 export const useHideSplash = (props: UseHideSplashProps) => {
@@ -11,12 +11,7 @@ export const useHideSplash = (props: UseHideSplashProps) => {
   // #endregion
 
   // #region Variables
-  const { opacity, translateY, navigation, isLanguageLoaded, isUserLoaded } =
-    props;
-  // #endregion
-
-  // #region Redux
-  const { user: stateUser } = useAppSelector(state => state.user);
+  const { isLanguageLoaded, isUserLoaded } = props;
   // #endregion
 
   // #region State
@@ -24,37 +19,22 @@ export const useHideSplash = (props: UseHideSplashProps) => {
     React.useState<boolean>(true);
   // #endregion
 
-  const openNextScreen = React.useCallback(() => {
-    console.info(getLogMessage('openNextScreen'));
-    navigation.replace(stateUser ? 'home' : 'landing');
-  }, [navigation, stateUser]);
+  const openNextScreen = React.useCallback(async () => {
+    console.info(getLogMessage('openNextScreen - navigating to landing'));
+    navigationRef.dispatch(
+      CommonActions.reset({ index: 0, routes: [{ name: 'landing' as any }] }),
+    );
+    try {
+      await rnBootSplashHide();
+    } catch (error) {}
+  }, [navigationRef]);
 
   const hideSplash = React.useCallback(async () => {
     console.info(getLogMessage('hideSplash'));
 
     try {
-      await rnBootSplashHide();
-
-      Animated.stagger(250, [
-        Animated.spring(translateY.current, {
-          useNativeDriver: true,
-          toValue: -50,
-        }),
-        Animated.spring(translateY.current, {
-          useNativeDriver: true,
-          toValue: Dimensions.get('window').height,
-        }),
-      ]).start();
-
-      Animated.timing(opacity.current, {
-        useNativeDriver: true,
-        toValue: 0,
-        duration: 150,
-        delay: 350,
-      }).start(() => {
-        setBootSplashVisible(false);
-        openNextScreen();
-      });
+      setBootSplashVisible(false);
+      openNextScreen();
     } catch (error) {
       console.warn(
         getLogMessage('Error while calling "rnBootSplashHide"'),
@@ -64,15 +44,12 @@ export const useHideSplash = (props: UseHideSplashProps) => {
       setBootSplashVisible(false);
       openNextScreen();
     }
-  }, [translateY, opacity, openNextScreen]);
+  }, [openNextScreen]);
 
   // #region Setup
   React.useEffect(() => {
-    // Check if register visibility, language and user loaded then:
-    // - If user available in state then:
-    //   - Open home screen.
-    // - Else:
-    //   - Open login screen.
+    // Check if language and user loaded then:
+    // - Navigate to landing screen.
     if (isLanguageLoaded && isUserLoaded) {
       hideSplash();
     }

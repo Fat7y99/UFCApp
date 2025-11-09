@@ -2,7 +2,6 @@ import { getLanguage, setLanguage } from '@modules/core';
 import { navigationRef } from '@src/navigation/NavigationUtils';
 import { store } from '@src/store';
 import * as i18next from 'i18next';
-
 import { initReactI18next } from 'react-i18next';
 import { Platform, Settings, I18nManager } from 'react-native';
 import { default as Config } from 'react-native-config';

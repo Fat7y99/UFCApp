@@ -76,7 +76,7 @@ export const saveUserDataOpenHome = (user: User, apiToken: string) => {
   console.info(getLogMessage('saveUserDataOpenHome'), user, apiToken);
   saveUserData(user);
   saveApiToken(apiToken);
-  reset('home');
+  // reset('home');
   // Fetch unread notifications count asynchronously after login
   fetchUnreadNotificationsCount();
 };

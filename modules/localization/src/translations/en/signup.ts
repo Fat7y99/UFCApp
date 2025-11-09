@@ -13,7 +13,7 @@ export default {
   signInText: 'Have an account?',
   signInLink: 'Sign In',
   registeredSuccessfully: 'Registered successfully',
-  mobileNumberMustBe20Digits: 'Mobile number must be 20 digits',
+  mobileNumberMustBe10Digits: 'Mobile number must be 10 digits',
   pleaseAcceptTerms: 'Please accept the terms and conditions',
   fieldRequired: '{{field}} is required',
   passwordsDoNotMatch: 'Passwords do not match',
@@ -24,4 +24,11 @@ export default {
   onlyLettersAndSpacesAllowed:
     'The name must contain at least one letter and no other characters',
   minimum9Digits: 'The mobile number must be at least 9 digits',
+  idNumberMustStartWith1Or2: 'The ID number must start with 1 or 2',
+  usernameMustStartWithLetter: 'Username must start with a letter',
+  usernameCannotBeOnlyNumbers: 'Username cannot be only numbers',
+  usernameMustBeMoreThan3Characters: 'Username must be more than 3 characters',
+  usernameCannotContainSpaces: 'Username cannot contain spaces',
+  usernameCannotContainSpecialCharacters:
+    'Username cannot contain special characters',
 };

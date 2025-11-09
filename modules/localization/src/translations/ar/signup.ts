@@ -13,7 +13,7 @@ export default {
   signInText: 'لديك حساب بالفعل؟',
   signInLink: 'تسجيل الدخول',
   registeredSuccessfully: 'تم التسجيل بنجاح',
-  mobileNumberMustBe20Digits: 'يجب أن يكون رقم الهاتف المحمول 20 رقمًا',
+  mobileNumberMustBe10Digits: 'يجب أن يكون رقم الهاتف المحمول 10 رقمًا',
   pleaseAcceptTerms: 'الرجاء الموافقة على الشروط والأحكام',
   fieldRequired: '{{field}} مطلوب',
   passwordsDoNotMatch: 'كلمات المرور غير متطابقة',
@@ -24,4 +24,11 @@ export default {
   onlyLettersAndSpacesAllowed:
     'يجب أن يحتوي الاسم على حرف واحد على الأقل ولا يحتوي على أي أحرف أخرى',
   minimum9Digits: 'يجب أن يكون رقم الهاتف المحمول على الأقل 9 رقمًا',
+  idNumberMustStartWith1Or2: 'يجب أن يبدأ رقم الهوية بـ 1 أو 2',
+  usernameMustStartWithLetter: 'يجب أن يبدأ اسم المستخدم بحرف',
+  usernameCannotBeOnlyNumbers: 'لا يمكن أن يكون اسم المستخدم أرقامًا فقط',
+  usernameMustBeMoreThan3Characters: 'يجب أن يكون اسم المستخدم أكثر من 3 أحرف',
+  usernameCannotContainSpaces: 'لا يمكن أن يحتوي اسم المستخدم على مسافات',
+  usernameCannotContainSpecialCharacters:
+    'لا يمكن أن يحتوي اسم المستخدم على أحرف خاصة',
 };

@@ -1,4 +1,5 @@
 export default {
+  splashIcon: require('./images/splash_icon.png'),
   bootSplashImage: require('./images/app_icon.svg'),
   // TODO: Add app images.
   logo: require('./images/logo.svg'),

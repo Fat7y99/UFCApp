@@ -5,16 +5,13 @@ import type { UseSplashProps } from './useSplash.types';
 
 export const useSplash = (props: UseSplashProps) => {
   // #region Variables
-  const { navigation, opacity, translateY, isBootSplashLogoLoaded } = props;
+  const { isBootSplashLogoLoaded } = props;
   // #endregion
 
   const isLanguageLoaded = useSplashLanguageLoader(isBootSplashLogoLoaded);
   const isUserLoaded = useSplashUserLoader(isBootSplashLogoLoaded);
 
   const isBootSplashVisible = useHideSplash({
-    navigation,
-    opacity,
-    translateY,
     isLanguageLoaded,
     isUserLoaded,
   });

@@ -16,9 +16,17 @@ import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { useAppTheme, AppColors } from '@modules/theme';
-import { FormInput, Checkbox, SignupButton, SignInLink } from './components';
+import {
+  FormInput,
+  MobileNumberInput,
+  Checkbox,
+  SignupButton,
+  SignInLink,
+} from './components';
 
 const isRTL = I18nManager.isRTL;
+const COUNTRY_CODE = '+20';
+
 export default React.memo(() => {
   const theme = useAppTheme();
 
@@ -26,7 +34,7 @@ export default React.memo(() => {
   const [formData, setFormData] = React.useState({
     name: '',
     username: '',
-    mobileNumber: '',
+    mobileNumber: COUNTRY_CODE,
     email: '',
     idNumber: '',
     password: '',
@@ -37,19 +45,44 @@ export default React.memo(() => {
   const navigation = useNavigation();
 
   // Check if all required fields are filled and passwords match
-  const isFormValid = React.useMemo(
-    () =>
+  const isFormValid = React.useMemo(() => {
+    const username = formData?.username?.trim() || '';
+    const isUsernameValid =
+      username.length > 3 &&
+      /^[a-zA-Z]/.test(username) && // Must start with letter
+      !/^[0-9]+$/.test(username) && // Cannot be only numbers
+      !username.includes(' ') && // Cannot contain spaces
+      !/[^a-zA-Z0-9]/.test(username); // Cannot contain special characters
+
+    return (
       formData?.name?.trim() !== '' &&
-      formData?.username?.trim() !== '' &&
+      username !== '' &&
+      isUsernameValid &&
       formData?.mobileNumber?.trim() !== '' &&
+      formData?.mobileNumber?.length > COUNTRY_CODE.length && // Ensure there are digits after country code
       formData?.email?.trim() !== '' &&
       formData?.idNumber?.trim() !== '' &&
       formData?.password?.trim() !== '' &&
       formData?.confirmPassword?.trim() !== '' &&
-      termsAccepted,
-    [formData, termsAccepted],
-  );
+      termsAccepted
+    );
+  }, [formData, termsAccepted]);
   const handleInputChange = (field: string, value: string) => {
+    // make idNumber should start with 1 or 2 only
+    if (field === 'idNumber') {
+      const idNumberValue = value.replace(/[^0-9*]/g, '');
+      //shoe error message if not start with 1 or 2
+      if (!idNumberValue.startsWith('1') && !idNumberValue.startsWith('2')) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:idNumberMustStartWith1Or2`,
+          ),
+        });
+      }
+      setFormData(prev => ({ ...prev, [field]: idNumberValue }));
+      return;
+    }
     //max length 50 characters
     if (value.length > 50) {
       Toast.show({
@@ -63,10 +96,63 @@ export default React.memo(() => {
       });
       return;
     }
+    //
     if (field === 'username') {
-      // Remove non-English characters
-      const englishValue = value.replace(/[^a-zA-Z0-9]/g, '');
-      setFormData(prev => ({ ...prev, [field]: englishValue }));
+      // Remove spaces and special characters (only allow letters and numbers)
+      let usernameValue = value.replace(/[^a-zA-Z0-9]/g, '');
+
+      // Show error if original value contained spaces or special characters
+      if (value.includes(' ')) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameCannotContainSpaces`,
+          ),
+        });
+      } else if (/[^a-zA-Z0-9]/.test(value)) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameCannotContainSpecialCharacters`,
+          ),
+        });
+      }
+
+      // Check if username starts with a number
+      if (usernameValue.length > 0 && /^[0-9]/.test(usernameValue)) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameMustStartWithLetter`,
+          ),
+        });
+        // Remove the leading number
+        usernameValue = usernameValue.replace(/^[0-9]+/, '');
+      }
+
+      // Check if username is only numbers
+      if (usernameValue.length > 0 && /^[0-9]+$/.test(usernameValue)) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameCannotBeOnlyNumbers`,
+          ),
+        });
+        // Keep only letters if it's all numbers
+        usernameValue = usernameValue.replace(/[0-9]/g, '');
+      }
+
+      // Check minimum length (only if user has typed something)
+      if (usernameValue.length > 0 && usernameValue.length <= 3) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameMustBeMoreThan3Characters`,
+          ),
+        });
+      }
+
+      setFormData(prev => ({ ...prev, [field]: usernameValue }));
       return;
     } //
     else if (field === 'email') {
@@ -74,31 +160,20 @@ export default React.memo(() => {
       setFormData(prev => ({ ...prev, [field]: emailValue }));
       return;
     } else if (field === 'mobileNumber') {
-      // Only allow numbers and one plus sign at the beginning
-      let mobileNumberValue = value.replace(/[^\d+]/g, ''); // Remove everything except digits and +
-
-      // Ensure only one plus sign at the beginning
-      if (mobileNumberValue.startsWith('+')) {
-        // Keep the + at the start and remove all other + signs
-        mobileNumberValue =
-          '+' + mobileNumberValue.substring(1).replace(/\+/g, '');
-      } else {
-        // Remove all + signs if not at the beginning
-        mobileNumberValue = mobileNumberValue.replace(/\+/g, '');
-      }
-
-      // Count only digits (excluding the + sign)
-      const digitsOnly = mobileNumberValue.replace(/\+/g, '');
-      if (digitsOnly.length > 20) {
+      // MobileNumberInput component ensures country code is always present
+      // Just validate the length of digits after country code
+      const digitsAfterCode = value.substring(COUNTRY_CODE.length);
+      if (digitsAfterCode.length > 10) {
         Toast.show({
           type: 'fail',
           text1: translate(
-            `${TranslationNamespaces.SIGNUP}:mobileNumberMustBe20Digits`,
+            `${TranslationNamespaces.SIGNUP}:mobileNumberMustBe10Digits`,
           ),
         });
         return;
       }
-      setFormData(prev => ({ ...prev, [field]: mobileNumberValue }));
+      console.log('valueee', value);
+      setFormData(prev => ({ ...prev, [field]: value }));
       return;
     } else if (field === 'idNumber') {
       const idNumberValue = value.replace(/[^0-9]/g, '');
@@ -126,6 +201,7 @@ export default React.memo(() => {
       >
         <View style={styles.contentContainer}>
           <ScrollView
+            automaticallyAdjustKeyboardInsets={true}
             style={styles.scrollView}
             contentContainerStyle={styles.scrollViewContent}
             showsVerticalScrollIndicator={false}
@@ -158,13 +234,16 @@ export default React.memo(() => {
                 onChangeText={value => handleInputChange('username', value)}
               />
 
-              <FormInput
+              <MobileNumberInput
                 textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.SIGNUP}:mobileNumber`,
                 )}
                 value={formData.mobileNumber}
-                onChangeText={value => handleInputChange('mobileNumber', value)}
+                onChangeText={(value: string) =>
+                  handleInputChange('mobileNumber', value)
+                }
+                countryCode={COUNTRY_CODE}
               />
 
               <FormInput

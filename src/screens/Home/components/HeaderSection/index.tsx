@@ -1,4 +1,3 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, TextInput, Image } from 'react-native';
 import { useAppSelector } from '@src/store';
@@ -10,11 +9,6 @@ import { AppImages } from 'modules/assets/src';
 
 const HeaderSection: React.FC = () => {
   const { user } = useAppSelector(state => state.user);
-  const navigation = useNavigation();
-  const handleSignInPress = () => {
-    // Will be handled by each screen's navigation
-    navigation.navigate('login');
-  };
 
   return (
     <View style={styles.container}>
