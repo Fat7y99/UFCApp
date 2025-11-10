@@ -1,5 +1,9 @@
 import * as React from 'react';
-import { useAppDispatch, setApiToken as setStateApiToken } from '@src/store';
+import {
+  useAppDispatch,
+  setApiToken as setStateApiToken,
+  useAppSelector,
+} from '@src/store';
 import {
   getApiToken as getLocalStorageApiToken,
   useGetUserDetailsApi,
@@ -22,13 +26,14 @@ export const useSplashUserLoader = (isBootSplashLogoLoaded: boolean) => {
 
   const [isUserLoaded, setUserLoaded] = React.useState<boolean>(false);
   // #endregion
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
 
   // #region API
   const {
     data: apiUser,
     isError: isErrorApi,
     isSuccess: isSuccessApi,
-  } = useGetUserDetailsApi({ enabled: shouldStartUserLoading });
+  } = useGetUserDetailsApi({ enabled: shouldStartUserLoading && isLoggedIn });
   // #endregion
 
   const getSavedUserToken = React.useCallback(() => {
@@ -67,7 +72,10 @@ export const useSplashUserLoader = (isBootSplashLogoLoaded: boolean) => {
     if (isErrorApi) {
       setUserLoaded(true);
     }
-  }, [isSuccessApi, isErrorApi, saveApiUserData]);
+    if (!isLoggedIn) {
+      setUserLoaded(true);
+    }
+  }, [isSuccessApi, isErrorApi, saveApiUserData, isLoggedIn]);
   // #endregion
 
   return isUserLoaded;

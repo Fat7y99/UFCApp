@@ -18,6 +18,12 @@ export default {
   next: 'التالي',
   apply: 'تقديم',
 
+  // Error Messages
+  failedToSubmitSmeApplication:
+    'فشل في تقديم طلب تمويل المؤسسات الصغيرة والمتوسطة',
+  failedToSubmitRealEstateApplication: 'فشل في تقديم طلب تمويل العقارات',
+  failedToSubmitPersonalApplication: 'فشل في تقديم طلب التمويل الشخصي',
+
   // Financing Types
   invoice: 'فواتير',
   project: 'مشروع',
@@ -54,7 +60,7 @@ export default {
   businessActivityType: 'نوع النشاط التجاري',
   crAge: 'عمر السجل التجاري (سنوات)',
   businessRegion: 'منطقة العمل',
-  businessType: 'نوع العمل',
+  businessType: 'نوع السجل',
   posAnnualPropertyIncome: 'دخل العقار السنوي من نقاط البيع',
   financialStatementAvailable: 'البيان المالي متوفر',
   yes: 'نعم',
@@ -67,4 +73,5 @@ export default {
   propertyAge: 'عمر العقار (سنوات)',
   propertyCity: 'مدينة العقار',
   annualPropertyIncome: 'الدخل السنوي للعقار',
+  propertyAgeMinimumError: 'يجب أن يكون عمر العقار أكثر من 3 سنوات',
 };

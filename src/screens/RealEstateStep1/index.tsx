@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,10 +15,18 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
+import { useAppDispatch, useAppSelector } from '@src/store';
 import {
-  getInputConstraints,
-  formatPhoneNumber,
-} from '@src/utils/InputFormatting';
+  resetRealEstateForm,
+  setServiceId,
+  setTitle,
+  setName,
+  setMobile,
+  setDob,
+  setEmployer,
+  setJobTitle,
+} from '@src/store/realEstateForm';
+import { getInputConstraints } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -31,6 +39,51 @@ import {
   RealEstateAllStepsLogo,
 } from 'modules/assets/src';
 
+const COUNTRY_CODE = '+20';
+
+// Local MobileNumberInput component matching RealEstateStep1 input styles
+interface MobileNumberInputProps {
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  countryCode: string;
+  textAlign?: 'left' | 'right';
+}
+
+const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
+  placeholder,
+  value,
+  onChangeText,
+  countryCode,
+  textAlign = 'left',
+}) => {
+  // Extract the number part (after country code)
+  const numberPart = value.startsWith(countryCode)
+    ? value.substring(countryCode.length)
+    : value;
+
+  const handleTextChange = (text: string) => {
+    // Always prepend country code
+    const newValue = countryCode + text.replace(/[^\d]/g, '');
+    onChangeText(newValue);
+  };
+
+  return (
+    <View style={styles.mobileInputWrapper}>
+      <Text style={styles.countryCode}>{countryCode}</Text>
+      <TextInput
+        style={styles.mobileInput}
+        placeholder={placeholder}
+        placeholderTextColor="#999"
+        value={numberPart}
+        onChangeText={handleTextChange}
+        keyboardType="phone-pad"
+        textAlign={textAlign}
+      />
+    </View>
+  );
+};
+
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type RealEstateStep1RouteProp = RouteProp<
   RootStackParamList,
@@ -40,14 +93,33 @@ const isRTL = I18nManager.isRTL;
 const RealEstateStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RealEstateStep1RouteProp>();
+  const dispatch = useAppDispatch();
   const serviceId = route.params?.serviceId || 7;
   const title = route.params?.title || '';
-  const [name, setName] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [dob, setDob] = useState('');
-  const [employer, setEmployer] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
+
+  // Get form state from Redux
+  const name = useAppSelector(state => state.realEstateForm.name || '');
+  const mobile = useAppSelector(
+    state => state.realEstateForm.mobile || COUNTRY_CODE,
+  );
+  const dob = useAppSelector(state => state.realEstateForm.dob || '');
+  const employer = useAppSelector(state => state.realEstateForm.employer || '');
+  const jobTitle = useAppSelector(state => state.realEstateForm.jobTitle || '');
   const [handleOpenCalendar, setHandleOpenCalendar] = useState<boolean>(false);
+
+  // Track which fields have been touched/changed by user
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+
+  // Reset form and set serviceId/title when component mounts
+  useEffect(() => {
+    dispatch(resetRealEstateForm());
+    dispatch(setServiceId(serviceId));
+    if (title) {
+      dispatch(setTitle(title));
+    }
+    // Reset touched fields when form is reset
+    setTouchedFields(new Set());
+  }, [dispatch, serviceId, title]);
 
   const formatDateString = (date: Date): string => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -78,7 +150,8 @@ const RealEstateStep1: React.FC = () => {
 
   const handleDateChange = (date: Date) => {
     const formattedDate = formatDateString(date);
-    setDob(formattedDate);
+    setTouchedFields(prev => new Set(prev).add('dob'));
+    dispatch(setDob(formattedDate));
     setHandleOpenCalendar(false);
   };
 
@@ -90,15 +163,33 @@ const RealEstateStep1: React.FC = () => {
   const filterEnglishLettersAndSpaces = (text: string): string =>
     text.replace(/[^a-zA-Z\s]/g, '');
 
+  // Validate all fields
+  const isNameValid = useMemo(() => name.trim() !== '', [name]);
+  const isMobileValid = useMemo(
+    () => mobile.length > COUNTRY_CODE.length, // Ensure there are digits after country code
+    [mobile],
+  );
+  const isDobValid = useMemo(() => dob.trim() !== '', [dob]);
+  const isEmployerValid = useMemo(() => employer.trim() !== '', [employer]);
+  const isJobTitleValid = useMemo(() => jobTitle.trim() !== '', [jobTitle]);
+
+  // Check if fields have errors (for red border display)
+  // Show error only if field has been touched AND is invalid
+  const hasNameError = touchedFields.has('name') && !isNameValid;
+  const hasMobileError = touchedFields.has('mobile') && !isMobileValid;
+  const hasDobError = touchedFields.has('dob') && !isDobValid;
+  const hasEmployerError = touchedFields.has('employer') && !isEmployerValid;
+  const hasJobTitleError = touchedFields.has('jobTitle') && !isJobTitleValid;
+
   // Check if all required fields are filled
   const isFormValid = useMemo(
     () =>
-      name.trim() !== '' &&
-      mobile.trim() !== '' &&
-      dob.trim() !== '' &&
-      employer.trim() !== '' &&
-      jobTitle.trim() !== '',
-    [name, mobile, dob, employer, jobTitle],
+      isNameValid &&
+      isMobileValid &&
+      isDobValid &&
+      isEmployerValid &&
+      isJobTitleValid,
+    [isNameValid, isMobileValid, isDobValid, isEmployerValid, isJobTitleValid],
   );
 
   const handleNext = () => {
@@ -115,13 +206,7 @@ const RealEstateStep1: React.FC = () => {
     }
     navigation.navigate('realEstateStep2', {
       serviceId,
-      customerBaseInfo: {
-        name: name || undefined,
-        phone: mobile || undefined,
-        birthDate: dob || undefined,
-        employer: employer || undefined,
-        jobTitle: jobTitle || undefined,
-      },
+      title,
     });
   };
 
@@ -139,7 +224,9 @@ const RealEstateStep1: React.FC = () => {
           />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
-          {title}
+          {title +
+            ' ' +
+            translate(`${TranslationNamespaces.FINANCING}:financing`)}
         </Text>
       </View>
 
@@ -147,6 +234,7 @@ const RealEstateStep1: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
@@ -174,78 +262,114 @@ const RealEstateStep1: React.FC = () => {
           </Text>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(`${TranslationNamespaces.FINANCING}:name`)}
-              placeholderTextColor="#999"
-              value={name}
-              onChangeText={text =>
-                setName(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:mobile`,
-              )}
-              placeholderTextColor="#999"
-              value={mobile}
-              onChangeText={text => setMobile(formatPhoneNumber(text))}
-              {...getInputConstraints('phone')}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={styles.dateInputContainer}
-              onPress={() => setHandleOpenCalendar(true)}
-            >
+            <View style={styles.inputWrapper}>
               <TextInput
-                style={styles.dateInput}
+                style={[styles.input, hasNameError && styles.inputError]}
                 placeholder={translate(
-                  `${TranslationNamespaces.FINANCING}:dob`,
+                  `${TranslationNamespaces.FINANCING}:name`,
                 )}
                 placeholderTextColor="#999"
-                value={dob}
-                onChangeText={setDob}
-                editable={false}
+                value={name}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('name'));
+                  dispatch(setName(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
               />
-              <CalendarLogo />
-            </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:employer`,
-              )}
-              placeholderTextColor="#999"
-              value={employer}
-              onChangeText={text =>
-                setEmployer(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <View
+                style={[
+                  styles.input,
+                  hasMobileError && styles.inputError,
+                  styles.mobileInputContainer,
+                ]}
+              >
+                <MobileNumberInput
+                  textAlign={isRTL ? 'right' : 'left'}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:mobile`,
+                  )}
+                  value={mobile}
+                  onChangeText={(value: string) => {
+                    setTouchedFields(prev => new Set(prev).add('mobile'));
+                    dispatch(setMobile(value));
+                  }}
+                  countryCode={COUNTRY_CODE}
+                />
+              </View>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:jobTitle`,
-              )}
-              placeholderTextColor="#999"
-              value={jobTitle}
-              onChangeText={text =>
-                setJobTitle(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.dateInputContainer,
+                  hasDobError && styles.inputError,
+                ]}
+                onPress={() => {
+                  setTouchedFields(prev => new Set(prev).add('dob'));
+                  setHandleOpenCalendar(true);
+                }}
+              >
+                <TextInput
+                  style={styles.dateInput}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:dob`,
+                  )}
+                  placeholderTextColor="#999"
+                  value={dob}
+                  onChangeText={text => dispatch(setDob(text))}
+                  editable={false}
+                />
+                <CalendarLogo />
+              </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasEmployerError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:employer`,
+                )}
+                placeholderTextColor="#999"
+                value={employer}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('employer'));
+                  dispatch(setEmployer(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasJobTitleError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:jobTitle`,
+                )}
+                placeholderTextColor="#999"
+                value={jobTitle}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('jobTitle'));
+                  dispatch(setJobTitle(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
         </View>
 
@@ -261,10 +385,7 @@ const RealEstateStep1: React.FC = () => {
         </TouchableOpacity>
       </ScrollView>
       <DateTimePickerModal
-        style={styles.datePicker}
-        pickerStyleIOS={styles.datePicker}
-        pickerContainerStyleIOS={styles.datePicker}
-        pickerComponentStyleIOS={styles.datePicker}
+        themeVariant="light"
         date={getDatePickerValue()}
         isVisible={handleOpenCalendar}
         mode="date"
@@ -442,6 +563,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
   },
+  inputWrapper: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: 'transparent',
     borderRadius: ResponsiveDimensions.vs(12),
@@ -452,6 +576,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#8C8C8C',
     textAlign: isRTL ? 'right' : 'left',
+  },
+  inputError: {
+    borderColor: '#FF0000',
+  },
+  mandatoryStar: {
+    position: 'absolute',
+    top: ResponsiveDimensions.vs(4),
+    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
+    color: AppColors.themeLight.secondary,
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: 'bold',
+  },
+  mobileInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+  },
+  mobileInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    paddingHorizontal: ResponsiveDimensions.vs(16),
+    paddingVertical: ResponsiveDimensions.vs(16),
+  },
+  countryCode: {
+    color: '#333',
+    fontSize: ResponsiveDimensions.vs(16),
+    marginRight: ResponsiveDimensions.vs(8),
+    fontWeight: '500',
+  },
+  mobileInput: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontSize: ResponsiveDimensions.vs(16),
+    color: '#333',
+    padding: 0,
   },
   dateInputContainer: {
     flexDirection: 'row',

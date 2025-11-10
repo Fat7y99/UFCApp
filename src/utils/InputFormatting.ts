@@ -1,15 +1,37 @@
 // Format number with commas and 2 decimal places
 export const formatAmount = (value: string): string => {
   // Remove all non-numeric characters except decimal point
-  const numericValue = value.replace(/[^0-9.]/g, '');
+  let numericValue = value.replace(/[^0-9.]/g, '');
+
+  // Prevent only dots - if input is just ".", convert to "0."
+  if (numericValue === '.') {
+    return '0.';
+  }
+
+  // If input starts with "." (and has more characters), convert to "0."
+  if (numericValue.startsWith('.')) {
+    numericValue = '0' + numericValue;
+  }
 
   // Split by decimal point
   const parts = numericValue.split('.');
 
-  // Format the integer part with commas
-  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  // Ensure integer part is not empty - if empty, use "0"
+  let integerPart = parts[0] || '0';
 
-  // Handle decimal part
+  // Remove leading zeros except for "0" itself
+  if (
+    integerPart?.length > 1 &&
+    integerPart?.startsWith('0') &&
+    integerPart !== '0'
+  ) {
+    integerPart = integerPart.replace(/^0+/, '') || '0';
+  }
+
+  // Format the integer part with commas
+  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // Handle decimal part (limit to 2 decimal places)
   const decimalPart = parts[1] ? parts[1].substring(0, 2) : '';
 
   // Combine parts
@@ -119,4 +141,29 @@ export const validateInput = (value: string, fieldType: string): boolean => {
 export const validateEmail = (emailPass: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(emailPass);
+};
+
+export const formatInput = (text: string, noDecimal?: boolean) => {
+  const cleanText = text.replace(/[^0-9]/g, '');
+
+  if (cleanText === '') {
+    return cleanText;
+  }
+
+  if (noDecimal) {
+    console.log('cleansText', text);
+    return parseInt(cleanText, 10).toLocaleString();
+  }
+
+  let formattedValue = '';
+
+  if (cleanText.length === 1) {
+    formattedValue = `0.0${cleanText}`;
+  } else if (cleanText.length === 2) {
+    formattedValue = `0.${cleanText}`;
+  } else {
+    formattedValue = `${parseInt(cleanText.slice(0, -2), 10).toLocaleString()}.${cleanText.slice(-2)}`;
+  }
+
+  return formattedValue;
 };

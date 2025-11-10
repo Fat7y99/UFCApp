@@ -17,20 +17,12 @@ import { AppImages } from 'modules/assets/src';
 import { AppColors } from 'modules/theme/src';
 const isRTL = I18nManager.isRTL;
 export default React.memo(() => {
-  // #region Logger
-  const getLogMessage = (message: string) =>
-    `## Notifications::Header:: ${message}`;
   // #endregion
 
   const {} = useTranslation(TranslationNamespaces.NOTIFICATIONS);
 
   const navigation =
     useNavigation<RootStackScreenProps<'notifications'>['navigation']>();
-
-  const onBackPress = () => {
-    console.info(getLogMessage('onBackPress'));
-    navigation.goBack();
-  };
 
   return (
     <View style={styles.header}>

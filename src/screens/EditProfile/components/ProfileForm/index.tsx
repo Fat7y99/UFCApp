@@ -247,10 +247,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         <View style={styles.separator} />
       </View>
       <DateTimePickerModal
-        style={styles.datePicker}
-        pickerStyleIOS={styles.datePicker}
-        pickerContainerStyleIOS={styles.datePicker}
-        pickerComponentStyleIOS={styles.datePicker}
+        themeVariant="light"
         date={getDatePickerValue()}
         isVisible={handleOpenCalendar}
         mode="date"

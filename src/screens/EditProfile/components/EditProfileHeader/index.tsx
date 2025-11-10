@@ -13,6 +13,7 @@ import {
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
+import { useAppSelector } from '@src/store';
 import { useUpdateImageProfileApi, useGetCurrentUserApi } from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -25,7 +26,11 @@ const isRTL = I18nManager.isRTL;
 const EditProfileHeader: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { data: currentUser } = useGetCurrentUserApi();
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
+
+  const { data: currentUser } = useGetCurrentUserApi({
+    enabled: isLoggedIn,
+  });
 
   const { mutate: updateImage, isPending } = useUpdateImageProfileApi({
     onSuccess: () => {

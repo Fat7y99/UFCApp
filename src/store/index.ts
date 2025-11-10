@@ -4,6 +4,9 @@ import { default as logger } from 'redux-logger';
 import dialogsReducer from './dialogs';
 import networkStateReducer from './networkState';
 import notificationsReducer from './notifications';
+import personalFormReducer from './personalForm';
+import realEstateFormReducer from './realEstateForm';
+import smeFormReducer from './smeForm';
 import userReducer from './user';
 
 export const store = configureStore({
@@ -12,6 +15,9 @@ export const store = configureStore({
     dialogs: dialogsReducer,
     networkState: networkStateReducer,
     notifications: notificationsReducer,
+    smeForm: smeFormReducer,
+    realEstateForm: realEstateFormReducer,
+    personalForm: personalFormReducer,
   },
   middleware: getDefaultMiddleware =>
     Config.ENABLE_LOCAL_LOG === 'true'
@@ -34,3 +40,6 @@ export * from './dialogs';
 export * from './networkState';
 export * from './user';
 export * from './notifications';
+export * from './smeForm';
+// Note: realEstateForm exports are not re-exported here to avoid conflicts with smeForm
+// Import directly from './realEstateForm' when needed

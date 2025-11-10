@@ -1,20 +1,17 @@
 import * as React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
-import type { RootStackScreenProps } from '@src/navigation';
+
 import { AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 
 import styles from './styles';
 import { useSplash } from './useSplash';
 
-export default React.memo((props: RootStackScreenProps<'splash'>) => {
+export default React.memo(() => {
   // #region Variables
-  const { navigation } = props;
   // #endregion
 
-  const isBootSplashVisible = useSplash({
-    navigation,
-
+  useSplash({
     isBootSplashLogoLoaded: true,
   });
 

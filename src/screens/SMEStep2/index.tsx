@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -17,9 +17,19 @@ import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
 import { SuccessType } from '@src/screens/Success/types';
 import {
+  useAppDispatch,
+  useAppSelector,
+  setBusinessActivityType,
+  setCrAge,
+  setBusinessRegion,
+  setBusinessType,
+  setPosAnnualPropertyIncome,
+  setFinancialStatementAvailable,
+} from '@src/store';
+import {
   getInputConstraints,
-  formatAmount,
   formatNumber,
+  formatInput,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -40,9 +50,43 @@ const isRTL = I18nManager.isRTL;
 const SMEStep2: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<SMEStep2RouteProp>();
-  const serviceId = route.params?.serviceId || 1;
-  const title = route.params?.title || '';
-  const customerLiability = route.params?.customerLiability;
+  const dispatch = useAppDispatch();
+
+  // Get form state from Redux
+  const serviceId = useAppSelector(
+    state => state.smeForm.serviceId || route.params?.serviceId || 1,
+  );
+  const title = useAppSelector(
+    state => state.smeForm.title || route.params?.title || '',
+  );
+
+  // Step 1 fields from Redux
+  const liabilityType = useAppSelector(state => state.smeForm.liabilityType);
+  const monthlyInstallment = useAppSelector(
+    state => state.smeForm.monthlyInstallment,
+  );
+  const bankName = useAppSelector(state => state.smeForm.bankName);
+  const remainingBalance = useAppSelector(
+    state => state.smeForm.remainingBalance,
+  );
+
+  // Step 2 fields from Redux
+  const businessActivityType = useAppSelector(
+    state => state.smeForm.businessActivityType || '',
+  );
+  const crAge = useAppSelector(state => state.smeForm.crAge || '');
+  const businessRegion = useAppSelector(
+    state => state.smeForm.businessRegion || '',
+  );
+  const businessType = useAppSelector(
+    state => state.smeForm.businessType || '',
+  );
+  const posAnnualPropertyIncome = useAppSelector(
+    state => state.smeForm.posAnnualPropertyIncome || '',
+  );
+  const financialStatementAvailable = useAppSelector(
+    state => state.smeForm.financialStatementAvailable || '',
+  );
 
   const addSmeApplicationMutation = useAddSmeApplicationApi({
     onSuccess: () => {
@@ -51,39 +95,91 @@ const SMEStep2: React.FC = () => {
       });
     },
     onError: error => {
+      Toast.show({
+        type: 'fail',
+        text1:
+          error.errorMessage ??
+          translate(
+            `${TranslationNamespaces.FINANCING}:failedToSubmitSmeApplication`,
+          ),
+      });
       console.error('Error submitting SME application:', error);
       // Handle error - you might want to show an error message
     },
   });
-  const [businessActivityType, setBusinessActivityType] = useState('');
-  const [crAge, setCrAge] = useState('');
-  const [businessRegion, setBusinessRegion] = useState('');
-  const [businessType, setBusinessType] = useState('');
-  const [posAnnualPropertyIncome, setPosAnnualPropertyIncome] = useState('');
-  const [financialStatementAvailable, setFinancialStatementAvailable] =
-    useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+
+  // Track which fields have been touched/changed by user
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
   // Filter text input to only allow English letters and spaces
   const filterEnglishLettersAndSpaces = (text: string): string =>
     text.replace(/[^a-zA-Z\s]/g, '');
 
+  // Validate all fields
+  const isBusinessActivityTypeValid = useMemo(
+    () => businessActivityType.trim() !== '',
+    [businessActivityType],
+  );
+  const isCrAgeValid = useMemo(() => crAge.trim() !== '', [crAge]);
+  const isBusinessRegionValid = useMemo(
+    () => businessRegion.trim() !== '',
+    [businessRegion],
+  );
+  const isBusinessTypeValid = useMemo(
+    () => businessType.trim() !== '',
+    [businessType],
+  );
+  const isPosAnnualPropertyIncomeValid = useMemo(() => {
+    // Only validate if serviceId === 3 (field is shown)
+    if (serviceId !== 3) {
+      return true; // Field not shown, so it's valid
+    }
+    if (!posAnnualPropertyIncome || posAnnualPropertyIncome.trim() === '') {
+      return false;
+    }
+    const numericValue = posAnnualPropertyIncome.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    // Valid if it's a number and > 0 (must be greater than 0)
+    return !isNaN(numValue) && numValue > 0;
+  }, [posAnnualPropertyIncome, serviceId]);
+  const isFinancialStatementAvailableValid = useMemo(
+    () => financialStatementAvailable.trim() !== '',
+    [financialStatementAvailable],
+  );
+
+  // Check if fields have errors (for red border display)
+  // Show error only if field has been touched AND is invalid
+  const hasBusinessActivityTypeError =
+    touchedFields.has('businessActivityType') && !isBusinessActivityTypeValid;
+  const hasCrAgeError = touchedFields.has('crAge') && !isCrAgeValid;
+  const hasBusinessRegionError =
+    touchedFields.has('businessRegion') && !isBusinessRegionValid;
+  const hasBusinessTypeError =
+    touchedFields.has('businessType') && !isBusinessTypeValid;
+  const hasPosAnnualPropertyIncomeError =
+    touchedFields.has('posAnnualPropertyIncome') &&
+    !isPosAnnualPropertyIncomeValid;
+  const hasFinancialStatementAvailableError =
+    touchedFields.has('financialStatementAvailable') &&
+    !isFinancialStatementAvailableValid;
+
   // Check if all required fields are filled
   const isFormValid = useMemo(
     () =>
-      businessActivityType.trim() !== '' &&
-      crAge.trim() !== '' &&
-      businessRegion.trim() !== '' &&
-      businessType.trim() !== '' &&
-      posAnnualPropertyIncome.trim() !== '' &&
-      financialStatementAvailable.trim() !== '',
+      isBusinessActivityTypeValid &&
+      isCrAgeValid &&
+      isBusinessRegionValid &&
+      isBusinessTypeValid &&
+      isPosAnnualPropertyIncomeValid &&
+      isFinancialStatementAvailableValid,
     [
-      businessActivityType,
-      crAge,
-      businessRegion,
-      businessType,
-      posAnnualPropertyIncome,
-      financialStatementAvailable,
+      isBusinessActivityTypeValid,
+      isCrAgeValid,
+      isBusinessRegionValid,
+      isBusinessTypeValid,
+      isPosAnnualPropertyIncomeValid,
+      isFinancialStatementAvailableValid,
     ],
   );
 
@@ -113,8 +209,18 @@ const SMEStep2: React.FC = () => {
           financialStatementsAvailable:
             financialStatementAvailable ===
             translate(`${TranslationNamespaces.FINANCING}:yes`),
+          crAgeYears: crAge ? parseInt(crAge.replace(/,/g, ''), 10) : undefined,
         },
-        customerLiability: customerLiability || undefined,
+        customerLiability: {
+          liabilityType: liabilityType || undefined,
+          monthlyInstallment: monthlyInstallment
+            ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+            : undefined,
+          bankName: bankName || undefined,
+          remainingBalance: remainingBalance
+            ? parseFloat(remainingBalance.replace(/,/g, ''))
+            : undefined,
+        },
       },
     };
     addSmeApplicationMutation.mutate(request);
@@ -133,13 +239,18 @@ const SMEStep2: React.FC = () => {
             style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
           />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{title}</Text>
+        <Text style={styles.headerTitle}>
+          {title +
+            ' ' +
+            translate(`${TranslationNamespaces.FINANCING}:financing`)}{' '}
+        </Text>
       </View>
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
@@ -160,103 +271,168 @@ const SMEStep2: React.FC = () => {
           </Text>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:businessActivityType`,
-              )}
-              placeholderTextColor="#999"
-              value={businessActivityType}
-              onChangeText={text =>
-                setBusinessActivityType(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasBusinessActivityTypeError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:businessActivityType`,
+                )}
+                placeholderTextColor="#999"
+                value={businessActivityType}
+                onChangeText={text => {
+                  setTouchedFields(prev =>
+                    new Set(prev).add('businessActivityType'),
+                  );
+                  dispatch(
+                    setBusinessActivityType(
+                      filterEnglishLettersAndSpaces(text),
+                    ),
+                  );
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:crAge`,
-              )}
-              placeholderTextColor="#999"
-              value={crAge}
-              onChangeText={text => setCrAge(formatNumber(text))}
-              {...getInputConstraints('year')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasCrAgeError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:crAge`,
+                )}
+                placeholderTextColor="#999"
+                value={crAge}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('crAge'));
+                  dispatch(setCrAge(formatNumber(text)));
+                }}
+                {...getInputConstraints('year')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:businessRegion`,
-              )}
-              placeholderTextColor="#999"
-              value={businessRegion}
-              onChangeText={text =>
-                setBusinessRegion(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasBusinessRegionError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:businessRegion`,
+                )}
+                placeholderTextColor="#999"
+                value={businessRegion}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('businessRegion'));
+                  dispatch(
+                    setBusinessRegion(filterEnglishLettersAndSpaces(text)),
+                  );
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:businessType`,
-              )}
-              placeholderTextColor="#999"
-              value={businessType}
-              onChangeText={text =>
-                setBusinessType(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasBusinessTypeError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:businessType`,
+                )}
+                placeholderTextColor="#999"
+                value={businessType}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('businessType'));
+                  dispatch(
+                    setBusinessType(filterEnglishLettersAndSpaces(text)),
+                  );
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:posAnnualPropertyIncome`,
-              )}
-              placeholderTextColor="#999"
-              value={posAnnualPropertyIncome}
-              onChangeText={text =>
-                setPosAnnualPropertyIncome(formatAmount(text))
-              }
-              {...getInputConstraints('amount')}
-            />
-          </View>
+          {serviceId === 3 && (
+            <View style={styles.inputContainer}>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={[
+                    styles.input,
+                    hasPosAnnualPropertyIncomeError && styles.inputError,
+                  ]}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:posAnnualPropertyIncome`,
+                  )}
+                  placeholderTextColor="#999"
+                  onChangeText={text => {
+                    setTouchedFields(prev =>
+                      new Set(prev).add('posAnnualPropertyIncome'),
+                    );
+                    const formattedText = formatInput(text, true);
+                    dispatch(setPosAnnualPropertyIncome(formattedText));
+                  }}
+                  value={posAnnualPropertyIncome?.toLocaleString() ?? ''}
+                  {...getInputConstraints('amount')}
+                />
+                <Text style={styles.mandatoryStar}>*</Text>
+              </View>
+            </View>
+          )}
 
           {/* Financial Statement Available Dropdown */}
           <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={styles.dropdownContainer}
-              onPress={() => setShowDropdown(!showDropdown)}
-            >
-              <TextInput
-                style={styles.dropdownInput}
-                placeholder={translate(
-                  `${TranslationNamespaces.FINANCING}:financialStatementAvailable`,
-                )}
-                placeholderTextColor="#999"
-                value={financialStatementAvailable}
-                editable={false}
-              />
-              <DropDownArrow />
-            </TouchableOpacity>
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.dropdownContainer,
+                  hasFinancialStatementAvailableError && styles.inputError,
+                ]}
+                onPress={() => {
+                  setTouchedFields(prev =>
+                    new Set(prev).add('financialStatementAvailable'),
+                  );
+                  setShowDropdown(!showDropdown);
+                }}
+              >
+                <TextInput
+                  style={styles.dropdownInput}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:financialStatementAvailable`,
+                  )}
+                  placeholderTextColor="#999"
+                  value={financialStatementAvailable}
+                  editable={false}
+                />
+                <DropDownArrow />
+              </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
 
             {showDropdown && (
               <View style={styles.dropdownOptions}>
                 <TouchableOpacity
                   style={styles.dropdownOption}
                   onPress={() => {
-                    setFinancialStatementAvailable(
-                      translate(`${TranslationNamespaces.FINANCING}:yes`),
+                    setTouchedFields(prev =>
+                      new Set(prev).add('financialStatementAvailable'),
+                    );
+                    dispatch(
+                      setFinancialStatementAvailable(
+                        translate(`${TranslationNamespaces.FINANCING}:yes`),
+                      ),
                     );
                     setShowDropdown(false);
                   }}
@@ -268,8 +444,13 @@ const SMEStep2: React.FC = () => {
                 <TouchableOpacity
                   style={styles.dropdownOption}
                   onPress={() => {
-                    setFinancialStatementAvailable(
-                      translate(`${TranslationNamespaces.FINANCING}:no`),
+                    setTouchedFields(prev =>
+                      new Set(prev).add('financialStatementAvailable'),
+                    );
+                    dispatch(
+                      setFinancialStatementAvailable(
+                        translate(`${TranslationNamespaces.FINANCING}:no`),
+                      ),
                     );
                     setShowDropdown(false);
                   }}
@@ -406,6 +587,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
   },
+  inputWrapper: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: 'transparent',
     borderRadius: ResponsiveDimensions.vs(12),
@@ -416,6 +600,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#8C8C8C',
     textAlign: isRTL ? 'right' : 'left',
+  },
+  inputError: {
+    borderColor: '#FF0000',
+  },
+  mandatoryStar: {
+    position: 'absolute',
+    top: ResponsiveDimensions.vs(4),
+    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
+    color: AppColors.themeLight.secondary,
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: 'bold',
   },
   dropdownContainer: {
     flexDirection: 'row',

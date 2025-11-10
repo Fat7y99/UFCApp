@@ -113,8 +113,6 @@ const SignupButton: React.FC<SignupButtonProps> = ({
   };
 
   const handleSignup = () => {
-    handlePress();
-    return;
     // Validate all required fields
     if (!validateField(formData.name, 'name')) return;
     if (!validateField(formData.username, 'username')) return;

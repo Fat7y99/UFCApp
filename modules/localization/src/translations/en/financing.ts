@@ -18,6 +18,12 @@ export default {
   next: 'NEXT',
   apply: 'APPLY',
 
+  // Error Messages
+  failedToSubmitSmeApplication: 'Failed to submit SME application',
+  failedToSubmitRealEstateApplication:
+    'Failed to submit real estate application',
+  failedToSubmitPersonalApplication: 'Failed to submit personal application',
+
   // Financing Types
   invoice: 'Invoice',
   project: 'Project',
@@ -54,7 +60,7 @@ export default {
   businessActivityType: 'Business Activity Type',
   crAge: 'CR Age (years)',
   businessRegion: 'Business Region',
-  businessType: 'Business Type',
+  businessType: 'CR Type',
   posAnnualPropertyIncome: 'POS Annual Property Income',
   financialStatementAvailable: 'Financial Statement Available',
   yes: 'Yes',
@@ -67,4 +73,5 @@ export default {
   propertyAge: 'Property Age (Years)',
   propertyCity: 'Property City',
   annualPropertyIncome: 'Annual Property Income',
+  propertyAgeMinimumError: 'Property age must be more than 3 years',
 };

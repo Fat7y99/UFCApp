@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,17 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
-import { useAppSelector } from '@src/store';
+import { useAppDispatch, useAppSelector } from '@src/store';
+import {
+  resetPersonalForm,
+  setServiceId,
+  setName,
+  setMobile,
+  setDob,
+  setEmployer,
+  setJobTitle,
+  setServiceStartDate,
+} from '@src/store/personalForm';
 import {
   getInputConstraints,
   formatPhoneNumber,
@@ -32,16 +42,32 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const isRTL = I18nManager.isRTL;
 const PersonalStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
+  const dispatch = useAppDispatch();
   const serviceId = 12; // Default to 12 for Personal Loan
-  const [name, setName] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [dob, setDob] = useState('');
-  const [employer, setEmployer] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [serviceStartDate, setServiceStartDate] = useState('');
+
+  // Get form state from Redux
+  const name = useAppSelector(state => state.personalForm.name || '');
+  const mobile = useAppSelector(state => state.personalForm.mobile || '');
+  const dob = useAppSelector(state => state.personalForm.dob || '');
+  const employer = useAppSelector(state => state.personalForm.employer || '');
+  const jobTitle = useAppSelector(state => state.personalForm.jobTitle || '');
+  const serviceStartDate = useAppSelector(
+    state => state.personalForm.serviceStartDate || '',
+  );
   const [handleOpenCalendar, setHandleOpenCalendar] = useState<string | null>(
     null,
   );
+
+  // Track which fields have been touched/changed by user
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+
+  // Reset form and set serviceId when component mounts
+  useEffect(() => {
+    dispatch(resetPersonalForm());
+    dispatch(setServiceId(serviceId));
+    // Reset touched fields when form is reset
+    setTouchedFields(new Set());
+  }, [dispatch, serviceId]);
 
   type CalendarType = 'dob' | 'serviceStartDate';
 
@@ -84,9 +110,11 @@ const PersonalStep1: React.FC = () => {
   const handleDateChange = (date: Date, calendarType: CalendarType) => {
     const formattedDate = formatDateString(date);
     if (calendarType === 'dob') {
-      setDob(formattedDate);
+      setTouchedFields(prev => new Set(prev).add('dob'));
+      dispatch(setDob(formattedDate));
     } else if (calendarType === 'serviceStartDate') {
-      setServiceStartDate(formattedDate);
+      setTouchedFields(prev => new Set(prev).add('serviceStartDate'));
+      dispatch(setServiceStartDate(formattedDate));
     }
     setHandleOpenCalendar(null);
   };
@@ -103,16 +131,44 @@ const PersonalStep1: React.FC = () => {
   const filterEnglishLettersAndSpaces = (text: string): string =>
     text.replace(/[^a-zA-Z\s]/g, '');
 
+  // Validate all fields
+  const isNameValid = useMemo(() => name.trim() !== '', [name]);
+  const isMobileValid = useMemo(() => mobile.trim() !== '', [mobile]);
+  const isDobValid = useMemo(() => dob.trim() !== '', [dob]);
+  const isEmployerValid = useMemo(() => employer.trim() !== '', [employer]);
+  const isJobTitleValid = useMemo(() => jobTitle.trim() !== '', [jobTitle]);
+  const isServiceStartDateValid = useMemo(
+    () => serviceStartDate.trim() !== '',
+    [serviceStartDate],
+  );
+
+  // Check if fields have errors (for red border display)
+  // Show error only if field has been touched AND is invalid
+  const hasNameError = touchedFields.has('name') && !isNameValid;
+  const hasMobileError = touchedFields.has('mobile') && !isMobileValid;
+  const hasDobError = touchedFields.has('dob') && !isDobValid;
+  const hasEmployerError = touchedFields.has('employer') && !isEmployerValid;
+  const hasJobTitleError = touchedFields.has('jobTitle') && !isJobTitleValid;
+  const hasServiceStartDateError =
+    touchedFields.has('serviceStartDate') && !isServiceStartDateValid;
+
   // Check if all required fields are filled
   const isFormValid = useMemo(
     () =>
-      name.trim() !== '' &&
-      mobile.trim() !== '' &&
-      dob.trim() !== '' &&
-      employer.trim() !== '' &&
-      jobTitle.trim() !== '' &&
-      serviceStartDate.trim() !== '',
-    [name, mobile, dob, employer, jobTitle, serviceStartDate],
+      isNameValid &&
+      isMobileValid &&
+      isDobValid &&
+      isEmployerValid &&
+      isJobTitleValid &&
+      isServiceStartDateValid,
+    [
+      isNameValid,
+      isMobileValid,
+      isDobValid,
+      isEmployerValid,
+      isJobTitleValid,
+      isServiceStartDateValid,
+    ],
   );
 
   const handleNext = () => {
@@ -130,14 +186,6 @@ const PersonalStep1: React.FC = () => {
     if (user) {
       navigation.navigate('personalStep2', {
         serviceId,
-        customerBaseInfo: {
-          name: name || undefined,
-          phone: mobile || undefined,
-          birthDate: dob || undefined,
-          employer: employer || undefined,
-          jobTitle: jobTitle || undefined,
-          serviceStartDate: serviceStartDate || undefined,
-        },
       });
     } else {
       goSignUpScreen();
@@ -166,6 +214,7 @@ const PersonalStep1: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
@@ -195,97 +244,137 @@ const PersonalStep1: React.FC = () => {
           </Text>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(`${TranslationNamespaces.FINANCING}:name`)}
-              placeholderTextColor="#999"
-              value={name}
-              onChangeText={text =>
-                setName(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:mobile`,
-              )}
-              placeholderTextColor="#999"
-              value={mobile}
-              onChangeText={text => setMobile(formatPhoneNumber(text))}
-              {...getInputConstraints('phone')}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={styles.dateInputContainer}
-              onPress={() => setHandleOpenCalendar('dob')}
-            >
+            <View style={styles.inputWrapper}>
               <TextInput
-                style={styles.dateInput}
+                style={[styles.input, hasNameError && styles.inputError]}
                 placeholder={translate(
-                  `${TranslationNamespaces.FINANCING}:dob`,
+                  `${TranslationNamespaces.FINANCING}:name`,
                 )}
                 placeholderTextColor="#999"
-                value={dob}
-                onChangeText={setDob}
-                editable={false}
+                value={name}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('name'));
+                  dispatch(setName(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
               />
-              <CalendarLogo />
-            </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:employer`,
-              )}
-              placeholderTextColor="#999"
-              value={employer}
-              onChangeText={text =>
-                setEmployer(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:jobTitle`,
-              )}
-              placeholderTextColor="#999"
-              value={jobTitle}
-              onChangeText={text =>
-                setJobTitle(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={styles.dateInputContainer}
-              onPress={() => setHandleOpenCalendar('serviceStartDate')}
-            >
+            <View style={styles.inputWrapper}>
               <TextInput
-                style={styles.dateInput}
+                style={[styles.input, hasMobileError && styles.inputError]}
                 placeholder={translate(
-                  `${TranslationNamespaces.FINANCING}:serviceStartDate`,
+                  `${TranslationNamespaces.FINANCING}:mobile`,
                 )}
                 placeholderTextColor="#999"
-                value={serviceStartDate}
-                onChangeText={setServiceStartDate}
-                editable={false}
+                value={mobile}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('mobile'));
+                  dispatch(setMobile(formatPhoneNumber(text)));
+                }}
+                {...getInputConstraints('phone')}
               />
-              <CalendarLogo />
-            </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.dateInputContainer,
+                  hasDobError && styles.inputError,
+                ]}
+                onPress={() => {
+                  setTouchedFields(prev => new Set(prev).add('dob'));
+                  setHandleOpenCalendar('dob');
+                }}
+              >
+                <TextInput
+                  style={styles.dateInput}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:dob`,
+                  )}
+                  placeholderTextColor="#999"
+                  value={dob}
+                  onChangeText={text => dispatch(setDob(text))}
+                  editable={false}
+                />
+                <CalendarLogo />
+              </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasEmployerError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:employer`,
+                )}
+                placeholderTextColor="#999"
+                value={employer}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('employer'));
+                  dispatch(setEmployer(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasJobTitleError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:jobTitle`,
+                )}
+                placeholderTextColor="#999"
+                value={jobTitle}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('jobTitle'));
+                  dispatch(setJobTitle(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.dateInputContainer,
+                  hasServiceStartDateError && styles.inputError,
+                ]}
+                onPress={() => {
+                  setTouchedFields(prev =>
+                    new Set(prev).add('serviceStartDate'),
+                  );
+                  setHandleOpenCalendar('serviceStartDate');
+                }}
+              >
+                <TextInput
+                  style={styles.dateInput}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:serviceStartDate`,
+                  )}
+                  placeholderTextColor="#999"
+                  value={serviceStartDate}
+                  onChangeText={text => dispatch(setServiceStartDate(text))}
+                  editable={false}
+                />
+                <CalendarLogo />
+              </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
         </View>
 
@@ -307,10 +396,7 @@ const PersonalStep1: React.FC = () => {
       </ScrollView>
       {handleOpenCalendar && (
         <DateTimePickerModal
-          style={styles.datePicker}
-          pickerStyleIOS={styles.datePicker}
-          pickerContainerStyleIOS={styles.datePicker}
-          pickerComponentStyleIOS={styles.datePicker}
+          themeVariant="light"
           date={getDatePickerValue(handleOpenCalendar as CalendarType)}
           isVisible={!!handleOpenCalendar}
           mode="date"
@@ -471,6 +557,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
   },
+  inputWrapper: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: 'transparent',
     borderRadius: ResponsiveDimensions.vs(12),
@@ -481,6 +570,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#8C8C8C',
     textAlign: isRTL ? 'right' : 'left',
+  },
+  inputError: {
+    borderColor: '#FF0000',
+  },
+  mandatoryStar: {
+    position: 'absolute',
+    top: ResponsiveDimensions.vs(4),
+    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
+    color: AppColors.themeLight.secondary,
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: 'bold',
   },
   dateInputContainer: {
     flexDirection: 'row',

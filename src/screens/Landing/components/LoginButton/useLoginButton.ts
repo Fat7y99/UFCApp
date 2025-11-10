@@ -76,7 +76,6 @@ const useLoginButton = () => {
       );
     },
   });
-
   const {
     data: userData,
     isSuccess: isUserFetched,

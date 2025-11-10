@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,14 @@ import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { SuccessType } from '@src/screens/Success/types';
-import { getInputConstraints, formatAmount } from '@src/utils/InputFormatting';
+import { useAppDispatch, useAppSelector } from '@src/store';
+import {
+  setBasicSalary,
+  setNetSalary,
+  setCurrentBank,
+  setCity,
+} from '@src/store/personalForm';
+import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
   useAddPersonalApplicationApi,
@@ -36,9 +43,47 @@ const isRTL = I18nManager.isRTL;
 const PersonalStep3: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<PersonalStep3RouteProp>();
-  const serviceId = route.params?.serviceId || 12;
-  const customerBaseInfoFromStep1 = route.params?.customerBaseInfo;
-  const customerLiability = route.params?.customerLiability;
+  const dispatch = useAppDispatch();
+
+  // Get form state from Redux
+  const serviceId = useAppSelector(
+    state => state.personalForm.serviceId || route.params?.serviceId || 12,
+  );
+
+  // Step 1 fields from Redux
+  const name = useAppSelector(state => state.personalForm.name);
+  const mobile = useAppSelector(state => state.personalForm.mobile);
+  const dob = useAppSelector(state => state.personalForm.dob);
+  const employer = useAppSelector(state => state.personalForm.employer);
+  const jobTitle = useAppSelector(state => state.personalForm.jobTitle);
+  const serviceStartDate = useAppSelector(
+    state => state.personalForm.serviceStartDate,
+  );
+
+  // Step 2 fields from Redux
+  const liabilityType = useAppSelector(
+    state => state.personalForm.liabilityType,
+  );
+  const monthlyInstallment = useAppSelector(
+    state => state.personalForm.monthlyInstallment,
+  );
+  const bankName = useAppSelector(state => state.personalForm.bankName);
+  const remainingBalance = useAppSelector(
+    state => state.personalForm.remainingBalance,
+  );
+
+  // Step 3 fields from Redux
+  const basicSalary = useAppSelector(
+    state => state.personalForm.basicSalary || '',
+  );
+  const netSalary = useAppSelector(state => state.personalForm.netSalary || '');
+  const currentBank = useAppSelector(
+    state => state.personalForm.currentBank || '',
+  );
+  const city = useAppSelector(state => state.personalForm.city || '');
+
+  // Track which fields have been touched/changed by user
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
   const addPersonalApplicationMutation = useAddPersonalApplicationApi({
     onSuccess: () => {
@@ -47,27 +92,65 @@ const PersonalStep3: React.FC = () => {
       });
     },
     onError: error => {
+      Toast.show({
+        type: 'fail',
+        text1:
+          error.errorMessage ??
+          translate(
+            `${TranslationNamespaces.FINANCING}:failedToSubmitPersonalApplication`,
+          ),
+      });
       console.error('Error submitting personal application:', error);
       // Handle error - you might want to show an error message
     },
   });
-  const [basicSalary, setBasicSalary] = useState('');
-  const [netSalary, setNetSalary] = useState('');
-  const [currentBank, setCurrentBank] = useState('');
-  const [city, setCity] = useState('');
 
   // Filter text input to only allow English letters and spaces
   const filterEnglishLettersAndSpaces = (text: string): string =>
     text.replace(/[^a-zA-Z\s]/g, '');
 
+  // Validate all fields
+  const isBasicSalaryValid = useMemo(() => {
+    if (!basicSalary || basicSalary.trim() === '') {
+      return false;
+    }
+    const numericValue = basicSalary.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    // Valid if it's a number and > 0 (must be greater than 0)
+    return !isNaN(numValue) && numValue > 0;
+  }, [basicSalary]);
+  const isNetSalaryValid = useMemo(() => {
+    if (!netSalary || netSalary.trim() === '') {
+      return false;
+    }
+    const numericValue = netSalary.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    // Valid if it's a number and > 0 (must be greater than 0)
+    return !isNaN(numValue) && numValue > 0;
+  }, [netSalary]);
+  const isCurrentBankValid = useMemo(
+    () => currentBank.trim() !== '',
+    [currentBank],
+  );
+  const isCityValid = useMemo(() => city.trim() !== '', [city]);
+
+  // Check if fields have errors (for red border display)
+  // Show error only if field has been touched AND is invalid
+  const hasBasicSalaryError =
+    touchedFields.has('basicSalary') && !isBasicSalaryValid;
+  const hasNetSalaryError = touchedFields.has('netSalary') && !isNetSalaryValid;
+  const hasCurrentBankError =
+    touchedFields.has('currentBank') && !isCurrentBankValid;
+  const hasCityError = touchedFields.has('city') && !isCityValid;
+
   // Check if all required fields are filled
   const isFormValid = useMemo(
     () =>
-      basicSalary.trim() !== '' &&
-      netSalary.trim() !== '' &&
-      currentBank.trim() !== '' &&
-      city.trim() !== '',
-    [basicSalary, netSalary, currentBank, city],
+      isBasicSalaryValid &&
+      isNetSalaryValid &&
+      isCurrentBankValid &&
+      isCityValid,
+    [isBasicSalaryValid, isNetSalaryValid, isCurrentBankValid, isCityValid],
   );
 
   const handleApply = () => {
@@ -87,7 +170,12 @@ const PersonalStep3: React.FC = () => {
       body: {
         serviceId,
         customerBaseInfo: {
-          ...customerBaseInfoFromStep1,
+          name: name || undefined,
+          phone: mobile || undefined,
+          birthDate: dob || undefined,
+          employer: employer || undefined,
+          jobTitle: jobTitle || undefined,
+          serviceStartDate: serviceStartDate || undefined,
           basicSalary: basicSalary
             ? parseFloat(basicSalary.replace(/,/g, ''))
             : undefined,
@@ -97,7 +185,16 @@ const PersonalStep3: React.FC = () => {
           currentBank: currentBank || undefined,
           city: city || undefined,
         },
-        customerLiability: customerLiability || undefined,
+        customerLiability: {
+          liabilityType: liabilityType || undefined,
+          monthlyInstallment: monthlyInstallment
+            ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+            : undefined,
+          bankName: bankName || undefined,
+          remainingBalance: remainingBalance
+            ? parseFloat(remainingBalance.replace(/,/g, ''))
+            : undefined,
+        },
       },
     };
     addPersonalApplicationMutation.mutate(request);
@@ -125,6 +222,7 @@ const PersonalStep3: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
@@ -154,57 +252,81 @@ const PersonalStep3: React.FC = () => {
           </Text>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:basicSalary`,
-              )}
-              placeholderTextColor="#999"
-              value={basicSalary}
-              onChangeText={text => setBasicSalary(formatAmount(text))}
-              {...getInputConstraints('amount')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasBasicSalaryError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:basicSalary`,
+                )}
+                placeholderTextColor="#999"
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('basicSalary'));
+                  const formattedText = formatInput(text, true);
+                  dispatch(setBasicSalary(formattedText));
+                }}
+                value={basicSalary?.toLocaleString() ?? ''}
+                {...getInputConstraints('amount')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:netSalaryAfterGOSI`,
-              )}
-              placeholderTextColor="#999"
-              value={netSalary}
-              onChangeText={text => setNetSalary(formatAmount(text))}
-              {...getInputConstraints('amount')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasNetSalaryError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:netSalaryAfterGOSI`,
+                )}
+                placeholderTextColor="#999"
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('netSalary'));
+                  const formattedText = formatInput(text, true);
+                  dispatch(setNetSalary(formattedText));
+                }}
+                value={netSalary?.toLocaleString() ?? ''}
+                {...getInputConstraints('amount')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:currentBank`,
-              )}
-              placeholderTextColor="#999"
-              value={currentBank}
-              onChangeText={text =>
-                setCurrentBank(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasCurrentBankError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:currentBank`,
+                )}
+                placeholderTextColor="#999"
+                value={currentBank}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('currentBank'));
+                  dispatch(setCurrentBank(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(`${TranslationNamespaces.FINANCING}:city`)}
-              placeholderTextColor="#999"
-              value={city}
-              onChangeText={text =>
-                setCity(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasCityError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:city`,
+                )}
+                placeholderTextColor="#999"
+                value={city}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('city'));
+                  dispatch(setCity(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
         </View>
 
@@ -373,6 +495,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
   },
+  inputWrapper: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: 'transparent',
     borderRadius: ResponsiveDimensions.vs(12),
@@ -383,6 +508,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#8C8C8C',
     textAlign: isRTL ? 'right' : 'left',
+  },
+  inputError: {
+    borderColor: '#FF0000',
+  },
+  mandatoryStar: {
+    position: 'absolute',
+    top: ResponsiveDimensions.vs(4),
+    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
+    color: AppColors.themeLight.secondary,
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: 'bold',
   },
   applyButton: {
     backgroundColor: '#4CAF50',

@@ -298,7 +298,7 @@ export default React.memo(() => {
             <SignupButton
               confirmPassword={formData.confirmPassword}
               isTermsAccepted={termsAccepted}
-              // disabled={!isFormValid}
+              disabled={!isFormValid}
               formData={{
                 email: formData.email,
                 name: formData.name,

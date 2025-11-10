@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,14 @@ import {
 import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
-import { getInputConstraints, formatAmount } from '@src/utils/InputFormatting';
+import { useAppDispatch, useAppSelector } from '@src/store';
+import {
+  setLiabilityType,
+  setMonthlyInstallment,
+  setBankName,
+  setRemainingBalance,
+} from '@src/store/realEstateForm';
+import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -32,26 +39,86 @@ const isRTL = I18nManager.isRTL;
 const RealEstateStep2: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RealEstateStep2RouteProp>();
-  const serviceId = route.params?.serviceId || 7;
-  const title = route.params?.title || '';
-  const customerBaseInfo = route.params?.customerBaseInfo;
-  const [liabilityType, setLiabilityType] = useState('');
-  const [monthlyInstallment, setMonthlyInstallment] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [remainingBalance, setRemainingBalance] = useState('');
+  const dispatch = useAppDispatch();
+
+  // Get form state from Redux
+  const serviceId = useAppSelector(
+    state => state.realEstateForm.serviceId || route.params?.serviceId || 7,
+  );
+  const title = useAppSelector(
+    state => state.realEstateForm.title || route.params?.title || '',
+  );
+
+  // Step 2 fields from Redux
+  const liabilityType = useAppSelector(
+    state => state.realEstateForm.liabilityType || '',
+  );
+  const monthlyInstallment = useAppSelector(
+    state => state.realEstateForm.monthlyInstallment || '',
+  );
+  const bankName = useAppSelector(state => state.realEstateForm.bankName || '');
+  const remainingBalance = useAppSelector(
+    state => state.realEstateForm.remainingBalance || '',
+  );
+
+  // Track which fields have been touched/changed by user
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
   // Filter text input to only allow English letters and spaces
   const filterEnglishLettersAndSpaces = (text: string): string =>
     text.replace(/[^a-zA-Z\s]/g, '');
 
+  // Validate all fields
+  const isLiabilityTypeValid = useMemo(
+    () => liabilityType.trim() !== '',
+    [liabilityType],
+  );
+
+  const isMonthlyInstallmentValid = useMemo(() => {
+    if (!monthlyInstallment || monthlyInstallment.trim() === '') {
+      return false;
+    }
+    const numericValue = monthlyInstallment.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    // Valid if it's a number and > 0 (must be greater than 0)
+    return !isNaN(numValue) && numValue > 0;
+  }, [monthlyInstallment]);
+
+  const isBankNameValid = useMemo(() => bankName.trim() !== '', [bankName]);
+
+  const isRemainingBalanceValid = useMemo(() => {
+    if (!remainingBalance || remainingBalance.trim() === '') {
+      return false;
+    }
+    const numericValue = remainingBalance.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    // Valid if it's a number and > 0 (must be greater than 0)
+    return !isNaN(numValue) && numValue > 0;
+  }, [remainingBalance]);
+
+  // Check if fields have errors (for red border display)
+  // Show error only if field has been touched AND is invalid
+  const hasLiabilityTypeError =
+    touchedFields.has('liabilityType') && !isLiabilityTypeValid;
+  const hasMonthlyInstallmentError =
+    touchedFields.has('monthlyInstallment') && !isMonthlyInstallmentValid;
+  const hasBankNameError = touchedFields.has('bankName') && !isBankNameValid;
+  const hasRemainingBalanceError =
+    touchedFields.has('remainingBalance') && !isRemainingBalanceValid;
+
   // Check if all required fields are filled
   const isFormValid = useMemo(
     () =>
-      liabilityType.trim() !== '' &&
-      monthlyInstallment.trim() !== '' &&
-      bankName.trim() !== '' &&
-      remainingBalance.trim() !== '',
-    [liabilityType, monthlyInstallment, bankName, remainingBalance],
+      isLiabilityTypeValid &&
+      isMonthlyInstallmentValid &&
+      isBankNameValid &&
+      isRemainingBalanceValid,
+    [
+      isLiabilityTypeValid,
+      isMonthlyInstallmentValid,
+      isBankNameValid,
+      isRemainingBalanceValid,
+    ],
   );
 
   const handleNext = () => {
@@ -66,17 +133,7 @@ const RealEstateStep2: React.FC = () => {
     }
     navigation.navigate('realEstateStep3', {
       serviceId,
-      customerBaseInfo,
-      customerLiability: {
-        liabilityType: liabilityType || undefined,
-        monthlyInstallment: monthlyInstallment
-          ? parseFloat(monthlyInstallment.replace(/,/g, ''))
-          : undefined,
-        bankName: bankName || undefined,
-        remainingBalance: remainingBalance
-          ? parseFloat(remainingBalance.replace(/,/g, ''))
-          : undefined,
-      },
+      title,
     });
   };
 
@@ -94,7 +151,9 @@ const RealEstateStep2: React.FC = () => {
           />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
-          {title}
+          {title +
+            ' ' +
+            translate(`${TranslationNamespaces.FINANCING}:financing`)}{' '}
         </Text>
       </View>
 
@@ -102,6 +161,7 @@ const RealEstateStep2: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
@@ -129,59 +189,96 @@ const RealEstateStep2: React.FC = () => {
           </Text>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:liabilityType`,
-              )}
-              placeholderTextColor="#999"
-              value={liabilityType}
-              onChangeText={text =>
-                setLiabilityType(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasLiabilityTypeError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:liabilityType`,
+                )}
+                placeholderTextColor="#999"
+                value={liabilityType}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('liabilityType'));
+                  dispatch(
+                    setLiabilityType(filterEnglishLettersAndSpaces(text)),
+                  );
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:monthlyInstallment`,
-              )}
-              placeholderTextColor="#999"
-              value={monthlyInstallment}
-              onChangeText={text => setMonthlyInstallment(formatAmount(text))}
-              {...getInputConstraints('amount')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasMonthlyInstallmentError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:monthlyInstallment`,
+                )}
+                placeholderTextColor="#999"
+                onChangeText={text => {
+                  setTouchedFields(prev =>
+                    new Set(prev).add('monthlyInstallment'),
+                  );
+                  const formattedText = formatInput(text, true);
+                  dispatch(setMonthlyInstallment(formattedText));
+                }}
+                value={monthlyInstallment?.toLocaleString() ?? ''}
+                {...getInputConstraints('amount')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:bankName`,
-              )}
-              placeholderTextColor="#999"
-              value={bankName}
-              onChangeText={text =>
-                setBankName(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasBankNameError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:bankName`,
+                )}
+                placeholderTextColor="#999"
+                value={bankName}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('bankName'));
+                  dispatch(setBankName(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:remainingBalance`,
-              )}
-              placeholderTextColor="#999"
-              value={remainingBalance}
-              onChangeText={text => setRemainingBalance(formatAmount(text))}
-              {...getInputConstraints('amount')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasRemainingBalanceError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:remainingBalance`,
+                )}
+                placeholderTextColor="#999"
+                onChangeText={text => {
+                  setTouchedFields(prev =>
+                    new Set(prev).add('remainingBalance'),
+                  );
+                  const formattedText = formatInput(text, true);
+                  dispatch(setRemainingBalance(formattedText));
+                }}
+                value={remainingBalance?.toLocaleString() ?? ''}
+                {...getInputConstraints('amount')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
         </View>
 
@@ -361,6 +458,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
   },
+  inputWrapper: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: 'transparent',
     borderRadius: ResponsiveDimensions.vs(12),
@@ -371,6 +471,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#8C8C8C',
     textAlign: isRTL ? 'right' : 'left',
+  },
+  inputError: {
+    borderColor: '#FF0000',
+  },
+  mandatoryStar: {
+    position: 'absolute',
+    top: ResponsiveDimensions.vs(4),
+    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
+    color: AppColors.themeLight.secondary,
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: 'bold',
   },
   nextButton: {
     backgroundColor: '#4CAF50',

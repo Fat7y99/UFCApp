@@ -1,6 +1,7 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import * as React from 'react';
 import { StyleSheet, ScrollView, ActivityIndicator, View } from 'react-native';
+import { useAppSelector } from '@src/store';
 import { Screen } from '@modules/components';
 import { useGetCurrentUserApi } from '@modules/core';
 import { EditProfileHeader, ProfileForm, SaveButton } from './components';
@@ -16,7 +17,10 @@ interface ProfileData {
 }
 
 export default React.memo(() => {
-  const { data: currentUser, isLoading } = useGetCurrentUserApi();
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
+  const { data: currentUser, isLoading } = useGetCurrentUserApi({
+    enabled: isLoggedIn,
+  });
 
   const [profileData, setProfileData] = React.useState<ProfileData>({
     username: '',

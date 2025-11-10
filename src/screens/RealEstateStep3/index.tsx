@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -16,10 +16,19 @@ import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { SuccessType } from '@src/screens/Success/types';
+import { useAppDispatch, useAppSelector } from '@src/store';
+import {
+  setRealEstateFinancingType,
+  setPropertyType,
+  setPropertyValue,
+  setPropertyAge,
+  setPropertyCity,
+  setAnnualPropertyIncome,
+} from '@src/store/realEstateForm';
 import {
   getInputConstraints,
-  formatAmount,
   formatNumber,
+  formatInput,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -44,10 +53,57 @@ const isRTL = I18nManager.isRTL;
 const RealEstateStep3: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RealEstateStep3RouteProp>();
-  const serviceId = route.params?.serviceId || 7;
-  const title = route.params?.title || '';
-  const customerBaseInfo = route.params?.customerBaseInfo;
-  const customerLiability = route.params?.customerLiability;
+  const dispatch = useAppDispatch();
+
+  // Get form state from Redux
+  const serviceId = useAppSelector(
+    state => state.realEstateForm.serviceId || route.params?.serviceId || 7,
+  );
+  const title = useAppSelector(
+    state => state.realEstateForm.title || route.params?.title || '',
+  );
+
+  // Step 1 fields from Redux
+  const name = useAppSelector(state => state.realEstateForm.name);
+  const mobile = useAppSelector(state => state.realEstateForm.mobile);
+  const dob = useAppSelector(state => state.realEstateForm.dob);
+  const employer = useAppSelector(state => state.realEstateForm.employer);
+  const jobTitle = useAppSelector(state => state.realEstateForm.jobTitle);
+
+  // Step 2 fields from Redux
+  const liabilityType = useAppSelector(
+    state => state.realEstateForm.liabilityType,
+  );
+  const monthlyInstallment = useAppSelector(
+    state => state.realEstateForm.monthlyInstallment,
+  );
+  const bankName = useAppSelector(state => state.realEstateForm.bankName);
+  const remainingBalance = useAppSelector(
+    state => state.realEstateForm.remainingBalance,
+  );
+
+  // Step 3 fields from Redux
+  const realEstateFinancingType = useAppSelector(
+    state => state.realEstateForm.realEstateFinancingType || '',
+  );
+  const propertyType = useAppSelector(
+    state => state.realEstateForm.propertyType || '',
+  );
+  const propertyValue = useAppSelector(
+    state => state.realEstateForm.propertyValue || '',
+  );
+  const propertyAge = useAppSelector(
+    state => state.realEstateForm.propertyAge || '',
+  );
+  const propertyCity = useAppSelector(
+    state => state.realEstateForm.propertyCity || '',
+  );
+  const annualPropertyIncome = useAppSelector(
+    state => state.realEstateForm.annualPropertyIncome || '',
+  );
+
+  // Track which fields have been touched/changed by user
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
   const addRealEstateApplicationMutation = useAddRealEstateApplicationApi({
     onSuccess: () => {
@@ -56,42 +112,109 @@ const RealEstateStep3: React.FC = () => {
       });
     },
     onError: error => {
+      Toast.show({
+        type: 'fail',
+        text1:
+          error.errorMessage ??
+          translate(
+            `${TranslationNamespaces.FINANCING}:failedToSubmitRealEstateApplication`,
+          ),
+      });
       console.error('Error submitting real estate application:', error);
       // Handle error - you might want to show an error message
     },
   });
-  const [realEstateFinancingType, setRealEstateFinancingType] = useState('');
-  const [propertyType, setPropertyType] = useState('');
-  const [propertyValue, setPropertyValue] = useState('');
-  const [propertyAge, setPropertyAge] = useState('');
-  const [propertyCity, setPropertyCity] = useState('');
-  const [annualPropertyIncome, setAnnualPropertyIncome] = useState('');
 
   // Filter text input to only allow English letters and spaces
   const filterEnglishLettersAndSpaces = (text: string): string =>
     text.replace(/[^a-zA-Z\s]/g, '');
 
+  // Validate all fields
+  const isRealEstateFinancingTypeValid = useMemo(
+    () => realEstateFinancingType.trim() !== '',
+    [realEstateFinancingType],
+  );
+  const isPropertyTypeValid = useMemo(
+    () => propertyType.trim() !== '',
+    [propertyType],
+  );
+  const isPropertyValueValid = useMemo(() => {
+    if (!propertyValue || propertyValue.trim() === '') {
+      return false;
+    }
+    const numericValue = propertyValue.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    // Valid if it's a number and > 0 (must be greater than 0)
+    return !isNaN(numValue) && numValue > 0;
+  }, [propertyValue]);
+  const isPropertyAgeValid = useMemo(() => {
+    if (!propertyAge.trim()) {
+      return false;
+    }
+    const age = parseInt(propertyAge.replace(/,/g, ''), 10);
+    return !isNaN(age) && age > 3;
+  }, [propertyAge]);
+  const isPropertyCityValid = useMemo(
+    () => propertyCity.trim() !== '',
+    [propertyCity],
+  );
+  const isAnnualPropertyIncomeValid = useMemo(() => {
+    if (!annualPropertyIncome || annualPropertyIncome.trim() === '') {
+      return false;
+    }
+    const numericValue = annualPropertyIncome.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    // Valid if it's a number and > 0 (must be greater than 0)
+    return !isNaN(numValue) && numValue > 0;
+  }, [annualPropertyIncome]);
+
+  // Check if fields have errors (for red border display)
+  // Show error only if field has been touched AND is invalid
+  const hasRealEstateFinancingTypeError =
+    touchedFields.has('realEstateFinancingType') &&
+    !isRealEstateFinancingTypeValid;
+  const hasPropertyTypeError =
+    touchedFields.has('propertyType') && !isPropertyTypeValid;
+  const hasPropertyValueError =
+    touchedFields.has('propertyValue') && !isPropertyValueValid;
+  const hasPropertyAgeError =
+    touchedFields.has('propertyAge') && !isPropertyAgeValid;
+  const hasPropertyCityError =
+    touchedFields.has('propertyCity') && !isPropertyCityValid;
+  const hasAnnualPropertyIncomeError =
+    touchedFields.has('annualPropertyIncome') && !isAnnualPropertyIncomeValid;
+
   // Check if all required fields are filled
   const isFormValid = useMemo(
     () =>
-      realEstateFinancingType.trim() !== '' &&
-      propertyType.trim() !== '' &&
-      propertyValue.trim() !== '' &&
-      propertyAge.trim() !== '' &&
-      propertyCity.trim() !== '' &&
-      annualPropertyIncome.trim() !== '',
+      isRealEstateFinancingTypeValid &&
+      isPropertyTypeValid &&
+      isPropertyValueValid &&
+      isPropertyAgeValid &&
+      isPropertyCityValid &&
+      isAnnualPropertyIncomeValid,
     [
-      realEstateFinancingType,
-      propertyType,
-      propertyValue,
-      propertyAge,
-      propertyCity,
-      annualPropertyIncome,
+      isRealEstateFinancingTypeValid,
+      isPropertyTypeValid,
+      isPropertyValueValid,
+      isPropertyAgeValid,
+      isPropertyCityValid,
+      isAnnualPropertyIncomeValid,
     ],
   );
 
   const handleApply = () => {
     if (!isFormValid) {
+      // Check specifically for property age validation
+      if (propertyAge.trim() && !isPropertyAgeValid) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.FINANCING}:propertyAgeMinimumError`,
+          ),
+        });
+        return;
+      }
       Toast.show({
         type: 'fail',
         text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
@@ -118,8 +241,23 @@ const RealEstateStep3: React.FC = () => {
             ? parseFloat(annualPropertyIncome.replace(/,/g, ''))
             : undefined,
         },
-        customerBaseInfo: customerBaseInfo || undefined,
-        customerLiability: customerLiability || undefined,
+        customerBaseInfo: {
+          name: name || undefined,
+          phone: mobile || undefined,
+          birthDate: dob || undefined,
+          employer: employer || undefined,
+          jobTitle: jobTitle || undefined,
+        },
+        customerLiability: {
+          liabilityType: liabilityType || undefined,
+          monthlyInstallment: monthlyInstallment
+            ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+            : undefined,
+          bankName: bankName || undefined,
+          remainingBalance: remainingBalance
+            ? parseFloat(remainingBalance.replace(/,/g, ''))
+            : undefined,
+        },
       },
     };
     addRealEstateApplicationMutation.mutate(request);
@@ -139,7 +277,9 @@ const RealEstateStep3: React.FC = () => {
           />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
-          {title}
+          {title +
+            ' ' +
+            translate(`${TranslationNamespaces.FINANCING}:financing`)}{' '}
         </Text>
       </View>
 
@@ -147,6 +287,7 @@ const RealEstateStep3: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* Progress Section */}
         <View style={styles.progressSection}>
@@ -174,88 +315,149 @@ const RealEstateStep3: React.FC = () => {
           </Text>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:realEstateFinancingType`,
-              )}
-              placeholderTextColor="#999"
-              value={realEstateFinancingType}
-              onChangeText={text =>
-                setRealEstateFinancingType(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasRealEstateFinancingTypeError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:realEstateFinancingType`,
+                )}
+                placeholderTextColor="#999"
+                value={realEstateFinancingType}
+                onChangeText={text => {
+                  setTouchedFields(prev =>
+                    new Set(prev).add('realEstateFinancingType'),
+                  );
+                  dispatch(
+                    setRealEstateFinancingType(
+                      filterEnglishLettersAndSpaces(text),
+                    ),
+                  );
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:propertyType`,
-              )}
-              placeholderTextColor="#999"
-              value={propertyType}
-              onChangeText={text =>
-                setPropertyType(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasPropertyTypeError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:propertyType`,
+                )}
+                placeholderTextColor="#999"
+                value={propertyType}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('propertyType'));
+                  dispatch(
+                    setPropertyType(filterEnglishLettersAndSpaces(text)),
+                  );
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:propertyValue`,
-              )}
-              placeholderTextColor="#999"
-              value={propertyValue}
-              onChangeText={text => setPropertyValue(formatAmount(text))}
-              {...getInputConstraints('amount')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasPropertyValueError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:propertyValue`,
+                )}
+                placeholderTextColor="#999"
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('propertyValue'));
+                  const formattedText = formatInput(text, true);
+                  dispatch(setPropertyValue(formattedText));
+                }}
+                value={propertyValue?.toLocaleString() ?? ''}
+                {...getInputConstraints('amount')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:propertyAge`,
-              )}
-              placeholderTextColor="#999"
-              value={propertyAge}
-              onChangeText={text => setPropertyAge(formatNumber(text))}
-              {...getInputConstraints('year')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasPropertyAgeError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:propertyAge`,
+                )}
+                placeholderTextColor="#999"
+                value={propertyAge}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('propertyAge'));
+                  dispatch(setPropertyAge(formatNumber(text)));
+                }}
+                {...getInputConstraints('year')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:propertyCity`,
-              )}
-              placeholderTextColor="#999"
-              value={propertyCity}
-              onChangeText={text =>
-                setPropertyCity(filterEnglishLettersAndSpaces(text))
-              }
-              {...getInputConstraints('text')}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[
+                  styles.input,
+                  hasPropertyCityError && styles.inputError,
+                ]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:propertyCity`,
+                )}
+                placeholderTextColor="#999"
+                value={propertyCity}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('propertyCity'));
+                  dispatch(
+                    setPropertyCity(filterEnglishLettersAndSpaces(text)),
+                  );
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
           </View>
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={translate(
-                `${TranslationNamespaces.FINANCING}:annualPropertyIncome`,
-              )}
-              placeholderTextColor="#999"
-              value={annualPropertyIncome}
-              onChangeText={text => setAnnualPropertyIncome(formatAmount(text))}
-              {...getInputConstraints('amount')}
-            />
-          </View>
+          {serviceId === 11 && (
+            <View style={styles.inputContainer}>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={[
+                    styles.input,
+                    hasAnnualPropertyIncomeError && styles.inputError,
+                  ]}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:annualPropertyIncome`,
+                  )}
+                  placeholderTextColor="#999"
+                  onChangeText={text => {
+                    setTouchedFields(prev =>
+                      new Set(prev).add('annualPropertyIncome'),
+                    );
+                    const formattedText = formatInput(text, true);
+                    dispatch(setAnnualPropertyIncome(formattedText));
+                  }}
+                  value={annualPropertyIncome?.toLocaleString() ?? ''}
+                  {...getInputConstraints('amount')}
+                />
+                <Text style={styles.mandatoryStar}>*</Text>
+              </View>
+            </View>
+          )}
         </View>
 
         {/* Apply Button */}
@@ -378,6 +580,9 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: ResponsiveDimensions.vs(16),
   },
+  inputWrapper: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: 'transparent',
     borderRadius: ResponsiveDimensions.vs(12),
@@ -388,6 +593,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#8C8C8C',
     textAlign: isRTL ? 'right' : 'left',
+  },
+  inputError: {
+    borderColor: '#FF0000',
+  },
+  mandatoryStar: {
+    position: 'absolute',
+    top: ResponsiveDimensions.vs(4),
+    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
+    color: AppColors.themeLight.secondary,
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: 'bold',
   },
   applyButton: {
     backgroundColor: '#4CAF50',

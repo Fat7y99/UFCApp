@@ -1,6 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { StyleSheet } from 'react-native';
-import { AppColors } from 'modules/theme/src';
 
 const styles = StyleSheet.create({
   container: {
