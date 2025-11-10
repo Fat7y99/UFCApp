@@ -25,13 +25,15 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 interface FinancingType {
   id: number;
   title: string;
-  onPress: () => void;
 }
 const isRTL = I18nManager.isRTL;
 
 const SMEFinancing: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [serviceId, setServiceId] = useState<number>(1);
+  const [selectedService, setSelectedService] = useState<FinancingType>({
+    id: 1,
+    title: translate(`${TranslationNamespaces.FINANCING}:invoice`),
+  });
   const { user } = useAppSelector(state => state.user);
   const goSignUpScreen = () => {
     navigation.navigate('signup');
@@ -40,34 +42,28 @@ const SMEFinancing: React.FC = () => {
     {
       id: 1,
       title: translate(`${TranslationNamespaces.FINANCING}:invoice`),
-      onPress: () => setServiceId(1),
     },
     {
       id: 2,
       title: translate(`${TranslationNamespaces.FINANCING}:project`),
-      onPress: () => setServiceId(2),
     },
     {
       id: 3,
       title: translate(`${TranslationNamespaces.FINANCING}:pos`),
-      onPress: () => setServiceId(3),
     },
     {
       id: 4,
       title: translate(`${TranslationNamespaces.FINANCING}:bankGuarantee`),
-      onPress: () => setServiceId(4),
     },
     {
       id: 5,
       title: translate(`${TranslationNamespaces.FINANCING}:workingCapital`),
-      onPress: () => setServiceId(5),
     },
     {
       id: 6,
       title: translate(
         `${TranslationNamespaces.FINANCING}:smeSecuredByProperty`,
       ),
-      onPress: () => setServiceId(6),
     },
   ];
   return (
@@ -111,16 +107,16 @@ const SMEFinancing: React.FC = () => {
               key={type.id}
               style={[
                 styles.financingButton,
-                serviceId === type.id && styles.activeButton,
+                selectedService?.id === type.id && styles.activeButton,
               ]}
               onPress={() => {
-                setServiceId(type.id);
+                setSelectedService(type);
               }}
             >
               <Text
                 style={[
                   styles.financingButtonText,
-                  serviceId === type.id && styles.activeButtonText,
+                  selectedService?.id === type.id && styles.activeButtonText,
                 ]}
               >
                 {type.title}
@@ -135,7 +131,10 @@ const SMEFinancing: React.FC = () => {
           onPress={
             user
               ? () => {
-                  navigation.navigate('smeStep1', { serviceId });
+                  navigation.navigate('smeStep1', {
+                    serviceId: selectedService?.id,
+                    title: selectedService?.title,
+                  });
                 }
               : goSignUpScreen
           }

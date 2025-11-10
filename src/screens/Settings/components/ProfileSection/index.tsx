@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, I18nManager } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 
+import { useAppSelector } from '@src/store';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { styles } from './styles';
@@ -17,8 +18,10 @@ const ProfileSection: React.FC = () => {
   const handleEditProfile = () => {
     navigation.navigate('editProfile');
   };
-
-  const { data: currentUser } = useGetCurrentUserApi();
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
+  const { data: currentUser } = useGetCurrentUserApi({
+    enabled: isLoggedIn,
+  });
 
   return (
     <View style={styles.container}>

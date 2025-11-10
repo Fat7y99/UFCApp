@@ -26,7 +26,6 @@ interface FinancingType {
   id: number;
   title: string;
   subtitle?: string;
-  onPress: () => void;
 }
 const isRTL = I18nManager.isRTL;
 
@@ -36,35 +35,33 @@ const RealEstateFinancing: React.FC = () => {
     navigation.navigate('signup');
   };
   const navigation = useNavigation<NavigationProp>();
-  const [serviceId, setServiceId] = useState<number>(1);
+  const [selectedService, setSelectedService] = useState<FinancingType>({
+    id: 7,
+    title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
+  });
   const financingTypes: FinancingType[] = [
     {
-      id: 1,
+      id: 7,
       title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
-      onPress: () => setServiceId(7),
     },
     {
-      id: 2,
+      id: 8,
       title: translate(`${TranslationNamespaces.FINANCING}:mortgage`),
-      onPress: () => setServiceId(8),
     },
     {
-      id: 3,
+      id: 9,
       title: translate(`${TranslationNamespaces.FINANCING}:refinance`),
-      onPress: () => setServiceId(9),
     },
     {
-      id: 4,
+      id: 10,
       title: translate(`${TranslationNamespaces.FINANCING}:selfBuild`),
-      onPress: () => setServiceId(10),
     },
     {
-      id: 5,
+      id: 11,
       title: translate(`${TranslationNamespaces.FINANCING}:wealthFinancing`),
       subtitle: translate(
         `${TranslationNamespaces.FINANCING}:commercialBuildings`,
       ),
-      onPress: () => setServiceId(11),
     },
   ];
 
@@ -110,16 +107,16 @@ const RealEstateFinancing: React.FC = () => {
               style={[
                 styles.financingButton,
                 type.id === 5 && styles.fullWidthButton,
-                serviceId === type.id && styles.activeButton,
+                selectedService?.id === type.id && styles.activeButton,
               ]}
               onPress={() => {
-                setServiceId(type.id);
+                setSelectedService(type);
               }}
             >
               <Text
                 style={[
                   styles.financingButtonText,
-                  serviceId === type.id && styles.activeButtonText,
+                  selectedService?.id === type.id && styles.activeButtonText,
                 ]}
               >
                 {type.title}
@@ -128,7 +125,7 @@ const RealEstateFinancing: React.FC = () => {
                 <Text
                   style={[
                     styles.financingButtonSubtext,
-                    serviceId === type.id && styles.activeButtonText,
+                    selectedService?.id === type.id && styles.activeButtonText,
                   ]}
                 >
                   {type.subtitle}
@@ -144,7 +141,10 @@ const RealEstateFinancing: React.FC = () => {
           onPress={
             user
               ? () => {
-                  navigation.navigate('realEstateStep1', { serviceId });
+                  navigation.navigate('realEstateStep1', {
+                    serviceId: selectedService?.id,
+                    title: selectedService?.title,
+                  });
                 }
               : goSignUpScreen
           }

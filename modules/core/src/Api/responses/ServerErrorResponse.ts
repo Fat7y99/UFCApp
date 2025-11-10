@@ -4,6 +4,7 @@ interface ServerErrorResponseErrors {
 }
 
 interface ServerErrorResponse {
+  code?: number;
   error?: string;
   errors?: string | ServerErrorResponseErrors;
   message?: string;

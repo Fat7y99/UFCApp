@@ -40,9 +40,10 @@ type RootStackParamList = {
   privacyPolicy: undefined;
   termsAndConditions: undefined;
   smeFinancing: undefined;
-  smeStep1: { serviceId: number };
+  smeStep1: { serviceId: number; title?: string };
   smeStep2: {
     serviceId: number;
+    title?: string;
     customerLiability?: {
       bankName?: string;
       currency?: string;
@@ -52,9 +53,10 @@ type RootStackParamList = {
     };
   };
   realEstateFinancing: undefined;
-  realEstateStep1: { serviceId: number };
+  realEstateStep1: { serviceId: number; title?: string };
   realEstateStep2: {
     serviceId: number;
+    title?: string;
     customerBaseInfo?: {
       name?: string;
       phone?: string;
@@ -65,6 +67,7 @@ type RootStackParamList = {
   };
   realEstateStep3: {
     serviceId: number;
+    title?: string;
     customerBaseInfo?: {
       name?: string;
       phone?: string;
@@ -80,9 +83,10 @@ type RootStackParamList = {
       remainingBalance?: number;
     };
   };
-  personalStep1: { serviceId?: number };
+  personalStep1: { serviceId?: number; title?: string };
   personalStep2: {
     serviceId: number;
+    title?: string;
     customerBaseInfo?: {
       name?: string;
       phone?: string;
@@ -94,6 +98,7 @@ type RootStackParamList = {
   };
   personalStep3: {
     serviceId: number;
+    title?: string;
     customerBaseInfo?: {
       name?: string;
       phone?: string;

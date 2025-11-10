@@ -30,6 +30,7 @@ const SMEStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<SMEStep1RouteProp>();
   const serviceId = route.params?.serviceId || 1;
+  const title = route.params?.title || '';
   const [liabilityType, setLiabilityType] = useState('');
   const [monthlyInstallment, setMonthlyInstallment] = useState('');
   const [bankName, setBankName] = useState('');
@@ -87,9 +88,7 @@ const SMEStep1: React.FC = () => {
             style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
           />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          {translate(`${TranslationNamespaces.FINANCING}:invoiceFinancing`)}
-        </Text>
+        <Text style={styles.headerTitle}>{title}</Text>
       </View>
 
       <ScrollView

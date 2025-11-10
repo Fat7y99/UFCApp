@@ -41,6 +41,7 @@ const SMEStep2: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<SMEStep2RouteProp>();
   const serviceId = route.params?.serviceId || 1;
+  const title = route.params?.title || '';
   const customerLiability = route.params?.customerLiability;
 
   const addSmeApplicationMutation = useAddSmeApplicationApi({
@@ -132,9 +133,7 @@ const SMEStep2: React.FC = () => {
             style={[styles.backIcon, isRTL && { transform: [{ scaleX: -1 }] }]}
           />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          {translate(`${TranslationNamespaces.FINANCING}:invoiceFinancing`)}
-        </Text>
+        <Text style={styles.headerTitle}>{title}</Text>
       </View>
 
       <ScrollView

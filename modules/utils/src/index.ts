@@ -6,3 +6,4 @@ export * from './RandomUtils';
 export * from './useFocusNotifyOnChangeProps';
 export * from './useRefreshOnFocus';
 export * from './UserUtils';
+export * from './ErrorUtils';

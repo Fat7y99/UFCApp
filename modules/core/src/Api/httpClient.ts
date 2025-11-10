@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
 import { translate } from '@modules/localization';
+import { processErrorCode } from '@modules/utils';
 import { setErrorDialogMessage, store } from '@src/store';
 import axios from 'axios';
 import { default as Config } from 'react-native-config';
@@ -130,29 +131,24 @@ const handle401Error = (error: AxiosError<ServerErrorResponse>) => {
 };
 
 const getErrorMessage = (error: AxiosError<ServerErrorResponse>) => {
-  // TODO: Construct error message base on "ServerErrorResponse" constructed from API.
-  let errorMessage: string = translate('unknownError');
+  // Use ErrorUtils to process error code and get proper message
+  const errorData = error.response?.data;
 
-  if (error.response?.data?.error) {
-    errorMessage = error.response?.data?.error;
-  } else if (
-    error.response?.data?.errors &&
-    typeof error.response.data.errors === 'string'
-  ) {
-    errorMessage = error.response?.data?.errors;
-  } else if (
-    error.response?.data?.errors &&
-    typeof error.response.data.errors === 'object' &&
-    error.response?.data?.errors?.message?.length
-  ) {
-    errorMessage = error.response?.data?.errors?.message?.join('\n');
-  } else if (error.response?.data?.message) {
-    errorMessage = error.response?.data?.message;
-  } else if (error.message) {
-    errorMessage = error.message;
+  // Process error using error code utility
+  const processedMessage = processErrorCode(errorData);
+
+  // If we got a message from error code processing, return it
+  if (processedMessage && processedMessage !== translate('unknownError')) {
+    return processedMessage;
   }
 
-  return errorMessage;
+  // Fallback to error.message if available
+  if (error.message) {
+    return error.message;
+  }
+
+  // Final fallback
+  return processedMessage || translate('unknownError');
 };
 
 const handleAxiosError = (error: AxiosError<ServerErrorResponse>) => {

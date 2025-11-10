@@ -4,4 +4,5 @@ export interface UserState {
   user?: User;
   unreadNotificationsCount?: number;
   apiToken?: string;
+  isLoggedIn: boolean;
 }

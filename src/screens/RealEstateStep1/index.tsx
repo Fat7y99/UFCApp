@@ -41,6 +41,7 @@ const RealEstateStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RealEstateStep1RouteProp>();
   const serviceId = route.params?.serviceId || 7;
+  const title = route.params?.title || '';
   const [name, setName] = useState('');
   const [mobile, setMobile] = useState('');
   const [dob, setDob] = useState('');
@@ -138,7 +139,7 @@ const RealEstateStep1: React.FC = () => {
           />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
-          {translate(`${TranslationNamespaces.FINANCING}:purchaseFinancing`)}
+          {title}
         </Text>
       </View>
 
