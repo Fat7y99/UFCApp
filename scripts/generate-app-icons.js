@@ -116,14 +116,28 @@ function generateIcons() {
   
   IOS_SIZES.forEach(({ name, size }) => {
     const output = path.join(IOS_ICON_DIR, name);
+    const tempOutput = `${output}.tmp`;
     console.log(`Generating ${name} (${size}x${size})...`);
     try {
-      execSync(`sips -z ${size} ${size} "${TEMP_PNG}" --out "${output}"`, { stdio: 'ignore' });
-      // Remove alpha channel if present (required by Apple)
-      execSync(`sips -s format png -s formatOptions normal "${output}" --out "${output}"`, { stdio: 'ignore' });
-      console.log(`✓ Created ${name}`);
+      // First resize the image
+      execSync(`sips -z ${size} ${size} "${TEMP_PNG}" --out "${tempOutput}"`, { stdio: 'ignore' });
+      
+      // Remove alpha channel by converting to JPEG (no alpha) then back to PNG
+      // This ensures the icon is fully opaque as required by Apple
+      const jpegOutput = `${output}.jpg`;
+      execSync(`sips -s format jpeg -s formatOptions 100 "${tempOutput}" --out "${jpegOutput}"`, { stdio: 'ignore' });
+      execSync(`sips -s format png "${jpegOutput}" --out "${output}"`, { stdio: 'ignore' });
+      
+      // Clean up temporary files
+      if (fs.existsSync(tempOutput)) fs.unlinkSync(tempOutput);
+      if (fs.existsSync(jpegOutput)) fs.unlinkSync(jpegOutput);
+      
+      console.log(`✓ Created ${name} (opaque, no alpha channel)`);
     } catch (err) {
       console.error(`✗ Failed to create ${name}:`, err.message);
+      // Clean up on error
+      if (fs.existsSync(tempOutput)) fs.unlinkSync(tempOutput);
+      if (fs.existsSync(`${output}.jpg`)) fs.unlinkSync(`${output}.jpg`);
     }
   });
   
