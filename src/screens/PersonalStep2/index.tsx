@@ -9,11 +9,13 @@ import {
   ScrollView,
   TextInput,
   Image,
+  ActivityIndicator,
   I18nManager,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
+import { SuccessType } from '@src/screens/Success/types';
 import { useAppDispatch, useAppSelector } from '@src/store';
 import {
   setLiabilityType,
@@ -23,6 +25,11 @@ import {
 } from '@src/store/personalForm';
 import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
+import {
+  useAddPersonalApplicationApi,
+  type ApiRequest,
+  type PersonalApplicationRequestBody,
+} from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -43,6 +50,24 @@ const PersonalStep2: React.FC = () => {
     state => state.personalForm.serviceId || route.params?.serviceId || 12,
   );
 
+  // Step 1 fields from Redux
+  const name = useAppSelector(state => state.personalForm.name);
+  const mobile = useAppSelector(state => state.personalForm.mobile);
+  const dob = useAppSelector(state => state.personalForm.dob);
+  const employer = useAppSelector(state => state.personalForm.employer);
+  const jobTitle = useAppSelector(state => state.personalForm.jobTitle);
+  const serviceStartDate = useAppSelector(
+    state => state.personalForm.serviceStartDate,
+  );
+  const basicSalary = useAppSelector(
+    state => state.personalForm.basicSalary || '',
+  );
+  const netSalary = useAppSelector(state => state.personalForm.netSalary || '');
+  const currentBank = useAppSelector(
+    state => state.personalForm.currentBank || '',
+  );
+  const city = useAppSelector(state => state.personalForm.city || '');
+
   // Step 2 fields from Redux
   const liabilityType = useAppSelector(
     state => state.personalForm.liabilityType || '',
@@ -57,6 +82,25 @@ const PersonalStep2: React.FC = () => {
 
   // Track which fields have been touched/changed by user
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+
+  const addPersonalApplicationMutation = useAddPersonalApplicationApi({
+    onSuccess: () => {
+      navigation.navigate('success', {
+        type: SuccessType.APPLICATION_SUBMITTED,
+      });
+    },
+    onError: error => {
+      Toast.show({
+        type: 'fail',
+        text1:
+          error.errorMessage ??
+          translate(
+            `${TranslationNamespaces.FINANCING}:failedToSubmitPersonalApplication`,
+          ),
+      });
+      console.error('Error submitting personal application:', error);
+    },
+  });
 
   // Filter text input to only allow English letters and spaces
   const filterEnglishLettersAndSpaces = (text: string): string =>
@@ -100,34 +144,97 @@ const PersonalStep2: React.FC = () => {
   const hasRemainingBalanceError =
     touchedFields.has('remainingBalance') && !isRemainingBalanceValid;
 
-  // Check if all required fields are filled
+  // Validate Step 1 fields
+  const isBasicSalaryValid = useMemo(() => {
+    if (!basicSalary || basicSalary.trim() === '') {
+      return false;
+    }
+    const numericValue = basicSalary.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    return !isNaN(numValue) && numValue > 0;
+  }, [basicSalary]);
+  const isNetSalaryValid = useMemo(() => {
+    if (!netSalary || netSalary.trim() === '') {
+      return false;
+    }
+    const numericValue = netSalary.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    return !isNaN(numValue) && numValue > 0;
+  }, [netSalary]);
+  const isCurrentBankValid = useMemo(
+    () => currentBank.trim() !== '',
+    [currentBank],
+  );
+  const isCityValid = useMemo(() => city.trim() !== '', [city]);
+
+  // Check if all required fields are filled (Step 1 + Step 2)
   const isFormValid = useMemo(
     () =>
       isLiabilityTypeValid &&
       isMonthlyInstallmentValid &&
       isBankNameValid &&
-      isRemainingBalanceValid,
+      isRemainingBalanceValid &&
+      isBasicSalaryValid &&
+      isNetSalaryValid &&
+      isCurrentBankValid &&
+      isCityValid,
     [
       isLiabilityTypeValid,
       isMonthlyInstallmentValid,
       isBankNameValid,
       isRemainingBalanceValid,
+      isBasicSalaryValid,
+      isNetSalaryValid,
+      isCurrentBankValid,
+      isCityValid,
     ],
   );
 
-  const handleNext = () => {
+  const handleApply = () => {
     if (!isFormValid) {
       Toast.show({
         type: 'fail',
         text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
-          field: translate(`${TranslationNamespaces.FINANCING}:liabilities`),
+          field: translate(
+            `${TranslationNamespaces.FINANCING}:baseRegistrationFields`,
+          ),
         }),
       });
       return;
     }
-    navigation.navigate('personalStep3', {
-      serviceId,
-    });
+    // Combine all form data and submit
+    const request: ApiRequest<PersonalApplicationRequestBody> = {
+      body: {
+        serviceId,
+        customerBaseInfo: {
+          name: name || undefined,
+          phone: mobile || undefined,
+          birthDate: dob || undefined,
+          employer: employer || undefined,
+          jobTitle: jobTitle || undefined,
+          serviceStartDate: serviceStartDate || undefined,
+          basicSalary: basicSalary
+            ? parseFloat(basicSalary.replace(/,/g, ''))
+            : undefined,
+          netSalary: netSalary
+            ? parseFloat(netSalary.replace(/,/g, ''))
+            : undefined,
+          currentBank: currentBank || undefined,
+          city: city || undefined,
+        },
+        customerLiability: {
+          liabilityType: liabilityType || undefined,
+          monthlyInstallment: monthlyInstallment
+            ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+            : undefined,
+          bankName: bankName || undefined,
+          remainingBalance: remainingBalance
+            ? parseFloat(remainingBalance.replace(/,/g, ''))
+            : undefined,
+        },
+      },
+    };
+    addPersonalApplicationMutation.mutate(request);
   };
 
   return (
@@ -273,15 +380,23 @@ const PersonalStep2: React.FC = () => {
           </View>
         </View>
 
-        {/* Next Button */}
+        {/* Apply Button */}
         <TouchableOpacity
-          style={[styles.nextButton, !isFormValid && styles.nextButtonDisabled]}
-          onPress={handleNext}
-          disabled={!isFormValid}
+          style={[
+            styles.applyButton,
+            (!isFormValid || addPersonalApplicationMutation.isPending) &&
+              styles.applyButtonDisabled,
+          ]}
+          onPress={handleApply}
+          disabled={!isFormValid || addPersonalApplicationMutation.isPending}
         >
-          <Text style={styles.nextButtonText}>
-            {translate(`${TranslationNamespaces.FINANCING}:next`)}
-          </Text>
+          {addPersonalApplicationMutation.isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.applyButtonText}>
+              {translate(`${TranslationNamespaces.FINANCING}:apply`)}
+            </Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </Screen>
@@ -369,7 +484,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    width: '66%',
+    width: '100%',
     backgroundColor: '#0080F7',
     borderRadius: ResponsiveDimensions.vs(4),
   },
@@ -455,19 +570,19 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(16),
     fontWeight: 'bold',
   },
-  nextButton: {
+  applyButton: {
     backgroundColor: '#4CAF50',
     borderRadius: ResponsiveDimensions.vs(12),
     paddingVertical: ResponsiveDimensions.vs(18),
     alignItems: 'center',
     marginTop: ResponsiveDimensions.vs(20),
   },
-  nextButtonText: {
+  applyButtonText: {
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
   },
-  nextButtonDisabled: {
+  applyButtonDisabled: {
     opacity: 0.6,
   },
 });

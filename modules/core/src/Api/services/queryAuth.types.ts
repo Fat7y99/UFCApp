@@ -3,7 +3,10 @@ export interface LoginBody {
   password?: string;
   grant_type?: string;
 }
-
+export interface RefreshTokenBody {
+  refresh_token?: string;
+  grant_type?: string;
+}
 export interface SignupBody {
   email?: string;
   name?: string;

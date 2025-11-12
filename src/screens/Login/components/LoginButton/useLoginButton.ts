@@ -17,7 +17,7 @@ import {
   setUnreadNotificationsCount as setLocalStorageUnreadNotificationsCount,
 } from '@modules/core';
 import { TranslationNamespaces } from '@modules/localization';
-import { saveApiToken, saveUserData } from '@modules/utils';
+import { saveApiToken, saveRefreshToken, saveUserData } from '@modules/utils';
 
 const useLoginButton = () => {
   // #region Logger
@@ -49,6 +49,11 @@ const useLoginButton = () => {
         const token = loginResponse.access_token;
         saveApiToken(token);
         dispatch(setStateApiToken(token));
+
+        // Save refresh token if available
+        if (loginResponse?.refresh_token) {
+          saveRefreshToken(loginResponse.refresh_token);
+        }
 
         // Trigger user details fetch
         setAccessToken(token);

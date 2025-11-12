@@ -10,6 +10,7 @@ interface FormInputProps {
   secureTextEntry?: boolean;
   textAlign?: 'left' | 'right';
   isOnlyEnglish?: boolean;
+  maxLength?: number;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -18,6 +19,7 @@ const FormInput: React.FC<FormInputProps> = ({
   onChangeText,
   secureTextEntry = false,
   textAlign,
+  maxLength,
 }) => (
   <View style={styles.container}>
     <TextInput
@@ -28,6 +30,7 @@ const FormInput: React.FC<FormInputProps> = ({
       onChangeText={onChangeText}
       secureTextEntry={secureTextEntry}
       textAlign={textAlign}
+      maxLength={maxLength}
     />
   </View>
 );

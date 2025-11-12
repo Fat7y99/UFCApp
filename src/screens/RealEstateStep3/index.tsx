@@ -81,7 +81,16 @@ const RealEstateStep3: React.FC = () => {
   const remainingBalance = useAppSelector(
     state => state.realEstateForm.remainingBalance,
   );
-
+  const basicSalary = useAppSelector(
+    state => state.realEstateForm.basicSalary || '',
+  );
+  const netSalary = useAppSelector(
+    state => state.realEstateForm.netSalary || '',
+  );
+  const currentBank = useAppSelector(
+    state => state.realEstateForm.currentBank || '',
+  );
+  const city = useAppSelector(state => state.realEstateForm.city || '');
   // Step 3 fields from Redux
   const realEstateFinancingType = useAppSelector(
     state => state.realEstateForm.realEstateFinancingType || '',
@@ -101,7 +110,9 @@ const RealEstateStep3: React.FC = () => {
   const annualPropertyIncome = useAppSelector(
     state => state.realEstateForm.annualPropertyIncome || '',
   );
-
+  const serviceStartDate = useAppSelector(
+    state => state.realEstateForm.serviceStartDate || '',
+  );
   // Track which fields have been touched/changed by user
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
 
@@ -241,13 +252,21 @@ const RealEstateStep3: React.FC = () => {
             ? parseFloat(annualPropertyIncome.replace(/,/g, ''))
             : undefined,
         },
-        /** */
         customerBaseInfo: {
           name: name || undefined,
           phone: mobile || undefined,
           birthDate: dob || undefined,
           employer: employer || undefined,
           jobTitle: jobTitle || undefined,
+          basicSalary: basicSalary
+            ? parseFloat(basicSalary.replace(/,/g, ''))
+            : undefined,
+          netSalary: netSalary
+            ? parseFloat(netSalary.replace(/,/g, ''))
+            : undefined,
+          currentBank: currentBank || undefined,
+          city: city || undefined,
+          serviceStartDate: serviceStartDate || undefined,
         },
         customerLiability: {
           liabilityType: liabilityType || undefined,

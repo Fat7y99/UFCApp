@@ -98,6 +98,10 @@ const OffersSection: React.FC<OffersSectionProps> = ({
     navigation.navigate('offers');
   };
 
+  const handleOfferPress = (offer: any) => {
+    navigation.navigate('offerDetails', { offer });
+  };
+
   return (
     <View style={styles.container}>
       {/* Section Header */}
@@ -120,20 +124,22 @@ const OffersSection: React.FC<OffersSectionProps> = ({
           const cardStyle = isOdd ? styles.offerCardOdd : styles.offerCardEven;
 
           return (
-            <View style={[styles.offerCard, cardStyle]}>
-              {/* Frame Image */}
-              <Image
-                source={isOdd ? AppImages.oddFrame : AppImages.evenFrame}
-                style={[
-                  isOdd ? styles.oddFrame : styles.evenFrame,
-                  isRTL && { transform: [{ scaleX: -1 }] },
-                ]}
-                resizeMode="contain"
-              />
+            <TouchableOpacity onPress={handleOfferPress}>
+              <View style={[styles.offerCard, cardStyle]}>
+                {/* Frame Image */}
+                <Image
+                  source={isOdd ? AppImages.oddFrame : AppImages.evenFrame}
+                  style={[
+                    isOdd ? styles.oddFrame : styles.evenFrame,
+                    isRTL && { transform: [{ scaleX: -1 }] },
+                  ]}
+                  resizeMode="contain"
+                />
 
-              <Text style={styles.offerTitle}>{offer.title}</Text>
-              <Text style={styles.offerDescription}>{offer.description}</Text>
-            </View>
+                <Text style={styles.offerTitle}>{offer.title}</Text>
+                <Text style={styles.offerDescription}>{offer.description}</Text>
+              </View>
+            </TouchableOpacity>
           );
         }}
         keyExtractor={item => item.id}

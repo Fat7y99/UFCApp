@@ -25,8 +25,12 @@ import {
   setEmployer,
   setJobTitle,
   setServiceStartDate,
+  setBasicSalary,
+  setNetSalary,
+  setCurrentBank,
+  setCity,
 } from '@src/store/personalForm';
-import { getInputConstraints } from '@src/utils/InputFormatting';
+import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -99,6 +103,14 @@ const PersonalStep1: React.FC = () => {
   const serviceStartDate = useAppSelector(
     state => state.personalForm.serviceStartDate || '',
   );
+  const basicSalary = useAppSelector(
+    state => state.personalForm.basicSalary || '',
+  );
+  const netSalary = useAppSelector(state => state.personalForm.netSalary || '');
+  const currentBank = useAppSelector(
+    state => state.personalForm.currentBank || '',
+  );
+  const city = useAppSelector(state => state.personalForm.city || '');
   const [handleOpenCalendar, setHandleOpenCalendar] = useState<string | null>(
     null,
   );
@@ -189,6 +201,27 @@ const PersonalStep1: React.FC = () => {
     () => serviceStartDate.trim() !== '',
     [serviceStartDate],
   );
+  const isBasicSalaryValid = useMemo(() => {
+    if (!basicSalary || basicSalary.trim() === '') {
+      return false;
+    }
+    const numericValue = basicSalary.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    return !isNaN(numValue) && numValue > 0;
+  }, [basicSalary]);
+  const isNetSalaryValid = useMemo(() => {
+    if (!netSalary || netSalary.trim() === '') {
+      return false;
+    }
+    const numericValue = netSalary.replace(/,/g, '');
+    const numValue = parseFloat(numericValue);
+    return !isNaN(numValue) && numValue > 0;
+  }, [netSalary]);
+  const isCurrentBankValid = useMemo(
+    () => currentBank.trim() !== '',
+    [currentBank],
+  );
+  const isCityValid = useMemo(() => city.trim() !== '', [city]);
 
   // Check if fields have errors (for red border display)
   // Show error only if field has been touched AND is invalid
@@ -199,6 +232,12 @@ const PersonalStep1: React.FC = () => {
   const hasJobTitleError = touchedFields.has('jobTitle') && !isJobTitleValid;
   const hasServiceStartDateError =
     touchedFields.has('serviceStartDate') && !isServiceStartDateValid;
+  const hasBasicSalaryError =
+    touchedFields.has('basicSalary') && !isBasicSalaryValid;
+  const hasNetSalaryError = touchedFields.has('netSalary') && !isNetSalaryValid;
+  const hasCurrentBankError =
+    touchedFields.has('currentBank') && !isCurrentBankValid;
+  const hasCityError = touchedFields.has('city') && !isCityValid;
 
   // Check if all required fields are filled
   const isFormValid = useMemo(
@@ -208,7 +247,11 @@ const PersonalStep1: React.FC = () => {
       isDobValid &&
       isEmployerValid &&
       isJobTitleValid &&
-      isServiceStartDateValid,
+      isServiceStartDateValid &&
+      isBasicSalaryValid &&
+      isNetSalaryValid &&
+      isCurrentBankValid &&
+      isCityValid,
     [
       isNameValid,
       isMobileValid,
@@ -216,6 +259,10 @@ const PersonalStep1: React.FC = () => {
       isEmployerValid,
       isJobTitleValid,
       isServiceStartDateValid,
+      isBasicSalaryValid,
+      isNetSalaryValid,
+      isCurrentBankValid,
+      isCityValid,
     ],
   );
 
@@ -428,6 +475,90 @@ const PersonalStep1: React.FC = () => {
                 />
                 <CalendarLogo />
               </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* Basic Salary */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasBasicSalaryError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:basicSalary`,
+                )}
+                placeholderTextColor="#999"
+                value={basicSalary}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('basicSalary'));
+                  const formattedText = formatInput(text, true);
+                  dispatch(setBasicSalary(formattedText));
+                }}
+                keyboardType="numeric"
+                textAlign={isRTL ? 'right' : 'left'}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* Net Salary (After GOSI) */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasNetSalaryError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:netSalaryAfterGOSI`,
+                )}
+                placeholderTextColor="#999"
+                value={netSalary}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('netSalary'));
+                  const formattedText = formatInput(text, true);
+                  dispatch(setNetSalary(formattedText));
+                }}
+                keyboardType="numeric"
+                textAlign={isRTL ? 'right' : 'left'}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* Current Bank */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasCurrentBankError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:currentBank`,
+                )}
+                placeholderTextColor="#999"
+                value={currentBank}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('currentBank'));
+                  dispatch(setCurrentBank(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* City */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasCityError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:city`,
+                )}
+                placeholderTextColor="#999"
+                value={city}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('city'));
+                  dispatch(setCity(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
               <Text style={styles.mandatoryStar}>*</Text>
             </View>
           </View>

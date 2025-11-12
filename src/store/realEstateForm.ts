@@ -8,6 +8,11 @@ const initialState = {
   dob: undefined,
   employer: undefined,
   jobTitle: undefined,
+  serviceStartDate: undefined,
+  basicSalary: undefined,
+  netSalary: undefined,
+  currentBank: undefined,
+  city: undefined,
   liabilityType: undefined,
   monthlyInstallment: undefined,
   bankName: undefined,
@@ -50,6 +55,21 @@ export const realEstateFormSlice = createSlice({
     },
     setJobTitle(state, action: PayloadAction<string>) {
       state.jobTitle = action.payload;
+    },
+    setServiceStartDate(state, action: PayloadAction<string>) {
+      state.serviceStartDate = action.payload;
+    },
+    setBasicSalary(state, action: PayloadAction<string>) {
+      state.basicSalary = action.payload;
+    },
+    setNetSalary(state, action: PayloadAction<string>) {
+      state.netSalary = action.payload;
+    },
+    setCurrentBank(state, action: PayloadAction<string>) {
+      state.currentBank = action.payload;
+    },
+    setCity(state, action: PayloadAction<string>) {
+      state.city = action.payload;
     },
     // Step 2 fields
     setLiabilityType(state, action: PayloadAction<string>) {
@@ -95,6 +115,11 @@ export const {
   setDob,
   setEmployer,
   setJobTitle,
+  setServiceStartDate,
+  setBasicSalary,
+  setNetSalary,
+  setCurrentBank,
+  setCity,
   setLiabilityType,
   setMonthlyInstallment,
   setBankName,

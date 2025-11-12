@@ -1,11 +1,17 @@
 import { Buffer } from 'buffer';
 import { translate } from '@modules/localization';
-import { processErrorCode } from '@modules/utils';
+import {
+  processErrorCode,
+  saveApiToken,
+  saveRefreshToken,
+  removeUserDataLogout,
+} from '@modules/utils';
 import { setErrorDialogMessage, store } from '@src/store';
 import axios from 'axios';
 import { default as Config } from 'react-native-config';
 import {
   queryAuth,
+  getRefreshToken,
   type ServerError,
   type ServerErrorResponse,
 } from '@modules/core';
@@ -22,6 +28,18 @@ const getLogMessage = (message: string) => `## HttpClient:: ${message}`;
 
 const isLoginRequest = (url?: string) =>
   url?.includes('/oauth2/token') || url?.includes('/login');
+const isRefreshTokenRequest = (config?: InternalAxiosRequestConfig) => {
+  if (!config?.url?.includes('/oauth2/token')) return false;
+  // Check if request body contains refresh_token
+  const body = config.data;
+  if (typeof body === 'string') {
+    return (
+      body.includes('refresh_token') &&
+      body.includes('grant_type=refresh_token')
+    );
+  }
+  return false;
+};
 const isForgotPasswordRequest = (url?: string) =>
   url?.includes('sendOTP') ||
   url?.endsWith('addEndUser') ||
@@ -38,7 +56,7 @@ const addHeaders = async (config: InternalAxiosRequestConfig<any>) => {
     config.headers.Authorization = `Bearer ${response?.access_token}`;
     return;
   }
-  if (isLoginRequest(config.url)) {
+  if (isLoginRequest(config.url) || isRefreshTokenRequest(config)) {
     // Get client credentials from Config
     const clientId = Config.CLIENT_ID || CLIENT_ID;
     const clientSecret = Config.CLIENT_SECRET || CLIENT_SECRET;
@@ -48,10 +66,16 @@ const addHeaders = async (config: InternalAxiosRequestConfig<any>) => {
       'base64',
     );
     config.headers.Authorization = `Basic ${basicAuthToken}`;
-    // Set Content-Type to application/x-www-form-urlencoded for login
+    // Set Content-Type to application/x-www-form-urlencoded for login/refresh
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
-    console.info(getLogMessage('Added Basic Auth for login request'));
+    console.info(
+      getLogMessage(
+        isRefreshTokenRequest(config)
+          ? 'Added Basic Auth for refresh token request'
+          : 'Added Basic Auth for login request',
+      ),
+    );
   } else {
     // Use Bearer token for other requests
     const token = store.getState().user?.apiToken;
@@ -120,13 +144,114 @@ const shouldSkip401 = (error: AxiosError<ServerErrorResponse>) => {
   return isSkip401Url;
 };
 
-const handle401Error = (error: AxiosError<ServerErrorResponse>) => {
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: any) => void;
+  reject: (error?: any) => void;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+const handle401Error = async (error: AxiosError<ServerErrorResponse>) => {
   console.info(getLogMessage('handle401Error'), error);
   const status = error.response?.status;
+  const originalRequest = error.config as InternalAxiosRequestConfig & {
+    _retry?: boolean;
+  };
+
   console.info(getLogMessage('status'), status);
 
-  if (status === 401 && !shouldSkip401(error)) {
+  // Skip 401 handling for certain URLs
+  if (shouldSkip401(error)) {
+    return Promise.reject(error);
+  }
+
+  // Skip if this is already a refresh token request or login request
+  if (
+    isRefreshTokenRequest(originalRequest) ||
+    isLoginRequest(originalRequest?.url)
+  ) {
+    // Refresh token also expired, logout user
+    console.info(getLogMessage('Refresh token expired, logging out user'));
+    removeUserDataLogout();
     store.dispatch(setErrorDialogMessage(translate('sessionExpired')));
+    return Promise.reject(error);
+  }
+
+  // If already refreshing, queue this request
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject });
+    })
+      .then(token => {
+        if (originalRequest && token) {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+        }
+        return httpClient(originalRequest);
+      })
+      .catch(err => Promise.reject(err));
+  }
+
+  // Start refresh process
+  isRefreshing = true;
+  originalRequest._retry = true;
+
+  const refreshToken = getRefreshToken() || store.getState().user?.refreshToken;
+
+  if (!refreshToken) {
+    console.info(getLogMessage('No refresh token available, logging out'));
+    isRefreshing = false;
+    processQueue(new Error('No refresh token'), null);
+    removeUserDataLogout();
+    store.dispatch(setErrorDialogMessage(translate('sessionExpired')));
+    return Promise.reject(error);
+  }
+
+  try {
+    console.info(getLogMessage('Attempting to refresh token'));
+    const response = await queryAuth.refreshToken({
+      body: { refresh_token: refreshToken },
+    });
+
+    if (response?.access_token) {
+      // Save new tokens
+      saveApiToken(response.access_token);
+      if (response.refresh_token) {
+        saveRefreshToken(response.refresh_token);
+      }
+
+      // Update original request with new token
+      if (originalRequest) {
+        originalRequest.headers.Authorization = `Bearer ${response.access_token}`;
+      }
+
+      // Process queued requests
+      isRefreshing = false;
+      processQueue(null, response.access_token);
+
+      // Retry original request
+      return httpClient(originalRequest);
+    } else {
+      throw new Error('No access token in refresh response');
+    }
+  } catch (refreshError) {
+    console.error(getLogMessage('Token refresh failed'), refreshError);
+    isRefreshing = false;
+    processQueue(refreshError, null);
+
+    // Refresh failed, logout user
+    removeUserDataLogout();
+    store.dispatch(setErrorDialogMessage(translate('sessionExpired')));
+    return Promise.reject(refreshError);
   }
 };
 
@@ -151,9 +276,25 @@ const getErrorMessage = (error: AxiosError<ServerErrorResponse>) => {
   return processedMessage || translate('unknownError');
 };
 
-const handleAxiosError = (error: AxiosError<ServerErrorResponse>) => {
+const handleAxiosError = async (error: AxiosError<ServerErrorResponse>) => {
   console.info(getLogMessage('handleAxiosError'), error);
-  handle401Error(error);
+
+  // Handle 401 errors with token refresh
+  if (error.response?.status === 401) {
+    try {
+      const refreshedResponse = await handle401Error(error);
+      // If refresh succeeded, return the refreshed response
+      if (refreshedResponse) {
+        return refreshedResponse;
+      }
+    } catch (refreshError) {
+      // Refresh failed, continue with error handling
+      console.error(
+        getLogMessage('Token refresh failed in handleAxiosError'),
+        refreshError,
+      );
+    }
+  }
 
   const severError: ServerError = {
     ...error,
@@ -206,7 +347,7 @@ const responseFulfilledInterceptor = (response: AxiosResponse<any, any>) => {
   return response;
 };
 
-const responseRejectedInterceptor = (error: any) => {
+const responseRejectedInterceptor = async (error: any) => {
   console.error(
     getLogMessage(`❌ Got Error from %c${error.response?.config?.url}`),
     `color: ${ConsoleColors.url}`,

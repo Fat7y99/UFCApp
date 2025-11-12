@@ -1,11 +1,11 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import moment from 'moment';
 import * as React from 'react';
 import { StyleSheet, ScrollView, ActivityIndicator, View } from 'react-native';
 import { useAppSelector } from '@src/store';
 import { Screen } from '@modules/components';
 import { useGetCurrentUserApi } from '@modules/core';
 import { EditProfileHeader, ProfileForm, SaveButton } from './components';
-
 interface ProfileData {
   username: string;
   fullName: string;
@@ -47,7 +47,9 @@ export default React.memo(() => {
         email: currentUser.email ?? '',
         mobileNumber: currentUser.phone ?? '',
         gender: validGender,
-        dateOfBirth: currentUser.birthDate ?? '',
+        dateOfBirth: currentUser.birthDate
+          ? moment(currentUser.birthDate).format('DD-MM-YYYY')
+          : '',
         address: currentUser.address ?? '',
       });
     }

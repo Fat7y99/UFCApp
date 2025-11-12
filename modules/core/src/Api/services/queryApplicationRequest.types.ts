@@ -1,3 +1,29 @@
+/**"appRealStateFinance": {
+    "annualPropertyIncome": 120000,
+    "financingType": "Real Estate Purchase",
+    "propertyAgeYears": 5,
+    "propertyCity": "Jeddah",
+    "propertyType": "Residential",
+    "propertyValue": 1500000
+  },
+  "customerBaseInfo": {
+    "basicSalary": 5000,
+    "birthDate": "2025-11-12T03:45:51.483Z",
+    "city": "Riyadh",
+    "currentBank": "National Bank",
+    "employer": "Tech Solutions Inc.",
+    "jobTitle": "Software Engineer",
+    "name": "John Doe",
+    "netSalary": 4500,
+    "phone": "+966501234567",
+    "serviceStartDate": "2025-11-12T03:45:51.483Z"
+  },
+  "customerLiability": {
+    "bankName": "First National Bank",
+    "liabilityType": "Credit Card",
+    "monthlyInstallment": 500,
+    "remainingBalance": 10000
+  }, */
 export interface CustomerBaseInfo {
   basicSalary?: number;
   birthDate?: string;

@@ -4,6 +4,7 @@ import type {
   LoginBody,
   LoginResponse,
   LogoutResponse,
+  RefreshTokenBody,
   SendOTPBody,
   SendOTPResponse,
   SignupBody,
@@ -50,6 +51,16 @@ const queryAuth = {
   // TODO: Change params, endpoint, method, and response mapping based on API requirements.
   logout: () =>
     httpClient.post<LogoutResponse>('/logout').then(response => response.data),
+  refreshToken: (
+    request: ApiRequest<RefreshTokenBody>,
+  ): Promise<LoginResponse> => {
+    const params = new URLSearchParams();
+    params.append('refresh_token', request.body?.refresh_token || '');
+    params.append('grant_type', 'refresh_token');
+    return httpClient
+      .post<LoginResponse>('/oauth2/token', params.toString())
+      .then(response => response.data);
+  },
 };
 
 export default queryAuth;

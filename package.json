@@ -90,6 +90,7 @@
     "axios": "^1.12.2",
     "buffer": "^6.0.3",
     "i18next": "^25.5.2",
+    "moment": "^2.30.1",
     "react": "19.1.0",
     "react-error-boundary": "^6.0.0",
     "react-hook-form": "^7.63.0",

@@ -1,9 +1,11 @@
 import {
   setUser as setLocalStorageUser,
   setApiToken as setLocalStorageApiToken,
+  setRefreshToken as setLocalStorageRefreshToken,
   removeUser as removeLocalStorageUser,
   removeUnreadNotificationsCount as removeLocalStorageUnreadNotificationsCount,
   removeApiToken as removeLocalStorageApiToken,
+  removeRefreshToken as removeLocalStorageRefreshToken,
   removeFcmToken as removeLocalStorageFcmToken,
   queryNotifications,
   setUnreadNotificationsCount as setLocalStorageUnreadNotificationsCount,
@@ -13,9 +15,11 @@ import {
   store,
   setUser as setStateUser,
   setApiToken as setStateApiToken,
+  setRefreshToken as setStateRefreshToken,
   removeUser as removeStateUser,
   removeUnreadNotificationsCount as removeStateUnreadNotificationsCount,
   removeApiToken as removeStateApiToken,
+  removeRefreshToken as removeStateRefreshToken,
   setUnreadCount,
 } from '@src/store';
 import type { User } from '@modules/core';
@@ -43,6 +47,17 @@ export const saveApiToken = (apiToken: string) => {
   console.info(getLogMessage('saveApiToken'), apiToken);
   setLocalStorageApiToken(apiToken);
   store.dispatch(setStateApiToken(apiToken));
+};
+
+/**
+ * Save refresh token to local storage and store state.
+ *
+ * @param refreshToken - The refresh token to be saved.
+ */
+export const saveRefreshToken = (refreshToken: string) => {
+  console.info(getLogMessage('saveRefreshToken'), refreshToken);
+  setLocalStorageRefreshToken(refreshToken);
+  store.dispatch(setStateRefreshToken(refreshToken));
 };
 
 /**
@@ -83,25 +98,27 @@ export const saveUserDataOpenHome = (user: User, apiToken: string) => {
 
 /**
  * Removes user data from local storage by deleting user,
- * unread notifications count, API token, and FCM token.
+ * unread notifications count, API token, refresh token, and FCM token.
  */
 export const removeLocalStorageUserData = () => {
   console.info(getLogMessage('removeLocalStorageUserData'));
   removeLocalStorageUser();
   removeLocalStorageUnreadNotificationsCount();
   removeLocalStorageApiToken();
+  removeLocalStorageRefreshToken();
   removeLocalStorageFcmToken();
 };
 
 /**
  * Removes user data from the Redux store by dispatching actions to remove user,
- * unread notifications count, and API token.
+ * unread notifications count, API token, and refresh token.
  */
 export const removeReduxUserData = () => {
   console.info(getLogMessage('removeReduxUserData'));
   store.dispatch(removeStateUser());
   store.dispatch(removeStateUnreadNotificationsCount());
   store.dispatch(removeStateApiToken());
+  store.dispatch(removeStateRefreshToken());
 };
 
 /**

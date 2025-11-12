@@ -5,6 +5,11 @@ export interface RealEstateFormState {
   dob?: string;
   employer?: string;
   jobTitle?: string;
+  serviceStartDate?: string;
+  basicSalary?: string;
+  netSalary?: string;
+  currentBank?: string;
+  city?: string;
 
   // Step 2 fields (customerLiability)
   liabilityType?: string;

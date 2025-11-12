@@ -7,6 +7,7 @@ const initialState = {
   user: undefined,
   unreadNotificationsCount: undefined,
   apiToken: undefined,
+  refreshToken: undefined,
   isLoggedIn: false,
 } as UserState;
 
@@ -36,6 +37,12 @@ export const userSlice = createSlice({
       // Set isLoggedIn to false when token is removed
       state.isLoggedIn = false;
     },
+    setRefreshToken(state, action: PayloadAction<string>) {
+      state.refreshToken = action.payload;
+    },
+    removeRefreshToken(state) {
+      state.refreshToken = undefined;
+    },
     setIsLoggedIn(state, action: PayloadAction<boolean>) {
       state.isLoggedIn = action.payload;
     },
@@ -49,6 +56,8 @@ export const {
   removeUnreadNotificationsCount,
   setApiToken,
   removeApiToken,
+  setRefreshToken,
+  removeRefreshToken,
   setIsLoggedIn,
 } = userSlice.actions;
 

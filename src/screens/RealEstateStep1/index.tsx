@@ -25,8 +25,13 @@ import {
   setDob,
   setEmployer,
   setJobTitle,
+  setServiceStartDate,
+  setBasicSalary,
+  setNetSalary,
+  setCurrentBank,
+  setCity,
 } from '@src/store/realEstateForm';
-import { getInputConstraints } from '@src/utils/InputFormatting';
+import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -106,7 +111,24 @@ const RealEstateStep1: React.FC = () => {
   const dob = useAppSelector(state => state.realEstateForm.dob || '');
   const employer = useAppSelector(state => state.realEstateForm.employer || '');
   const jobTitle = useAppSelector(state => state.realEstateForm.jobTitle || '');
+  const serviceStartDate = useAppSelector(
+    state => state.realEstateForm.serviceStartDate || '',
+  );
+  const basicSalary = useAppSelector(
+    state => state.realEstateForm.basicSalary || '',
+  );
+  const netSalary = useAppSelector(
+    state => state.realEstateForm.netSalary || '',
+  );
+  const currentBank = useAppSelector(
+    state => state.realEstateForm.currentBank || '',
+  );
+  const city = useAppSelector(state => state.realEstateForm.city || '');
   const [handleOpenCalendar, setHandleOpenCalendar] = useState<boolean>(false);
+  const [
+    handleOpenServiceStartDateCalendar,
+    setHandleOpenServiceStartDateCalendar,
+  ] = useState<boolean>(false);
 
   // Track which fields have been touched/changed by user
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
@@ -141,6 +163,18 @@ const RealEstateStep1: React.FC = () => {
     return new Date();
   };
 
+  const getServiceStartDatePickerValue = (): Date => {
+    if (serviceStartDate) {
+      const [day, month, year] = serviceStartDate.split('-');
+      return new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+      );
+    }
+    return new Date();
+  };
+
   const getDatePickerMinDate = (): Date => {
     const date = new Date();
     date.setFullYear(date.getFullYear() - 100);
@@ -156,8 +190,19 @@ const RealEstateStep1: React.FC = () => {
     setHandleOpenCalendar(false);
   };
 
+  const handleServiceStartDateChange = (date: Date) => {
+    const formattedDate = formatDateString(date);
+    setTouchedFields(prev => new Set(prev).add('serviceStartDate'));
+    dispatch(setServiceStartDate(formattedDate));
+    setHandleOpenServiceStartDateCalendar(false);
+  };
+
   const onCancelDate = () => {
     setHandleOpenCalendar(false);
+  };
+
+  const onCancelServiceStartDate = () => {
+    setHandleOpenServiceStartDateCalendar(false);
   };
 
   // Filter text input to only allow English letters and spaces
@@ -173,6 +218,20 @@ const RealEstateStep1: React.FC = () => {
   const isDobValid = useMemo(() => dob.trim() !== '', [dob]);
   const isEmployerValid = useMemo(() => employer.trim() !== '', [employer]);
   const isJobTitleValid = useMemo(() => jobTitle.trim() !== '', [jobTitle]);
+  const isServiceStartDateValid = useMemo(
+    () => serviceStartDate.trim() !== '',
+    [serviceStartDate],
+  );
+  const isBasicSalaryValid = useMemo(
+    () => basicSalary.trim() !== '',
+    [basicSalary],
+  );
+  const isNetSalaryValid = useMemo(() => netSalary.trim() !== '', [netSalary]);
+  const isCurrentBankValid = useMemo(
+    () => currentBank.trim() !== '',
+    [currentBank],
+  );
+  const isCityValid = useMemo(() => city.trim() !== '', [city]);
 
   // Check if fields have errors (for red border display)
   // Show error only if field has been touched AND is invalid
@@ -181,6 +240,14 @@ const RealEstateStep1: React.FC = () => {
   const hasDobError = touchedFields.has('dob') && !isDobValid;
   const hasEmployerError = touchedFields.has('employer') && !isEmployerValid;
   const hasJobTitleError = touchedFields.has('jobTitle') && !isJobTitleValid;
+  const hasServiceStartDateError =
+    touchedFields.has('serviceStartDate') && !isServiceStartDateValid;
+  const hasBasicSalaryError =
+    touchedFields.has('basicSalary') && !isBasicSalaryValid;
+  const hasNetSalaryError = touchedFields.has('netSalary') && !isNetSalaryValid;
+  const hasCurrentBankError =
+    touchedFields.has('currentBank') && !isCurrentBankValid;
+  const hasCityError = touchedFields.has('city') && !isCityValid;
 
   // Check if all required fields are filled
   const isFormValid = useMemo(
@@ -189,8 +256,24 @@ const RealEstateStep1: React.FC = () => {
       isMobileValid &&
       isDobValid &&
       isEmployerValid &&
+      isJobTitleValid &&
+      isServiceStartDateValid &&
+      isBasicSalaryValid &&
+      isNetSalaryValid &&
+      isCurrentBankValid &&
+      isCityValid,
+    [
+      isNameValid,
+      isMobileValid,
+      isDobValid,
+      isEmployerValid,
       isJobTitleValid,
-    [isNameValid, isMobileValid, isDobValid, isEmployerValid, isJobTitleValid],
+      isServiceStartDateValid,
+      isBasicSalaryValid,
+      isNetSalaryValid,
+      isCurrentBankValid,
+      isCityValid,
+    ],
   );
 
   const handleNext = () => {
@@ -372,6 +455,121 @@ const RealEstateStep1: React.FC = () => {
               <Text style={styles.mandatoryStar}>*</Text>
             </View>
           </View>
+
+          {/* Service Start Date */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TouchableOpacity
+                style={[
+                  styles.dateInputContainer,
+                  hasServiceStartDateError && styles.inputError,
+                ]}
+                onPress={() => {
+                  setTouchedFields(prev =>
+                    new Set(prev).add('serviceStartDate'),
+                  );
+                  setHandleOpenServiceStartDateCalendar(true);
+                }}
+              >
+                <TextInput
+                  style={styles.dateInput}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:serviceStartDate`,
+                  )}
+                  placeholderTextColor="#999"
+                  value={serviceStartDate}
+                  onChangeText={text => dispatch(setServiceStartDate(text))}
+                  editable={false}
+                />
+                <CalendarLogo />
+              </TouchableOpacity>
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* Basic Salary */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasBasicSalaryError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:basicSalary`,
+                )}
+                placeholderTextColor="#999"
+                value={basicSalary}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('basicSalary'));
+                  const formattedText = formatInput(text, true);
+                  dispatch(setBasicSalary(formattedText));
+                }}
+                keyboardType="numeric"
+                textAlign={isRTL ? 'right' : 'left'}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* Net Salary (After GOSI) */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasNetSalaryError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:netSalaryAfterGOSI`,
+                )}
+                placeholderTextColor="#999"
+                value={netSalary}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('netSalary'));
+                  const formattedText = formatInput(text, true);
+                  dispatch(setNetSalary(formattedText));
+                }}
+                keyboardType="numeric"
+                textAlign={isRTL ? 'right' : 'left'}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* Current Bank */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasCurrentBankError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:currentBank`,
+                )}
+                placeholderTextColor="#999"
+                value={currentBank}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('currentBank'));
+                  dispatch(setCurrentBank(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
+
+          {/* City */}
+          <View style={styles.inputContainer}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, hasCityError && styles.inputError]}
+                placeholder={translate(
+                  `${TranslationNamespaces.FINANCING}:city`,
+                )}
+                placeholderTextColor="#999"
+                value={city}
+                onChangeText={text => {
+                  setTouchedFields(prev => new Set(prev).add('city'));
+                  dispatch(setCity(filterEnglishLettersAndSpaces(text)));
+                }}
+                {...getInputConstraints('text')}
+              />
+              <Text style={styles.mandatoryStar}>*</Text>
+            </View>
+          </View>
         </View>
 
         {/* Next Button */}
@@ -394,6 +592,16 @@ const RealEstateStep1: React.FC = () => {
         minimumDate={getDatePickerMinDate()}
         maximumDate={getDatePickerMaxDate()}
         onConfirm={handleDateChange}
+      />
+      <DateTimePickerModal
+        themeVariant="light"
+        date={getServiceStartDatePickerValue()}
+        isVisible={handleOpenServiceStartDateCalendar}
+        mode="date"
+        onCancel={onCancelServiceStartDate}
+        minimumDate={getDatePickerMinDate()}
+        maximumDate={getDatePickerMaxDate()}
+        onConfirm={handleServiceStartDateChange}
       />
     </Screen>
   );
