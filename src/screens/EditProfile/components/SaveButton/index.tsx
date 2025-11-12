@@ -65,6 +65,10 @@ const SaveButton: React.FC<SaveButtonProps> = ({ profileData }) => {
       address?: string;
       birthDate?: string;
       gender?: 'MALE' | 'FEMALE';
+      name?: string;
+      username?: string;
+      phone?: string;
+      email?: string;
     } = {};
 
     if (profileData.address && profileData.address.trim() !== '') {
@@ -74,7 +78,18 @@ const SaveButton: React.FC<SaveButtonProps> = ({ profileData }) => {
     if (profileData.dateOfBirth && profileData.dateOfBirth.trim() !== '') {
       updateProfileBody.birthDate = profileData.dateOfBirth;
     }
-
+    if (profileData.fullName && profileData.fullName.trim() !== '') {
+      updateProfileBody.name = profileData.fullName;
+    }
+    if (profileData.username && profileData.username.trim() !== '') {
+      updateProfileBody.username = profileData.username;
+    }
+    if (profileData.mobileNumber && profileData.mobileNumber.trim() !== '') {
+      updateProfileBody.phone = profileData.mobileNumber;
+    }
+    if (profileData.email && profileData.email.trim() !== '') {
+      updateProfileBody.email = profileData.email;
+    }
     if (
       profileData.gender &&
       (profileData.gender === 'male' || profileData.gender === 'female')

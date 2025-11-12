@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   ImageBackground,
+  I18nManager,
 } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { LogoIcon, AppImages } from '@modules/assets';
@@ -52,6 +53,8 @@ export default React.memo(() => {
     navigation.navigate('forgotPassword');
   };
 
+  const isRTL = I18nManager.isRTL;
+
   return (
     <Screen style={styles.container}>
       <ImageBackground
@@ -78,6 +81,7 @@ export default React.memo(() => {
             {/* Form Fields */}
             <View style={styles.formContainer}>
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.LOGIN}:username`,
                 )}
@@ -86,6 +90,7 @@ export default React.memo(() => {
               />
 
               <FormInput
+                textAlign={isRTL ? 'right' : 'left'}
                 placeholder={translate(
                   `${TranslationNamespaces.LOGIN}:password`,
                 )}

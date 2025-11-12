@@ -79,6 +79,7 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
         onChangeText={handleTextChange}
         keyboardType="phone-pad"
         textAlign={textAlign}
+        maxLength={10}
       />
     </View>
   );

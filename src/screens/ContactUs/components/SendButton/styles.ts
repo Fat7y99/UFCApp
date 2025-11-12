@@ -31,4 +31,11 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
+  sendButtonDisabled: {
+    backgroundColor: '#CCCCCC',
+    opacity: 0.6,
+  },
+  sendButtonTextDisabled: {
+    color: '#999999',
+  },
 });

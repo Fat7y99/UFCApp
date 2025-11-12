@@ -108,6 +108,77 @@ const SignupButton: React.FC<SignupButtonProps> = ({
       }
       return true;
     }
+    if (fieldKey === 'username') {
+      const username = value.trim();
+      // Must be more than 3 characters
+      if (username.length <= 3) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameMustBeMoreThan3Characters`,
+          ),
+        });
+        return false;
+      }
+      // Must start with letter
+      if (!/^[a-zA-Z]/.test(username)) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameMustStartWithLetter`,
+          ),
+        });
+        return false;
+      }
+      // Cannot be only numbers
+      if (/^[0-9]+$/.test(username)) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameCannotBeOnlyNumbers`,
+          ),
+        });
+        return false;
+      }
+      // Cannot contain spaces
+      if (username.includes(' ')) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameCannotContainSpaces`,
+          ),
+        });
+        return false;
+      }
+      // Cannot contain special characters
+      if (/[^a-zA-Z0-9]/.test(username)) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:usernameCannotContainSpecialCharacters`,
+          ),
+        });
+        return false;
+      }
+      return true;
+    }
+    if (fieldKey === 'idNumber') {
+      // Must start with 1 or 2
+      if (
+        value.length > 0 &&
+        !value.startsWith('1') &&
+        !value.startsWith('2')
+      ) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:idNumberMustStartWith1Or2`,
+          ),
+        });
+        return false;
+      }
+      return true;
+    }
 
     return true;
   };

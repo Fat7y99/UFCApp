@@ -5,4 +5,6 @@ export default {
   emailPlaceholder: 'البريد الإلكتروني',
   messagePlaceholder: 'الرسالة',
   sendButton: 'إرسال',
+  successMessage: 'شكرًا لك على رسالتك. سنعود إليك قريبًا.',
+  invalidEmail: 'الرجاء إدخال عنوان بريد إلكتروني صحيح',
 };

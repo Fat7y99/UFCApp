@@ -10,6 +10,7 @@ import {
   Image,
   I18nManager,
 } from 'react-native';
+import { useAppSelector } from '@src/store';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -25,7 +26,8 @@ const SettingsHeader: React.FC = () => {
   const handleBackPress = () => {
     navigation.navigate('Home');
   };
-
+  const currenUser = useAppSelector(state => state.user.user);
+  console.log('fatoo7', currenUser, currenUser?.imageUrl, currenUser?.data);
   return (
     <View style={styles.container}>
       <StatusBar
@@ -52,7 +54,10 @@ const SettingsHeader: React.FC = () => {
         {/* Avatar floating in the middle */}
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>👤</Text>
+            <Image
+              source={{ uri: currenUser?.imageUrl as string }}
+              style={styles.avatar}
+            />
           </View>
         </View>
 

@@ -1,5 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,53 @@ import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import { CalendarLogo } from 'modules/assets/src';
 const isRTL = I18nManager.isRTL;
+const COUNTRY_CODE = '+20';
+
+// Local MobileNumberInput component matching RealEstateStep1 input styles
+interface MobileNumberInputProps {
+  value: string;
+  onChangeText: (text: string) => void;
+  countryCode: string;
+  textAlign?: 'left' | 'right';
+  style?: any;
+  editable?: boolean;
+}
+
+const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
+  value,
+  onChangeText,
+  countryCode,
+  textAlign = 'left',
+  style,
+  editable = true,
+}) => {
+  // Extract the number part (after country code)
+  const numberPart = value.startsWith(countryCode)
+    ? value.substring(countryCode.length)
+    : value;
+
+  const handleTextChange = (text: string) => {
+    // Always prepend country code
+    const newValue = countryCode + text.replace(/[^\d]/g, '');
+    onChangeText(newValue);
+  };
+
+  return (
+    <View style={styles.mobileInputWrapper}>
+      <Text style={styles.countryCode}>{countryCode}</Text>
+      <TextInput
+        style={[style, styles.mobileInput]}
+        value={numberPart}
+        onChangeText={handleTextChange}
+        keyboardType="phone-pad"
+        textAlign={textAlign}
+        placeholderTextColor="#B0B0B0"
+        editable={editable}
+        maxLength={10}
+      />
+    </View>
+  );
+};
 interface ProfileData {
   username: string;
   fullName: string;
@@ -34,10 +81,23 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   setProfileData,
 }) => {
   const [handleOpenCalendar, setHandleOpenCalendar] = useState<boolean>(false);
+  const [, setTouchedFields] = useState<Set<string>>(new Set());
 
-  const handleGenderSelect = (selectedGender: 'male' | 'female') => {
-    setProfileData(prev => ({ ...prev, gender: selectedGender }));
-  };
+  // Validate mobile number - ensures there are digits after country code
+  const isMobileValid = useMemo(
+    () => profileData.mobileNumber.length > COUNTRY_CODE.length,
+    [profileData.mobileNumber],
+  );
+
+  // Track validation state (can be used for form submission validation or visual feedback)
+  useEffect(() => {
+    // Validation is computed and available via isMobileValid
+    // This effect ensures the validation runs when mobileNumber changes
+    if (profileData.mobileNumber && !isMobileValid) {
+      // Mobile number is invalid (only country code, no digits)
+      // This can be used for showing error messages or disabling save button
+    }
+  }, [profileData.mobileNumber, isMobileValid]);
 
   const formatDateString = (date: Date): string => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -90,6 +150,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             setProfileData(prev => ({ ...prev, username: value }))
           }
           placeholderTextColor="#B0B0B0"
+          editable={false}
         />
         <View style={styles.separator} />
       </View>
@@ -106,6 +167,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             setProfileData(prev => ({ ...prev, fullName: value }))
           }
           placeholderTextColor="#B0B0B0"
+          maxLength={50}
         />
         <View style={styles.separator} />
       </View>
@@ -124,6 +186,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor="#B0B0B0"
+          maxLength={50}
         />
         <View style={styles.separator} />
       </View>
@@ -133,14 +196,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         <Text style={[styles.fieldLabel, isRTL && { textAlign: 'left' }]}>
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:mobileNumber`)}
         </Text>
-        <TextInput
+        <MobileNumberInput
+          value={profileData.mobileNumber || COUNTRY_CODE}
+          onChangeText={value => {
+            setTouchedFields(prev => new Set(prev).add('mobileNumber'));
+            setProfileData(prev => ({ ...prev, mobileNumber: value }));
+          }}
+          countryCode={COUNTRY_CODE}
+          textAlign={isRTL ? 'right' : 'left'}
           style={styles.fieldValue}
-          value={profileData.mobileNumber}
-          onChangeText={value =>
-            setProfileData(prev => ({ ...prev, mobileNumber: value }))
-          }
-          keyboardType="phone-pad"
-          placeholderTextColor="#B0B0B0"
+          editable={false}
         />
         <View style={styles.separator} />
       </View>
@@ -151,10 +216,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           {translate(`${TranslationNamespaces.EDIT_PROFILE}:gender`)}
         </Text>
         <View style={styles.genderContainer}>
-          <TouchableOpacity
-            style={styles.genderOption}
-            onPress={() => handleGenderSelect('male')}
-          >
+          <View style={styles.genderOption}>
             <View
               style={[
                 styles.radioButton,
@@ -173,12 +235,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             >
               {translate(`${TranslationNamespaces.EDIT_PROFILE}:male`)}
             </Text>
-          </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity
-            style={styles.genderOption}
-            onPress={() => handleGenderSelect('female')}
-          >
+          <View style={styles.genderOption}>
             <View
               style={[
                 styles.radioButton,
@@ -197,7 +256,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             >
               {translate(`${TranslationNamespaces.EDIT_PROFILE}:female`)}
             </Text>
-          </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.separator} />
       </View>
@@ -243,6 +302,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             `${TranslationNamespaces.EDIT_PROFILE}:addressPlaceholder`,
           )}
           placeholderTextColor="#B0B0B0"
+          maxLength={50}
         />
         <View style={styles.separator} />
       </View>
@@ -345,6 +405,21 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#E5E5E5',
     marginTop: ResponsiveDimensions.vs(8),
+  },
+  mobileInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  countryCode: {
+    color: '#2C2C2C',
+    fontSize: ResponsiveDimensions.vs(16),
+    marginRight: ResponsiveDimensions.vs(8),
+    fontWeight: '500',
+    paddingVertical: ResponsiveDimensions.vs(8),
+  },
+  mobileInput: {
+    flex: 1,
+    paddingVertical: 0,
   },
 });
 

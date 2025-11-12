@@ -1,5 +1,5 @@
 import type { User, ApiRequest } from '@modules/core';
-import { httpClient, queryMedia } from '@modules/core';
+import { httpClient } from '@modules/core';
 import type { UpdateProfileBody } from './queryUser.types';
 
 const queryUser = {
@@ -12,29 +12,9 @@ const queryUser = {
     const user = userResponse.data;
 
     // Check if user has an image path field (could be imagePath, image, profileImage, etc.)
-    let imageUrl = (user as any).imageUrl;
-
-    if (imageUrl) {
-      try {
-        // Get media URL from path
-        const mediaResponse = await queryMedia.getMedia({
-          params: {
-            path: imageUrl,
-            // Optionally add thumb and width parameters if needed
-            // thumb: 'true',
-            // width: 200,
-          },
-        });
-
-        // Media API returns an array, take the first element as the URL
-        if (Array.isArray(mediaResponse) && mediaResponse.length > 0) {
-          imageUrl = mediaResponse[0];
-        }
-      } catch (error) {
-        // If media API fails, log but don't block user data
-        console.warn('Failed to get media URL:', error);
-      }
-    }
+    let imageUrl = (user as any).imageUrl
+      ? `http://34.166.196.89:8080/api/media?path=${(user as any).imageUrl}`
+      : '';
 
     return {
       ...user,

@@ -26,10 +26,7 @@ import {
   setJobTitle,
   setServiceStartDate,
 } from '@src/store/personalForm';
-import {
-  getInputConstraints,
-  formatPhoneNumber,
-} from '@src/utils/InputFormatting';
+import { getInputConstraints } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -37,6 +34,52 @@ import { AppColors } from '@modules/theme';
 
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, CalendarLogo, PersonalStep1Logo } from 'modules/assets/src';
+
+const COUNTRY_CODE = '+20';
+
+// Local MobileNumberInput component matching RealEstateStep1 input styles
+interface MobileNumberInputProps {
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  countryCode: string;
+  textAlign?: 'left' | 'right';
+}
+
+const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
+  placeholder,
+  value,
+  onChangeText,
+  countryCode,
+  textAlign = 'left',
+}) => {
+  // Extract the number part (after country code)
+  const numberPart = value.startsWith(countryCode)
+    ? value.substring(countryCode.length)
+    : value;
+
+  const handleTextChange = (text: string) => {
+    // Always prepend country code
+    const newValue = countryCode + text.replace(/[^\d]/g, '');
+    onChangeText(newValue);
+  };
+
+  return (
+    <View style={styles.mobileInputWrapper}>
+      <Text style={styles.countryCode}>{countryCode}</Text>
+      <TextInput
+        style={styles.mobileInput}
+        placeholder={placeholder}
+        placeholderTextColor="#999"
+        value={numberPart}
+        onChangeText={handleTextChange}
+        keyboardType="phone-pad"
+        textAlign={textAlign}
+        maxLength={10}
+      />
+    </View>
+  );
+};
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const isRTL = I18nManager.isRTL;
@@ -47,7 +90,9 @@ const PersonalStep1: React.FC = () => {
 
   // Get form state from Redux
   const name = useAppSelector(state => state.personalForm.name || '');
-  const mobile = useAppSelector(state => state.personalForm.mobile || '');
+  const mobile = useAppSelector(
+    state => state.personalForm.mobile || COUNTRY_CODE,
+  );
   const dob = useAppSelector(state => state.personalForm.dob || '');
   const employer = useAppSelector(state => state.personalForm.employer || '');
   const jobTitle = useAppSelector(state => state.personalForm.jobTitle || '');
@@ -133,7 +178,10 @@ const PersonalStep1: React.FC = () => {
 
   // Validate all fields
   const isNameValid = useMemo(() => name.trim() !== '', [name]);
-  const isMobileValid = useMemo(() => mobile.trim() !== '', [mobile]);
+  const isMobileValid = useMemo(
+    () => mobile.length > COUNTRY_CODE.length, // Ensure there are digits after country code
+    [mobile],
+  );
   const isDobValid = useMemo(() => dob.trim() !== '', [dob]);
   const isEmployerValid = useMemo(() => employer.trim() !== '', [employer]);
   const isJobTitleValid = useMemo(() => jobTitle.trim() !== '', [jobTitle]);
@@ -264,19 +312,26 @@ const PersonalStep1: React.FC = () => {
 
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
-              <TextInput
-                style={[styles.input, hasMobileError && styles.inputError]}
-                placeholder={translate(
-                  `${TranslationNamespaces.FINANCING}:mobile`,
-                )}
-                placeholderTextColor="#999"
-                value={mobile}
-                onChangeText={text => {
-                  setTouchedFields(prev => new Set(prev).add('mobile'));
-                  dispatch(setMobile(formatPhoneNumber(text)));
-                }}
-                {...getInputConstraints('phone')}
-              />
+              <View
+                style={[
+                  styles.input,
+                  hasMobileError && styles.inputError,
+                  styles.mobileInputContainer,
+                ]}
+              >
+                <MobileNumberInput
+                  textAlign={isRTL ? 'right' : 'left'}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:mobile`,
+                  )}
+                  value={mobile}
+                  onChangeText={(value: string) => {
+                    setTouchedFields(prev => new Set(prev).add('mobile'));
+                    dispatch(setMobile(value));
+                  }}
+                  countryCode={COUNTRY_CODE}
+                />
+              </View>
               <Text style={styles.mandatoryStar}>*</Text>
             </View>
           </View>
@@ -581,6 +636,32 @@ const styles = StyleSheet.create({
     color: AppColors.themeLight.secondary,
     fontSize: ResponsiveDimensions.vs(16),
     fontWeight: 'bold',
+  },
+  mobileInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+  },
+  mobileInputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    paddingHorizontal: ResponsiveDimensions.vs(16),
+    paddingVertical: ResponsiveDimensions.vs(16),
+  },
+  countryCode: {
+    color: '#333',
+    fontSize: ResponsiveDimensions.vs(16),
+    marginRight: ResponsiveDimensions.vs(8),
+    fontWeight: '500',
+  },
+  mobileInput: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontSize: ResponsiveDimensions.vs(16),
+    color: '#333',
+    padding: 0,
   },
   dateInputContainer: {
     flexDirection: 'row',

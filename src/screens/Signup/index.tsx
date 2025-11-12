@@ -10,7 +10,6 @@ import {
   ImageBackground,
   I18nManager,
 } from 'react-native';
-import Toast from 'react-native-toast-message';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
@@ -68,32 +67,8 @@ export default React.memo(() => {
     );
   }, [formData, termsAccepted]);
   const handleInputChange = (field: string, value: string) => {
-    // make idNumber should start with 1 or 2 only
-    if (field === 'idNumber') {
-      const idNumberValue = value.replace(/[^0-9*]/g, '');
-      //shoe error message if not start with 1 or 2
-      if (!idNumberValue.startsWith('1') && !idNumberValue.startsWith('2')) {
-        Toast.show({
-          type: 'fail',
-          text1: translate(
-            `${TranslationNamespaces.SIGNUP}:idNumberMustStartWith1Or2`,
-          ),
-        });
-      }
-      setFormData(prev => ({ ...prev, [field]: idNumberValue }));
-      return;
-    }
     //max length 50 characters
     if (value.length > 50) {
-      Toast.show({
-        type: 'fail',
-        text1: translate(
-          `${TranslationNamespaces.SIGNUP}:maxLength50Characters`,
-          {
-            field: field,
-          },
-        ),
-      });
       return;
     }
     //
@@ -101,61 +76,19 @@ export default React.memo(() => {
       // Remove spaces and special characters (only allow letters and numbers)
       let usernameValue = value.replace(/[^a-zA-Z0-9]/g, '');
 
-      // Show error if original value contained spaces or special characters
-      if (value.includes(' ')) {
-        Toast.show({
-          type: 'fail',
-          text1: translate(
-            `${TranslationNamespaces.SIGNUP}:usernameCannotContainSpaces`,
-          ),
-        });
-      } else if (/[^a-zA-Z0-9]/.test(value)) {
-        Toast.show({
-          type: 'fail',
-          text1: translate(
-            `${TranslationNamespaces.SIGNUP}:usernameCannotContainSpecialCharacters`,
-          ),
-        });
-      }
-
-      // Check if username starts with a number
+      // Check if username starts with a number - remove the leading number
       if (usernameValue.length > 0 && /^[0-9]/.test(usernameValue)) {
-        Toast.show({
-          type: 'fail',
-          text1: translate(
-            `${TranslationNamespaces.SIGNUP}:usernameMustStartWithLetter`,
-          ),
-        });
-        // Remove the leading number
         usernameValue = usernameValue.replace(/^[0-9]+/, '');
       }
 
-      // Check if username is only numbers
+      // Check if username is only numbers - keep only letters if it's all numbers
       if (usernameValue.length > 0 && /^[0-9]+$/.test(usernameValue)) {
-        Toast.show({
-          type: 'fail',
-          text1: translate(
-            `${TranslationNamespaces.SIGNUP}:usernameCannotBeOnlyNumbers`,
-          ),
-        });
-        // Keep only letters if it's all numbers
         usernameValue = usernameValue.replace(/[0-9]/g, '');
-      }
-
-      // Check minimum length (only if user has typed something)
-      if (usernameValue.length > 0 && usernameValue.length <= 3) {
-        Toast.show({
-          type: 'fail',
-          text1: translate(
-            `${TranslationNamespaces.SIGNUP}:usernameMustBeMoreThan3Characters`,
-          ),
-        });
       }
 
       setFormData(prev => ({ ...prev, [field]: usernameValue }));
       return;
-    } //
-    else if (field === 'email') {
+    } else if (field === 'email') {
       const emailValue = value.replace(/[^a-zA-Z0-9@.]/g, '');
       setFormData(prev => ({ ...prev, [field]: emailValue }));
       return;
@@ -164,19 +97,12 @@ export default React.memo(() => {
       // Just validate the length of digits after country code
       const digitsAfterCode = value.substring(COUNTRY_CODE.length);
       if (digitsAfterCode.length > 10) {
-        Toast.show({
-          type: 'fail',
-          text1: translate(
-            `${TranslationNamespaces.SIGNUP}:mobileNumberMustBe10Digits`,
-          ),
-        });
         return;
       }
-      console.log('valueee', value);
       setFormData(prev => ({ ...prev, [field]: value }));
       return;
     } else if (field === 'idNumber') {
-      const idNumberValue = value.replace(/[^0-9]/g, '');
+      const idNumberValue = value.replace(/[^0-9*]/g, '');
       setFormData(prev => ({ ...prev, [field]: idNumberValue }));
       return;
     }

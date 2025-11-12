@@ -79,6 +79,7 @@ export default React.memo(() => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* Edit Profile Header */}
         <EditProfileHeader />

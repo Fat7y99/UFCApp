@@ -192,7 +192,7 @@ const RealEstateStep3: React.FC = () => {
       isPropertyValueValid &&
       isPropertyAgeValid &&
       isPropertyCityValid &&
-      isAnnualPropertyIncomeValid,
+      ((isAnnualPropertyIncomeValid && serviceId === 11) || serviceId !== 11),
     [
       isRealEstateFinancingTypeValid,
       isPropertyTypeValid,
@@ -241,6 +241,7 @@ const RealEstateStep3: React.FC = () => {
             ? parseFloat(annualPropertyIncome.replace(/,/g, ''))
             : undefined,
         },
+        /** */
         customerBaseInfo: {
           name: name || undefined,
           phone: mobile || undefined,
