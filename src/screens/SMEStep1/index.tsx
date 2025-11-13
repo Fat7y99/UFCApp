@@ -328,6 +328,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
+    flexWrap: 'wrap',
+    width: '80%',
+    textAlign: 'left',
   },
   notificationButton: {
     position: 'relative',
@@ -465,7 +468,7 @@ const styles = StyleSheet.create({
   mandatoryStar: {
     position: 'absolute',
     top: ResponsiveDimensions.vs(4),
-    [isRTL ? 'left' : 'right']: ResponsiveDimensions.vs(8),
+    right: ResponsiveDimensions.vs(8),
     color: AppColors.themeLight.secondary,
     fontSize: ResponsiveDimensions.vs(16),
     fontWeight: 'bold',

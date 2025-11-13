@@ -1,6 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useEffect } from 'react';
-import { View, TextInput, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  I18nManager,
+} from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { useAppSelector } from '@src/store';
 import { NotificationButton } from '@modules/components';
@@ -9,7 +15,7 @@ import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { styles } from './styles';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
-
+const isRTL = I18nManager.isRTL;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface HeaderSectionProps {
@@ -53,7 +59,13 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({
       <View style={styles.headerContent}>
         {showBackButton && onBackPress && (
           <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
-            <Image source={AppImages.leftArrow} style={styles.backIcon} />
+            <Image
+              source={AppImages.leftArrow}
+              style={[
+                styles.backIcon,
+                isRTL && { transform: [{ scaleX: -1 }] },
+              ]}
+            />
           </TouchableOpacity>
         )}
         <TouchableOpacity
