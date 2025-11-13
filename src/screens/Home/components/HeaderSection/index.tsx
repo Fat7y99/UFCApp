@@ -1,13 +1,13 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useEffect } from 'react';
 import { View, TextInput, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '@src/navigation';
 import { useAppSelector } from '@src/store';
 import { NotificationButton } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
-import type { RootStackParamList } from '@src/navigation';
 import { styles } from './styles';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -52,14 +52,8 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({
       {/* Login Button and Search Bar */}
       <View style={styles.headerContent}>
         {showBackButton && onBackPress && (
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={onBackPress}
-          >
-            <Image
-              source={AppImages.leftArrow}
-              style={styles.backIcon}
-            />
+          <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
+            <Image source={AppImages.leftArrow} style={styles.backIcon} />
           </TouchableOpacity>
         )}
         <TouchableOpacity
@@ -77,9 +71,10 @@ const HeaderSection: React.FC<HeaderSectionProps> = ({
             value={searchValue}
             onChangeText={onSearchChange}
             onFocus={showBackButton ? undefined : handleSearchPress}
+            onPress={showBackButton ? undefined : handleSearchPress}
           />
         </TouchableOpacity>
-        {user ? (
+        {user && !showBackButton ? (
           <View>
             <NotificationButton />
           </View>

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import type { RootStackParamList } from '@src/navigation';
 import { useAppSelector } from '@src/store';
 import { Screen } from '@modules/components';
 import {
@@ -23,10 +22,7 @@ import {
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, FavIcon, UnFavIcon } from 'modules/assets/src';
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const isRTL = I18nManager.isRTL;
 
@@ -38,7 +34,7 @@ interface ServiceType {
 }
 
 const Favourites: React.FC = () => {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<any>();
   const { user } = useAppSelector(state => state.user);
   const [selectedService, setSelectedService] = useState<ServiceType | null>(
     null,
