@@ -67,6 +67,7 @@ export default React.memo(() => {
             style={styles.scrollView}
             contentContainerStyle={styles.scrollViewContent}
             showsVerticalScrollIndicator={false}
+            automaticallyAdjustKeyboardInsets={true}
           >
             {/* Logo and App Name */}
             <View style={styles.headerContainer}>
@@ -86,6 +87,7 @@ export default React.memo(() => {
                   `${TranslationNamespaces.LOGIN}:username`,
                 )}
                 value={formData.username}
+                maxLength={50}
                 onChangeText={value => handleInputChange('username', value)}
               />
 
@@ -95,6 +97,7 @@ export default React.memo(() => {
                   `${TranslationNamespaces.LOGIN}:password`,
                 )}
                 value={formData.password}
+                maxLength={50}
                 onChangeText={value => handleInputChange('password', value)}
                 secureTextEntry
               />

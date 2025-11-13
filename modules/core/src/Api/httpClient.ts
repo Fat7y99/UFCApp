@@ -278,6 +278,17 @@ const getErrorMessage = (error: AxiosError<ServerErrorResponse>) => {
 
 const handleAxiosError = async (error: AxiosError<ServerErrorResponse>) => {
   console.info(getLogMessage('handleAxiosError'), error);
+  const isLoginRequestStatus = isLoginRequest(error.config?.url);
+  if (isLoginRequestStatus) {
+    const severError: ServerError = {
+      ...error,
+      date: new Date(),
+      status: error.response?.status,
+      data: error.response?.data,
+      errorMessage: getErrorMessage(error),
+    };
+    return Promise.reject(severError);
+  }
 
   // Handle 401 errors with token refresh
   if (error.response?.status === 401) {

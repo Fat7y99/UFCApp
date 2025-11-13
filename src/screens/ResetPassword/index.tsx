@@ -127,6 +127,7 @@ export default React.memo(() => {
             style={styles.scrollView}
             contentContainerStyle={styles.scrollViewContent}
             showsVerticalScrollIndicator={false}
+            automaticallyAdjustKeyboardInsets={true}
           >
             {/* Logo and App Name */}
             <View style={styles.headerContainer}>

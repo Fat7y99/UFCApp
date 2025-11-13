@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keyboard } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { reset } from '@src/navigation';
 import {
   useAppDispatch,
@@ -75,14 +76,15 @@ const useSignInButton = () => {
     onError: error => {
       console.error(getLogMessage('handleError'), error);
 
-      dispatch(
-        setErrorDialogMessage(
-          error.errorMessage ??
+      Toast.show({
+        type: 'fail',
+        text1: error.errorMessage?.includes('401')
+          ? translate(`${TranslationNamespaces.LOGIN}:invalidCredentials`)
+          : (error.errorMessage ??
             translate(`${TranslationNamespaces.COMMON}:errorWhileAction`, {
               action: translate(`${TranslationNamespaces.LOGIN}:signin`),
-            }),
-        ),
-      );
+            })),
+      });
     },
   });
 
@@ -144,12 +146,22 @@ const useSignInButton = () => {
       Keyboard.dismiss();
 
       if (!formData.username || formData.username.trim() === '') {
-        dispatch(setErrorDialogMessage('Please enter your username'));
+        Toast.show({
+          type: 'fail',
+          text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+            field: translate(`${TranslationNamespaces.LOGIN}:username`),
+          }),
+        });
         return;
       }
 
       if (!formData.password || formData.password.trim() === '') {
-        dispatch(setErrorDialogMessage('Please enter your password'));
+        Toast.show({
+          type: 'fail',
+          text1: translate(`${TranslationNamespaces.COMMON}:fieldRequired`, {
+            field: translate(`${TranslationNamespaces.LOGIN}:password`),
+          }),
+        });
         return;
       }
 

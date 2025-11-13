@@ -18,4 +18,6 @@ export { default as OutlinedSettingsIcon } from './images/rnsvg/OutlinedSettings
 export { default as OutlinedSearchIcon } from './images/rnsvg/OutlinedSearchIcon';
 export { default as EditProfileIcon } from './images/rnsvg/EditProfileIcon';
 export { default as DropDownArrow } from './images/rnsvg/DropDownArrow';
+export { default as FavIcon } from './images/rnsvg/FavIcon';
+export { default as UnFavIcon } from './images/rnsvg/unFavIcon';
 export * from './fonts';

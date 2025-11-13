@@ -21,4 +21,5 @@ export default {
   pleaseEnterCompleteOtp: 'الرجاء إدخال رمز OTP كامل',
   phoneNumberRequired: 'رقم الهاتف مطلوب',
   failedToSendOtp: 'فشل إرسال رمز التحقق. يرجى المحاولة مرة أخرى.',
+  invalidCredentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
 };

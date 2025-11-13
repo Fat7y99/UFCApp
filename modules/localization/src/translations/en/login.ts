@@ -21,4 +21,5 @@ export default {
   pleaseEnterCompleteOtp: 'Please enter complete OTP code',
   phoneNumberRequired: 'Phone number is required',
   failedToSendOtp: 'Failed to send OTP. Please try again.',
+  invalidCredentials: 'Your username or password is incorrect',
 };

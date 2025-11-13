@@ -18,7 +18,12 @@ import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AppImages, SMEStep1Logo } from 'modules/assets/src';
+import {
+  AppImages,
+  FavIcon,
+  SMEStep1Logo,
+  UnFavIcon,
+} from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -38,6 +43,7 @@ const SMEFinancing: React.FC = () => {
   const goSignUpScreen = () => {
     navigation.navigate('signup');
   };
+  const [isFav, setIsFav] = useState(false);
   const services: FinancingType[] = [
     {
       id: 1,
@@ -108,6 +114,11 @@ const SMEFinancing: React.FC = () => {
               style={[
                 styles.financingButton,
                 selectedService?.id === type.id && styles.activeButton,
+                {
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                  alignItems: 'center',
+                },
               ]}
               onPress={() => {
                 setSelectedService(type);
@@ -121,6 +132,13 @@ const SMEFinancing: React.FC = () => {
               >
                 {type.title}
               </Text>
+              {/*add favicon and unfavicon icons*/}
+              <TouchableOpacity
+                style={{ paddingEnd: ResponsiveDimensions.vs(10) }}
+                onPress={() => setIsFav(!isFav)}
+              >
+                {isFav ? <FavIcon /> : <UnFavIcon />}
+              </TouchableOpacity>
             </TouchableOpacity>
           ))}
         </View>
@@ -251,8 +269,9 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.themeLight.primary_1,
     borderRadius: ResponsiveDimensions.vs(12),
     paddingVertical: ResponsiveDimensions.vs(16),
-    paddingHorizontal: ResponsiveDimensions.vs(20),
+    paddingStart: ResponsiveDimensions.vs(20),
     alignItems: 'center',
+    gap: ResponsiveDimensions.vs(10),
   },
   financingButtonText: {
     color: 'white',
