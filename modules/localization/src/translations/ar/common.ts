@@ -33,6 +33,8 @@ export default {
   offerSuccess: 'نجاح العرض',
   profileUpdatedSuccessfully: 'تم تحديث الملف الشخصي بنجاح',
   operationCompletedSuccessfully: 'تمت العملية بنجاح',
+  serviceFavouritedSuccessfully: 'تمت إضافة الخدمة إلى المفضلة بنجاح',
+  serviceUnfavouritedSuccessfully: 'تمت إزالة الخدمة من المفضلة بنجاح',
   // Error codes
   unauthorized: 'غير مصرح',
   objectNotFound: 'الكائن غير موجود',

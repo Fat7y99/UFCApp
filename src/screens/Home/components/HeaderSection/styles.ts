@@ -60,8 +60,9 @@ export const styles = StyleSheet.create({
     paddingVertical: ResponsiveDimensions.vs(12),
   },
   searchIcon: {
+    width: ResponsiveDimensions.vs(18),
+    height: ResponsiveDimensions.vs(18),
     marginRight: ResponsiveDimensions.vs(12),
-    fontSize: ResponsiveDimensions.vs(18),
   },
   searchInput: {
     flex: 1,
@@ -77,5 +78,14 @@ export const styles = StyleSheet.create({
   notificationIcon: {
     width: ResponsiveDimensions.vs(24),
     height: ResponsiveDimensions.vs(24),
+  },
+  backButton: {
+    padding: ResponsiveDimensions.vs(8),
+    marginRight: ResponsiveDimensions.vs(8),
+  },
+  backIcon: {
+    width: ResponsiveDimensions.vs(16),
+    height: ResponsiveDimensions.vs(16),
+    tintColor: 'white',
   },
 });

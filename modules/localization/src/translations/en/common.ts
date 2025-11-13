@@ -36,6 +36,8 @@ export default {
   offerSuccess: 'Offer success',
   profileUpdatedSuccessfully: 'Profile updated successfully',
   operationCompletedSuccessfully: 'Operation completed successfully',
+  serviceFavouritedSuccessfully: 'Service added to favorites successfully',
+  serviceUnfavouritedSuccessfully: 'Service removed from favorites successfully',
   // Error codes
   unauthorized: 'Unauthorized',
   objectNotFound: 'Object not found',

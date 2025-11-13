@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,16 @@ import {
   Image,
   I18nManager,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import type { RootStackParamList } from '@src/navigation';
 import { useAppSelector } from '@src/store';
 import { Screen } from '@modules/components';
+import {
+  useFavouriteApi,
+  useUnfavouriteApi,
+  useGetFavouriteListApi,
+} from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -43,7 +49,107 @@ const SMEFinancing: React.FC = () => {
   const goSignUpScreen = () => {
     navigation.navigate('signup');
   };
-  const [isFav, setIsFav] = useState(false);
+
+  // Track favourites per service ID
+  const [favouriteServiceIds, setFavouriteServiceIds] = useState<Set<number>>(
+    new Set(),
+  );
+
+  // Load favourite list
+  const { data: favouriteList } = useGetFavouriteListApi(
+    {
+      body: {
+        pageNumber: '1',
+        pageSize: '100',
+      },
+    },
+    {
+      enabled: !!user, // Only fetch if user is logged in
+    },
+  );
+
+  // Update favourite service IDs when list loads
+  useEffect(() => {
+    if (favouriteList?.list) {
+      const favouriteIds = new Set<number>();
+      favouriteList.list.forEach(item => {
+        if (item.service?.id) {
+          favouriteIds.add(item.service.id);
+        }
+      });
+      setFavouriteServiceIds(favouriteIds);
+    }
+  }, [favouriteList]);
+
+  // Favourite mutation
+  const { mutate: favourite, isPending: isFavouriting } = useFavouriteApi({
+    onSuccess: (_, variables) => {
+      setFavouriteServiceIds(prev => new Set(prev).add(variables.pathVar!));
+      Toast.show({
+        type: 'success',
+        text1: translate(
+          `${TranslationNamespaces.COMMON}:serviceFavouritedSuccessfully`,
+        ),
+      });
+    },
+    onError: error => {
+      Toast.show({
+        type: 'fail',
+        text1:
+          error.errorMessage ??
+          translate(`${TranslationNamespaces.COMMON}:errorWhileAction`, {
+            action: 'favouriting',
+          }),
+      });
+    },
+  });
+
+  // Unfavourite mutation
+  const { mutate: unfavourite, isPending: isUnfavouriting } = useUnfavouriteApi(
+    {
+      onSuccess: (_, variables) => {
+        setFavouriteServiceIds(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(variables.pathVar!);
+          return newSet;
+        });
+        Toast.show({
+          type: 'success',
+          text1: translate(
+            `${TranslationNamespaces.COMMON}:serviceUnfavouritedSuccessfully`,
+          ),
+        });
+      },
+      onError: error => {
+        Toast.show({
+          type: 'fail',
+          text1:
+            error.errorMessage ??
+            translate(`${TranslationNamespaces.COMMON}:errorWhileAction`, {
+              action: 'unfavouriting',
+            }),
+        });
+      },
+    },
+  );
+
+  // Handle favourite/unfavourite
+  const handleFavouriteToggle = (serviceId: number) => {
+    if (!user) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(`${TranslationNamespaces.COMMON}:unauthorized`),
+      });
+      return;
+    }
+
+    const isFavourite = favouriteServiceIds.has(serviceId);
+    if (isFavourite) {
+      unfavourite({ pathVar: serviceId });
+    } else {
+      favourite({ pathVar: serviceId });
+    }
+  };
   const services: FinancingType[] = [
     {
       id: 1,
@@ -135,9 +241,10 @@ const SMEFinancing: React.FC = () => {
               {/*add favicon and unfavicon icons*/}
               <TouchableOpacity
                 style={{ paddingEnd: ResponsiveDimensions.vs(10) }}
-                onPress={() => setIsFav(!isFav)}
+                onPress={() => handleFavouriteToggle(type.id)}
+                disabled={isFavouriting || isUnfavouriting}
               >
-                {isFav ? <FavIcon /> : <UnFavIcon />}
+                {favouriteServiceIds.has(type.id) ? <FavIcon /> : <UnFavIcon />}
               </TouchableOpacity>
             </TouchableOpacity>
           ))}

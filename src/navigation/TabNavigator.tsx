@@ -32,6 +32,8 @@ import {
   PrivacyPolicy,
   TermsAndConditions,
 } from '@src/screens';
+import Favourites from '@src/screens/Favourites';
+import Search from '@src/screens/Search';
 import SignUpSuccess from '@src/screens/SignUpSuccess';
 import {
   AppImages,
@@ -206,7 +208,7 @@ const TabNavigator: React.FC = () => (
 
     <Tab.Screen
       name="Search"
-      component={MainStackNavigator}
+      component={Search}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem
@@ -220,7 +222,7 @@ const TabNavigator: React.FC = () => (
     />
     <Tab.Screen
       name="Favorites"
-      component={MainStackNavigator}
+      component={Favourites}
       options={{
         tabBarIcon: ({ focused }) => (
           <TabItem

@@ -1,12 +1,12 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
+  TouchableOpacity,
   Image,
   I18nManager,
 } from 'react-native';
@@ -24,32 +24,29 @@ import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {
-  AppImages,
-  FavIcon,
-  RealEstateStep1Logo,
-  UnFavIcon,
-} from 'modules/assets/src';
+import { AppImages, FavIcon, UnFavIcon } from 'modules/assets/src';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-interface FinancingType {
+const isRTL = I18nManager.isRTL;
+
+interface ServiceType {
   id: number;
   title: string;
   subtitle?: string;
+  category: 'SME' | 'REAL_ESTATE';
 }
-const isRTL = I18nManager.isRTL;
 
-const RealEstateFinancing: React.FC = () => {
+const Favourites: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { user } = useAppSelector(state => state.user);
+  const [selectedService, setSelectedService] = useState<ServiceType | null>(
+    null,
+  );
+
   const goSignUpScreen = () => {
     navigation.navigate('signup');
   };
-  const [selectedService, setSelectedService] = useState<FinancingType>({
-    id: 7,
-    title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
-  });
 
   // Track favourites per service ID
   const [favouriteServiceIds, setFavouriteServiceIds] = useState<Set<number>>(
@@ -151,31 +148,116 @@ const RealEstateFinancing: React.FC = () => {
       favourite({ pathVar: serviceId });
     }
   };
-  const financingTypes: FinancingType[] = [
-    {
-      id: 7,
-      title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
-    },
-    {
-      id: 8,
-      title: translate(`${TranslationNamespaces.FINANCING}:mortgage`),
-    },
-    {
-      id: 9,
-      title: translate(`${TranslationNamespaces.FINANCING}:refinance`),
-    },
-    {
-      id: 10,
-      title: translate(`${TranslationNamespaces.FINANCING}:selfBuild`),
-    },
-    {
-      id: 11,
-      title: translate(`${TranslationNamespaces.FINANCING}:wealthFinancing`),
-      subtitle: translate(
-        `${TranslationNamespaces.FINANCING}:commercialBuildings`,
-      ),
-    },
-  ];
+
+  // Handle navigation based on service category
+  const handleNext = () => {
+    if (!selectedService) return;
+
+    if (!user) {
+      goSignUpScreen();
+      return;
+    }
+
+    if (selectedService.category === 'SME') {
+      navigation.navigate('Home', {
+        screen: 'smeStep1',
+        params: {
+          serviceId: selectedService.id,
+          title: selectedService.title,
+        },
+      });
+    } else if (selectedService.category === 'REAL_ESTATE') {
+      navigation.navigate('Home', {
+        screen: 'realEstateStep1',
+        params: {
+          serviceId: selectedService.id,
+          title: selectedService.title,
+        },
+      });
+    }
+  };
+
+  // All services combined
+  const allServices: ServiceType[] = useMemo(
+    () => [
+      // SME Services (1-6)
+      {
+        id: 1,
+        title: translate(`${TranslationNamespaces.FINANCING}:invoice`),
+        category: 'SME',
+      },
+      {
+        id: 2,
+        title: translate(`${TranslationNamespaces.FINANCING}:project`),
+        category: 'SME',
+      },
+      {
+        id: 3,
+        title: translate(`${TranslationNamespaces.FINANCING}:pos`),
+        category: 'SME',
+      },
+      {
+        id: 4,
+        title: translate(`${TranslationNamespaces.FINANCING}:bankGuarantee`),
+        category: 'SME',
+      },
+      {
+        id: 5,
+        title: translate(`${TranslationNamespaces.FINANCING}:workingCapital`),
+        category: 'SME',
+      },
+      {
+        id: 6,
+        title: translate(
+          `${TranslationNamespaces.FINANCING}:smeSecuredByProperty`,
+        ),
+        category: 'SME',
+      },
+      // Real Estate Services (7-11)
+      {
+        id: 7,
+        title: translate(`${TranslationNamespaces.FINANCING}:purchase`),
+        category: 'REAL_ESTATE',
+      },
+      {
+        id: 8,
+        title: translate(`${TranslationNamespaces.FINANCING}:mortgage`),
+        category: 'REAL_ESTATE',
+      },
+      {
+        id: 9,
+        title: translate(`${TranslationNamespaces.FINANCING}:refinance`),
+        category: 'REAL_ESTATE',
+      },
+      {
+        id: 10,
+        title: translate(`${TranslationNamespaces.FINANCING}:selfBuild`),
+        category: 'REAL_ESTATE',
+      },
+      {
+        id: 11,
+        title: translate(`${TranslationNamespaces.FINANCING}:wealthFinancing`),
+        subtitle: translate(
+          `${TranslationNamespaces.FINANCING}:commercialBuildings`,
+        ),
+        category: 'REAL_ESTATE',
+      },
+    ],
+    [],
+  );
+
+  // Filter services to show only favourites
+  const favouriteServices = useMemo(
+    () => allServices.filter(service => favouriteServiceIds.has(service.id)),
+    [allServices, favouriteServiceIds],
+  );
+
+  // Clear selected service if it's no longer a favourite
+  useEffect(() => {
+    if (selectedService && !favouriteServiceIds.has(selectedService.id)) {
+      setSelectedService(null);
+    }
+  }, [favouriteServiceIds, selectedService]);
 
   return (
     <Screen style={styles.container}>
@@ -191,7 +273,7 @@ const RealEstateFinancing: React.FC = () => {
           />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          {translate(`${TranslationNamespaces.FINANCING}:realEstateFinancing`)}
+          {translate(`${TranslationNamespaces.HOME}:favorites`)}
         </Text>
         <View style={styles.headerSpacer} />
       </View>
@@ -201,88 +283,90 @@ const RealEstateFinancing: React.FC = () => {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Building Icon */}
-        <View style={styles.iconContainer}>
-          <RealEstateStep1Logo />
-        </View>
-
-        {/* Select Financing Type Label */}
-        <Text style={styles.sectionLabel}>
-          {translate(`${TranslationNamespaces.FINANCING}:selectFinancingType`)}
-        </Text>
-
-        {/* Financing Type Buttons */}
+        {/* Favourite Services */}
         <View style={styles.buttonsContainer}>
-          {financingTypes.map((type: FinancingType) => (
-            <TouchableOpacity
-              key={type.id}
-              style={[
-                styles.financingButton,
-                type.id === 11 && styles.fullWidthButton,
-                selectedService?.id === type.id && styles.activeButton,
-                {
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                },
-              ]}
-              onPress={() => {
-                setSelectedService(type);
-              }}
-            >
-              <View style={styles.buttonContent}>
-                <Text
-                  style={[
-                    styles.financingButtonText,
-                    selectedService?.id === type.id && styles.activeButtonText,
-                  ]}
-                >
-                  {type.title}
-                </Text>
-                {type.subtitle && (
+          {favouriteServices.length > 0 ? (
+            favouriteServices.map((service: ServiceType) => (
+              <TouchableOpacity
+                key={service.id}
+                style={[
+                  styles.serviceButton,
+                  service.id === 11 && styles.fullWidthButton,
+                  selectedService?.id === service.id && styles.activeButton,
+                  {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  },
+                ]}
+                onPress={() => {
+                  setSelectedService(service);
+                }}
+              >
+                <View style={styles.buttonContent}>
                   <Text
                     style={[
-                      styles.financingButtonSubtext,
-                      selectedService?.id === type.id &&
+                      styles.serviceButtonText,
+                      selectedService?.id === service.id &&
                         styles.activeButtonText,
                     ]}
                   >
-                    {type.subtitle}
+                    {service.title}
                   </Text>
-                )}
-              </View>
-              {/* Favourite/Unfavourite icon */}
-              <TouchableOpacity
-                style={{ paddingStart: ResponsiveDimensions.vs(10) }}
-                onPress={() => handleFavouriteToggle(type.id)}
-                disabled={isFavouriting || isUnfavouriting}
-              >
-                {favouriteServiceIds.has(type.id) ? <FavIcon /> : <UnFavIcon />}
+                  {service.subtitle && (
+                    <Text
+                      style={[
+                        styles.serviceButtonSubtext,
+                        selectedService?.id === service.id &&
+                          styles.activeButtonText,
+                      ]}
+                    >
+                      {service.subtitle}
+                    </Text>
+                  )}
+                </View>
+                {/* Favourite/Unfavourite icon */}
+                <TouchableOpacity
+                  style={{ paddingStart: ResponsiveDimensions.vs(10) }}
+                  onPress={() => handleFavouriteToggle(service.id)}
+                  disabled={isFavouriting || isUnfavouriting}
+                >
+                  {favouriteServiceIds.has(service.id) ? (
+                    <FavIcon />
+                  ) : (
+                    <UnFavIcon />
+                  )}
+                </TouchableOpacity>
               </TouchableOpacity>
-            </TouchableOpacity>
-          ))}
+            ))
+          ) : (
+            <View style={styles.noResultsContainer}>
+              <Text style={styles.noResultsText}>
+                {translate(`${TranslationNamespaces.COMMON}:noDataAvailable`, {
+                  data: 'favorites',
+                })}
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Next Button */}
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={
-            user
-              ? () => {
-                  navigation.navigate('realEstateStep1', {
-                    serviceId: selectedService?.id,
-                    title: selectedService?.title,
-                  });
-                }
-              : goSignUpScreen
-          }
-        >
-          <Text style={styles.nextButtonText}>
-            {user
-              ? translate(`${TranslationNamespaces.FINANCING}:next`)
-              : translate(`${TranslationNamespaces.HOME}:signUpToApply`)}
-          </Text>
-        </TouchableOpacity>
+        {selectedService && (
+          <TouchableOpacity
+            style={[
+              styles.nextButton,
+              !selectedService && styles.nextButtonDisabled,
+            ]}
+            onPress={handleNext}
+            disabled={!selectedService}
+          >
+            <Text style={styles.nextButtonText}>
+              {user
+                ? translate(`${TranslationNamespaces.FINANCING}:next`)
+                : translate(`${TranslationNamespaces.HOME}:signUpToApply`)}
+            </Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </Screen>
   );
@@ -302,7 +386,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: ResponsiveDimensions.vs(16),
     backgroundColor: AppColors.themeLight.primary_1,
     paddingTop: ResponsiveDimensions.vs(50),
     paddingHorizontal: ResponsiveDimensions.vs(20),
@@ -316,6 +400,7 @@ const styles = StyleSheet.create({
   backIcon: {
     width: ResponsiveDimensions.vs(16),
     height: ResponsiveDimensions.vs(16),
+    tintColor: 'white',
   },
   headerTitle: {
     color: 'white',
@@ -332,65 +417,13 @@ const styles = StyleSheet.create({
     padding: ResponsiveDimensions.vs(20),
     paddingBottom: ResponsiveDimensions.vs(100),
   },
-  iconContainer: {
-    alignItems: 'center',
-    marginBottom: ResponsiveDimensions.vs(40),
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: ResponsiveDimensions.vs(20),
-  },
-  buildingLeft: {
-    width: ResponsiveDimensions.vs(80),
-    height: ResponsiveDimensions.vs(100),
-    backgroundColor: AppColors.themeLight.primary_1,
-    borderRadius: ResponsiveDimensions.vs(12),
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  buildingRight: {
-    width: ResponsiveDimensions.vs(80),
-    height: ResponsiveDimensions.vs(100),
-    backgroundColor: '#4CAF50',
-    borderRadius: ResponsiveDimensions.vs(12),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buildingWindows: {
-    gap: ResponsiveDimensions.vs(4),
-  },
-  windowRow: {
-    flexDirection: 'row',
-    gap: ResponsiveDimensions.vs(4),
-  },
-  window: {
-    width: ResponsiveDimensions.vs(12),
-    height: ResponsiveDimensions.vs(12),
-    backgroundColor: 'white',
-    borderRadius: ResponsiveDimensions.vs(6),
-  },
-  buildingDoor: {
-    position: 'absolute',
-    bottom: ResponsiveDimensions.vs(8),
-    width: ResponsiveDimensions.vs(20),
-    height: ResponsiveDimensions.vs(30),
-    backgroundColor: '#4CAF50',
-    borderRadius: ResponsiveDimensions.vs(4),
-  },
-  sectionLabel: {
-    color: '#666',
-    fontSize: ResponsiveDimensions.vs(18),
-    fontWeight: '600',
-    marginBottom: ResponsiveDimensions.vs(24),
-    textAlign: 'left',
-  },
   buttonsContainer: {
     gap: ResponsiveDimensions.vs(16),
     marginBottom: ResponsiveDimensions.vs(40),
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  financingButton: {
+  serviceButton: {
     backgroundColor: AppColors.themeLight.primary_1,
     borderRadius: ResponsiveDimensions.vs(12),
     paddingVertical: ResponsiveDimensions.vs(16),
@@ -405,12 +438,12 @@ const styles = StyleSheet.create({
   fullWidthButton: {
     width: '100%',
   },
-  financingButtonText: {
+  serviceButtonText: {
     color: 'white',
     fontSize: ResponsiveDimensions.vs(16),
     fontWeight: '600',
   },
-  financingButtonSubtext: {
+  serviceButtonSubtext: {
     color: 'white',
     fontSize: ResponsiveDimensions.vs(12),
     fontWeight: '400',
@@ -423,11 +456,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: ResponsiveDimensions.vs(20),
   },
+  nextButtonDisabled: {
+    backgroundColor: '#CCCCCC',
+    opacity: 0.6,
+  },
   nextButtonText: {
     color: 'white',
     fontSize: ResponsiveDimensions.vs(18),
     fontWeight: 'bold',
   },
+  noResultsContainer: {
+    width: '100%',
+    paddingVertical: ResponsiveDimensions.vs(40),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noResultsText: {
+    color: '#666',
+    fontSize: ResponsiveDimensions.vs(16),
+    textAlign: 'center',
+  },
 });
 
-export default RealEstateFinancing;
+export default Favourites;
