@@ -33,8 +33,8 @@ export default React.memo(() => {
 
   // Form state
   const [formData, setFormData] = React.useState({
-    username: 'remon',
-    password: '0000',
+    username: '',
+    password: '',
   });
 
   const handleInputChange = (field: string, value: string) => {
