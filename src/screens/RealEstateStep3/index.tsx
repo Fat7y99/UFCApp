@@ -118,6 +118,7 @@ const RealEstateStep3: React.FC = () => {
 
   const addRealEstateApplicationMutation = useAddRealEstateApplicationApi({
     onSuccess: () => {
+      navigation.popTo('home');
       navigation.navigate('success', {
         type: SuccessType.APPLICATION_SUBMITTED,
       });

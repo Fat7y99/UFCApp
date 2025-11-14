@@ -307,6 +307,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         <View style={styles.separator} />
       </View>
       <DateTimePickerModal
+        isDarkModeEnabled={false}
         themeVariant="light"
         date={getDatePickerValue()}
         isVisible={handleOpenCalendar}

@@ -584,6 +584,7 @@ const RealEstateStep1: React.FC = () => {
         </TouchableOpacity>
       </ScrollView>
       <DateTimePickerModal
+        isDarkModeEnabled={false}
         themeVariant="light"
         date={getDatePickerValue()}
         isVisible={handleOpenCalendar}
@@ -594,6 +595,7 @@ const RealEstateStep1: React.FC = () => {
         onConfirm={handleDateChange}
       />
       <DateTimePickerModal
+        isDarkModeEnabled={false}
         themeVariant="light"
         date={getServiceStartDatePickerValue()}
         isVisible={handleOpenServiceStartDateCalendar}

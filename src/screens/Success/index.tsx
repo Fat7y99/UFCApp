@@ -1,6 +1,7 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as React from 'react';
+import { useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { Screen } from '@modules/components';
@@ -97,9 +98,9 @@ export default React.memo(() => {
   const successType = params?.type || SuccessType.PASSWORD_CHANGED;
   const config = getSuccessConfig(successType);
 
-  const handlePrimaryButtonPress = () => {
+  const handlePrimaryButtonPress = useCallback(() => {
     navigation.popTo('home');
-  };
+  }, [navigation]);
 
   const handleSecondaryButtonPress = () => {
     // Navigate to offers screen if available

@@ -90,6 +90,8 @@ const SMEStep2: React.FC = () => {
 
   const addSmeApplicationMutation = useAddSmeApplicationApi({
     onSuccess: () => {
+      //remove the current steps from the stack
+      navigation.popTo('home');
       navigation.navigate('success', {
         type: SuccessType.APPLICATION_SUBMITTED,
       });

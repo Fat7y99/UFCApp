@@ -582,6 +582,7 @@ const PersonalStep1: React.FC = () => {
       </ScrollView>
       {handleOpenCalendar && (
         <DateTimePickerModal
+          isDarkModeEnabled={false}
           themeVariant="light"
           date={getDatePickerValue(handleOpenCalendar as CalendarType)}
           isVisible={!!handleOpenCalendar}

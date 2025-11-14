@@ -87,6 +87,8 @@ const PersonalStep3: React.FC = () => {
 
   const addPersonalApplicationMutation = useAddPersonalApplicationApi({
     onSuccess: () => {
+      //remove the current steps from the stack
+      navigation.popTo('home');
       navigation.navigate('success', {
         type: SuccessType.APPLICATION_SUBMITTED,
       });

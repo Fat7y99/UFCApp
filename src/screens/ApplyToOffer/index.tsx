@@ -245,6 +245,7 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
       </ScrollView>
       {handleOpenCalendar && (
         <DateTimePickerModal
+          isDarkModeEnabled={false}
           themeVariant="light"
           date={getDatePickerValue(handleOpenCalendar as CalendarType)}
           isVisible={handleOpenCalendar !== null}

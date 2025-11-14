@@ -31,6 +31,7 @@ const FormInput: React.FC<FormInputProps> = ({
       secureTextEntry={secureTextEntry}
       textAlign={textAlign}
       maxLength={maxLength}
+      numberOfLines={1}
     />
   </View>
 );
