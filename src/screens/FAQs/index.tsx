@@ -57,6 +57,16 @@ const FAQsScreen: React.FC = () => {
       question: translate(`${TranslationNamespaces.HELP}:question5`),
       answer: translate(`${TranslationNamespaces.HELP}:answer5`),
     },
+    {
+      id: '6',
+      question: translate(`${TranslationNamespaces.HELP}:question6`),
+      answer: translate(`${TranslationNamespaces.HELP}:answer6`),
+    },
+    {
+      id: '7',
+      question: translate(`${TranslationNamespaces.HELP}:question7`),
+      answer: translate(`${TranslationNamespaces.HELP}:answer7`),
+    },
   ];
 
   const handleQuestionPress = (faq: FAQ) => {

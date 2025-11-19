@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   backIcon: {
     width: ResponsiveDimensions.vs(16),
     height: ResponsiveDimensions.vs(16),
-    tintColor: '#66B2FF',
+    tintColor: '#3B7BC8',
   },
   headerTitle: {
     flex: 1,
@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
   headingText: {
     fontSize: ResponsiveDimensions.vs(16),
     fontWeight: '800',
-    color: '#B8B8B8',
+    color: '#666666',
     marginBottom: ResponsiveDimensions.vs(16),
     marginTop: ResponsiveDimensions.vs(8),
     fontFamily: 'Roboto',
   },
   bodyText: {
     fontSize: ResponsiveDimensions.vs(16),
-    color: '#CACACA',
+    color: '#808080',
     lineHeight: ResponsiveDimensions.vs(24),
     marginBottom: ResponsiveDimensions.vs(16),
     paddingStart: ResponsiveDimensions.vs(16),
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   bullet: {
     fontSize: ResponsiveDimensions.vs(16),
-    color: '#CACACA',
+    color: '#808080',
     lineHeight: ResponsiveDimensions.vs(24),
   },
 });

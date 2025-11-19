@@ -118,8 +118,7 @@ export default React.memo(() => {
   };
 
   const handleTermsPress = () => {
-    // Navigate to terms and conditions
-    console.log('Navigate to terms and conditions');
+    navigation.navigate('termsAndConditions');
   };
 
   return (

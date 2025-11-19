@@ -44,50 +44,23 @@ export default React.memo(() => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <View style={styles.contentCard}>
-          {/* Heading */}
-          <Text style={[styles.headingText, isRTL && { textAlign: 'left' }]}>
-            {translate(`${TranslationNamespaces.SETTINGS}:privacyHeading`)}
-          </Text>
-
-          {/* Body Text */}
-          <Text style={[styles.bodyText, isRTL && { textAlign: 'left' }]}>
-            {translate(`${TranslationNamespaces.SETTINGS}:privacyContent`)}
-          </Text>
-
-          {/* Second Heading */}
-          <Text style={[styles.headingText, isRTL && { textAlign: 'left' }]}>
-            {translate(`${TranslationNamespaces.SETTINGS}:privacyHeading`)}
-          </Text>
-
-          {/* Bullet Points */}
-          <View style={styles.bulletList}>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bullet}>•</Text>
-              <Text style={[styles.bodyText, isRTL && { textAlign: 'left' }]}>
-                {translate(`${TranslationNamespaces.SETTINGS}:privacyBullet1`)}
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bullet}>•</Text>
-              <Text style={[styles.bodyText, isRTL && { textAlign: 'left' }]}>
-                {translate(`${TranslationNamespaces.SETTINGS}:privacyBullet2`)}
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bullet}>•</Text>
-              <Text style={[styles.bodyText, isRTL && { textAlign: 'left' }]}>
-                {translate(`${TranslationNamespaces.SETTINGS}:privacyBullet3`)}
-              </Text>
-            </View>
-            <View style={styles.bulletItem}>
-              <Text style={styles.bullet}>•</Text>
-              <Text style={[styles.bodyText, isRTL && { textAlign: 'left' }]}>
-                {translate(`${TranslationNamespaces.SETTINGS}:privacyBullet4`)}
-              </Text>
-            </View>
-          </View>
-        </View>
+        {/* Legal / Compliance Owner Section */}
+        {/* <View style={styles.legalSection}> */}
+        <Text style={[styles.legalTitle, isRTL && { textAlign: 'left' }]}>
+          {translate(`${TranslationNamespaces.SETTINGS}:legalComplianceTitle`)}
+        </Text>
+        <Text style={[styles.legalText, isRTL && { textAlign: 'left' }]}>
+          {translate(
+            `${TranslationNamespaces.SETTINGS}:legalComplianceDepartment`,
+          )}
+        </Text>
+        <Text style={[styles.legalText, isRTL && { textAlign: 'left' }]}>
+          {translate(`${TranslationNamespaces.SETTINGS}:legalComplianceEmail`)}
+        </Text>
+        <Text style={[styles.lastUpdatedText, isRTL && { textAlign: 'left' }]}>
+          {translate(`${TranslationNamespaces.SETTINGS}:lastUpdated`)}
+        </Text>
+        {/* </View> */}
       </ScrollView>
     </Screen>
   );

@@ -3,19 +3,25 @@ export default {
   faqs: 'FAQs',
   contactUs: 'Contact Us',
   faqsTitle: 'FAQs',
-  question1: 'Question number one',
+  question1: 'What is Ultimate Finance App?',
   answer1:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  question2: 'Question number two',
+    'A digital finance application offering financing, e-wallet, and payment services.',
+  question2: 'How do I register?',
   answer2:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  question3: 'Question number three',
+    'Use your mobile number and verify identity through Nafath or national ID.',
+  question3: 'Is my wallet a bank account?',
   answer3:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  question4: 'Question number four',
+    'No, it\'s a digital wallet without credit facilities.',
+  question4: 'Is my data secure?',
   answer4:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-  question5: 'Question number five',
+    'Yes, we use industry-grade encryption and SAMA-compliant security standards.',
+  question5: 'How can I apply for financing?',
   answer5:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
+    'From the Financing section in the app; submit the form and our team will review it.',
+  question6: 'Are there any fees?',
+  answer6:
+    'Fees vary by service and are displayed before confirmation.',
+  question7: 'How can I contact support?',
+  answer7:
+    'Via email or the in-app support chat.',
 };

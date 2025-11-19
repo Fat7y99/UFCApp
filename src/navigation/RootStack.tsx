@@ -11,6 +11,7 @@ import {
   OtpVerification,
   ResetPassword,
   ResetPasswordSuccess,
+  TermsAndConditions,
 } from '@src/screens';
 import TabNavigator from './TabNavigator';
 
@@ -39,6 +40,7 @@ export default React.memo(() => (
     />
     {/* Main app with tab bar */}
     <stack.Screen name="home" component={TabNavigator} />
+    <stack.Screen name="termsAndConditions" component={TermsAndConditions} />
     {/* Navigators */}
     {/* TODO: Add nested navigators here. */}
 

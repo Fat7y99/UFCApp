@@ -74,6 +74,29 @@ const styles = StyleSheet.create({
     color: '#CACACA',
     lineHeight: ResponsiveDimensions.vs(24),
   },
+  legalSection: {
+    marginTop: ResponsiveDimensions.vs(32),
+    paddingTop: ResponsiveDimensions.vs(24),
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  legalTitle: {
+    fontSize: ResponsiveDimensions.vs(18),
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: ResponsiveDimensions.vs(12),
+  },
+  legalText: {
+    fontSize: ResponsiveDimensions.vs(16),
+    color: '#666',
+    lineHeight: ResponsiveDimensions.vs(24),
+    marginBottom: ResponsiveDimensions.vs(8),
+  },
+  lastUpdatedText: {
+    fontSize: ResponsiveDimensions.vs(14),
+    color: '#999',
+    marginTop: ResponsiveDimensions.vs(8),
+  },
 });
 
 export default styles;
