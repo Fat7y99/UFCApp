@@ -12,4 +12,7 @@ export default {
   passwordsDoNotMatch: 'Passwords do not match',
   failedToResetPassword: 'Failed to reset password',
   otpCodeRequired: 'OTP code is required',
+  errorTitle: 'Error',
+  errorMessage: 'An error occurred while changing the password',
+  fillAllFields: 'Please fill all fields',
 };

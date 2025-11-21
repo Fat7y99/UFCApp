@@ -1,15 +1,21 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import React, { useState } from 'react';
+import React from 'react';
 import { View, TextInput, StyleSheet, I18nManager } from 'react-native';
+import { useChangePasswordContext } from '@src/screens/ChangePassword/context/ChangePasswordContext';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 
 const isRTL = I18nManager.isRTL;
 
 const PasswordForm: React.FC = () => {
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const {
+    currentPassword,
+    newPassword,
+    confirmPassword,
+    setCurrentPassword,
+    setNewPassword,
+    setConfirmPassword,
+  } = useChangePasswordContext();
 
   return (
     <View style={styles.container}>

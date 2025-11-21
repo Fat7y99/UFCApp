@@ -12,4 +12,7 @@ export default {
   passwordsDoNotMatch: 'كلمات المرور غير متطابقة',
   failedToResetPassword: 'فشل إعادة تعيين كلمة المرور',
   otpCodeRequired: 'رمز التحقق مطلوب',
+  errorTitle: 'خطأ',
+  errorMessage: 'حدث خطأ أثناء تغيير كلمة المرور',
+  fillAllFields: 'الرجاء إدخال جميع الحقول',
 };

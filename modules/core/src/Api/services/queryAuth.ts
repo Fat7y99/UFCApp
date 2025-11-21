@@ -1,5 +1,6 @@
 import type {
   ApiRequest,
+  ChangePasswordBody,
   ForgetPasswordBody,
   LoginBody,
   LoginResponse,
@@ -47,6 +48,11 @@ const queryAuth = {
   forgetPassword: (request: ApiRequest<ForgetPasswordBody>): Promise<void> =>
     httpClient
       .post('/api/user/forgetPassword', request.body)
+      .then(() => undefined),
+  // Change password
+  changePassword: (request: ApiRequest<ChangePasswordBody>): Promise<void> =>
+    httpClient
+      .post('/api/user/changePassword', request.body)
       .then(() => undefined),
   // TODO: Change params, endpoint, method, and response mapping based on API requirements.
   logout: () =>

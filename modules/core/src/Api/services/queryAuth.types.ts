@@ -28,3 +28,8 @@ export interface ForgetPasswordBody {
   password: string;
   phone: string;
 }
+
+export interface ChangePasswordBody {
+  password: string;
+  newPassword: string;
+}

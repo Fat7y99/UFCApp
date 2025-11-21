@@ -7,24 +7,27 @@ import {
   PasswordForm,
   ChangePasswordButton,
 } from './components';
+import { ChangePasswordProvider } from './context/ChangePasswordContext';
 
 export default React.memo(() => (
-  <Screen style={styles.container}>
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.scrollViewContent}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Change Password Header */}
-      <ChangePasswordHeader />
+  <ChangePasswordProvider>
+    <Screen style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Change Password Header */}
+        <ChangePasswordHeader />
 
-      {/* Password Form */}
-      <PasswordForm />
+        {/* Password Form */}
+        <PasswordForm />
 
-      {/* Change Password Button */}
-      <ChangePasswordButton />
-    </ScrollView>
-  </Screen>
+        {/* Change Password Button */}
+        <ChangePasswordButton />
+      </ScrollView>
+    </Screen>
+  </ChangePasswordProvider>
 ));
 
 const styles = StyleSheet.create({

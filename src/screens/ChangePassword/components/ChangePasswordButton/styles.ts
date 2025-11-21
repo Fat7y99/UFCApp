@@ -30,4 +30,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
+  changePasswordButtonDisabled: {
+    opacity: 0.6,
+  },
 });
