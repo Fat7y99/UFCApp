@@ -16,7 +16,6 @@ const PasswordForm: React.FC = () => {
     setNewPassword,
     setConfirmPassword,
   } = useChangePasswordContext();
-
   return (
     <View style={styles.container}>
       {/* Current Password Input */}
@@ -32,6 +31,7 @@ const PasswordForm: React.FC = () => {
         autoCapitalize="none"
         autoCorrect={false}
         textAlign={isRTL ? 'right' : 'left'}
+        maxLength={50}
       />
 
       {/* New Password Input */}
@@ -47,6 +47,7 @@ const PasswordForm: React.FC = () => {
         autoCapitalize="none"
         autoCorrect={false}
         textAlign={isRTL ? 'right' : 'left'}
+        maxLength={50}
       />
 
       {/* Confirm New Password Input */}

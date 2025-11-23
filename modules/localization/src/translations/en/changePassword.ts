@@ -15,4 +15,6 @@ export default {
   errorTitle: 'Error',
   errorMessage: 'An error occurred while changing the password',
   fillAllFields: 'Please fill all fields',
+  newPasswordCannotBeSameAsCurrentPassword:
+    'New password cannot be the same as the current password',
 };

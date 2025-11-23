@@ -9,6 +9,7 @@ interface FormInputProps {
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
   textAlign: 'left' | 'right';
+  maxLength?: number;
 }
 
 const FormInput: React.FC<FormInputProps> = ({

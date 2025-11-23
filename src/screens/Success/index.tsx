@@ -1,5 +1,9 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import * as React from 'react';
 import { useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
@@ -99,7 +103,15 @@ export default React.memo(() => {
   const config = getSuccessConfig(successType);
 
   const handlePrimaryButtonPress = useCallback(() => {
-    navigation.popTo('home');
+    if (navigation.getState().routes.some(item => item.name === 'home')) {
+      navigation.dispatch(
+        CommonActions.reset({ index: 0, routes: [{ name: 'home' }] }),
+      );
+      return;
+    }
+    navigation
+      .getParent()
+      ?.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'home' }] }));
   }, [navigation]);
 
   const handleSecondaryButtonPress = () => {
@@ -112,7 +124,10 @@ export default React.memo(() => {
   return (
     <Screen style={styles.container}>
       {/* Header */}
-      <SuccessHeader title={config.title} />
+      <SuccessHeader
+        title={config.title}
+        handlePrimaryButtonPress={handlePrimaryButtonPress}
+      />
 
       {/* Main Content */}
       <ScrollView

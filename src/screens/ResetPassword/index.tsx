@@ -114,7 +114,20 @@ export default React.memo(() => {
       },
     });
   };
-
+  const onPasswordChange = (value: string) => {
+    //don't allow arabic characters
+    if (value.match(/[\u0600-\u06FF]/)) {
+      return;
+    }
+    setPassword(value);
+  };
+  const onConfirmPasswordChange = (value: string) => {
+    //don't allow arabic characters
+    if (value.match(/[\u0600-\u06FF]/)) {
+      return;
+    }
+    setConfirmPassword(value);
+  };
   return (
     <Screen style={styles.container}>
       <ImageBackground
@@ -151,9 +164,12 @@ export default React.memo(() => {
                   `${TranslationNamespaces.CHANGE_PASSWORD}:newPassword`,
                 )}
                 value={password}
-                onChangeText={value => setPassword(value)}
+                onChangeText={value => {
+                  onPasswordChange(value);
+                }}
                 secureTextEntry
                 textAlign={isRTL ? 'right' : 'left'}
+                maxLength={50}
               />
 
               {/* Confirm New Password Input */}
@@ -162,9 +178,12 @@ export default React.memo(() => {
                   `${TranslationNamespaces.CHANGE_PASSWORD}:confirmPassword`,
                 )}
                 value={confirmPassword}
-                onChangeText={value => setConfirmPassword(value)}
+                onChangeText={value => {
+                  onConfirmPasswordChange(value);
+                }}
                 secureTextEntry
                 textAlign={isRTL ? 'right' : 'left'}
+                maxLength={50}
               />
             </View>
 

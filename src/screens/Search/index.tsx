@@ -237,6 +237,14 @@ const Search: React.FC = () => {
         ),
         category: 'REAL_ESTATE',
       },
+      // Personal Loan Service (12)
+      {
+        id: 12,
+        title: translate(
+          `${TranslationNamespaces.FINANCING}:personalFinancing`,
+        ),
+        category: 'PERSONAL',
+      },
     ],
     [],
   );

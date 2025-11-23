@@ -167,3 +167,6 @@ export const formatInput = (text: string, noDecimal?: boolean) => {
 
   return formattedValue;
 };
+export const filterEnglishLettersAndSpaces = (text: string): string =>
+  //allow arabic, english letters and spaces
+  text.replace(/[^a-zA-Z\s\u0600-\u06FF]/g, '');

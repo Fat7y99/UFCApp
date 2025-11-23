@@ -23,7 +23,11 @@ import {
   setCurrentBank,
   setCity,
 } from '@src/store/personalForm';
-import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
+import {
+  getInputConstraints,
+  formatInput,
+  filterEnglishLettersAndSpaces,
+} from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
   useAddPersonalApplicationApi,
@@ -106,10 +110,6 @@ const PersonalStep3: React.FC = () => {
       // Handle error - you might want to show an error message
     },
   });
-
-  // Filter text input to only allow English letters and spaces
-  const filterEnglishLettersAndSpaces = (text: string): string =>
-    text.replace(/[^a-zA-Z\s]/g, '');
 
   // Validate all fields
   const isBasicSalaryValid = useMemo(() => {

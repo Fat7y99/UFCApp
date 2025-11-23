@@ -29,6 +29,7 @@ import {
   getInputConstraints,
   formatNumber,
   formatInput,
+  filterEnglishLettersAndSpaces,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -136,10 +137,6 @@ const RealEstateStep3: React.FC = () => {
       // Handle error - you might want to show an error message
     },
   });
-
-  // Filter text input to only allow English letters and spaces
-  const filterEnglishLettersAndSpaces = (text: string): string =>
-    text.replace(/[^a-zA-Z\s]/g, '');
 
   // Validate all fields
   const isRealEstateFinancingTypeValid = useMemo(

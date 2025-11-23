@@ -14,7 +14,7 @@ import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import { CalendarLogo } from 'modules/assets/src';
 const isRTL = I18nManager.isRTL;
-const COUNTRY_CODE = '+20';
+const COUNTRY_CODE = '+966';
 
 // Local MobileNumberInput component matching RealEstateStep1 input styles
 interface MobileNumberInputProps {

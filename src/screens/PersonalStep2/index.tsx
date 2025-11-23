@@ -23,7 +23,11 @@ import {
   setBankName,
   setRemainingBalance,
 } from '@src/store/personalForm';
-import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
+import {
+  getInputConstraints,
+  formatInput,
+  filterEnglishLettersAndSpaces,
+} from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
   useAddPersonalApplicationApi,
@@ -103,10 +107,6 @@ const PersonalStep2: React.FC = () => {
       console.error('Error submitting personal application:', error);
     },
   });
-
-  // Filter text input to only allow English letters and spaces
-  const filterEnglishLettersAndSpaces = (text: string): string =>
-    text.replace(/[^a-zA-Z\s]/g, '');
 
   // Validate all fields
   const isLiabilityTypeValid = useMemo(

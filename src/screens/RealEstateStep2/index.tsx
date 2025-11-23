@@ -21,7 +21,11 @@ import {
   setBankName,
   setRemainingBalance,
 } from '@src/store/realEstateForm';
-import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
+import {
+  getInputConstraints,
+  formatInput,
+  filterEnglishLettersAndSpaces,
+} from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -63,10 +67,6 @@ const RealEstateStep2: React.FC = () => {
 
   // Track which fields have been touched/changed by user
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
-
-  // Filter text input to only allow English letters and spaces
-  const filterEnglishLettersAndSpaces = (text: string): string =>
-    text.replace(/[^a-zA-Z\s]/g, '');
 
   // Validate all fields
   const isLiabilityTypeValid = useMemo(

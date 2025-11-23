@@ -15,4 +15,6 @@ export default {
   errorTitle: 'خطأ',
   errorMessage: 'حدث خطأ أثناء تغيير كلمة المرور',
   fillAllFields: 'الرجاء إدخال جميع الحقول',
+  newPasswordCannotBeSameAsCurrentPassword:
+    'كلمة المرور الجديدة لا يمكن أن تكون نفس كلمة المرور الحالية',
 };

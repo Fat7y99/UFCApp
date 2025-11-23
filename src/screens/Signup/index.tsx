@@ -24,7 +24,7 @@ import {
 } from './components';
 
 const isRTL = I18nManager.isRTL;
-const COUNTRY_CODE = '+20';
+const COUNTRY_CODE = '+966';
 
 export default React.memo(() => {
   const theme = useAppTheme();
@@ -108,6 +108,13 @@ export default React.memo(() => {
     } else if (field === 'idNumber') {
       const idNumberValue = value.replace(/[^0-9*]/g, '');
       setFormData(prev => ({ ...prev, [field]: idNumberValue }));
+      return;
+    } else if (field === 'password' || field === 'confirmPassword') {
+      //don't allow arabic characters
+      if (value.match(/[\u0600-\u06FF]/)) {
+        return;
+      }
+      setFormData(prev => ({ ...prev, [field]: value }));
       return;
     }
     setFormData(prev => ({ ...prev, [field]: value }));

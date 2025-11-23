@@ -5,7 +5,7 @@ import { Screen } from '@modules/components';
 
 import { SettingsHeader, ProfileSection, SettingsOptions } from './components';
 
-export default React.memo(() => (
+export default () => (
   <Screen style={styles.container}>
     <ScrollView
       style={styles.scrollView}
@@ -22,7 +22,7 @@ export default React.memo(() => (
       <SettingsOptions />
     </ScrollView>
   </Screen>
-));
+);
 
 const styles = StyleSheet.create({
   container: {

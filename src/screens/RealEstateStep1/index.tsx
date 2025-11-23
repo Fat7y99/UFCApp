@@ -31,7 +31,11 @@ import {
   setCurrentBank,
   setCity,
 } from '@src/store/realEstateForm';
-import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
+import {
+  getInputConstraints,
+  formatInput,
+  filterEnglishLettersAndSpaces,
+} from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -44,7 +48,7 @@ import {
   RealEstateAllStepsLogo,
 } from 'modules/assets/src';
 
-const COUNTRY_CODE = '+20';
+const COUNTRY_CODE = '+966';
 
 // Local MobileNumberInput component matching RealEstateStep1 input styles
 interface MobileNumberInputProps {
@@ -204,10 +208,6 @@ const RealEstateStep1: React.FC = () => {
   const onCancelServiceStartDate = () => {
     setHandleOpenServiceStartDateCalendar(false);
   };
-
-  // Filter text input to only allow English letters and spaces
-  const filterEnglishLettersAndSpaces = (text: string): string =>
-    text.replace(/[^a-zA-Z\s]/g, '');
 
   // Validate all fields
   const isNameValid = useMemo(() => name.trim() !== '', [name]);

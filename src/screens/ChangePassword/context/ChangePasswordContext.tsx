@@ -20,16 +20,36 @@ export const ChangePasswordProvider: React.FC<{ children: ReactNode }> = ({
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const onOldPasswordChange = (password: string) => {
+    //don't allow arabic characters
+    if (password.match(/[\u0600-\u06FF]/)) {
+      return;
+    }
+    setCurrentPassword(password);
+  };
+  const onNewPasswordChange = (password: string) => {
+    //don't allow arabic characters
+    if (password.match(/[\u0600-\u06FF]/)) {
+      return;
+    }
+    setNewPassword(password);
+  };
+  const onConfirmPasswordChange = (password: string) => {
+    //don't allow arabic characters
+    if (password.match(/[\u0600-\u06FF]/)) {
+      return;
+    }
+    setConfirmPassword(password);
+  };
   return (
     <ChangePasswordContext.Provider
       value={{
         currentPassword,
         newPassword,
         confirmPassword,
-        setCurrentPassword,
-        setNewPassword,
-        setConfirmPassword,
+        setCurrentPassword: onOldPasswordChange,
+        setNewPassword: onNewPasswordChange,
+        setConfirmPassword: onConfirmPasswordChange,
       }}
     >
       {children}

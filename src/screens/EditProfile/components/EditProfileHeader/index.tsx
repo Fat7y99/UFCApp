@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
+import { useDispatch } from 'react-redux';
 import type { RootStackParamList } from '@src/navigation';
-import { useAppSelector } from '@src/store';
+import { setUser, useAppSelector } from '@src/store';
 import { useUpdateImageProfileApi, useGetCurrentUserApi } from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -31,6 +32,7 @@ const EditProfileHeader: React.FC = () => {
   const { data: currentUser } = useGetCurrentUserApi({
     enabled: isLoggedIn,
   });
+  const dispatch = useDispatch();
 
   const { mutate: updateImage, isPending } = useUpdateImageProfileApi({
     onSuccess: () => {
@@ -40,6 +42,7 @@ const EditProfileHeader: React.FC = () => {
           `${TranslationNamespaces.EDIT_PROFILE}:profileImageUpdatedSuccessfully`,
         ),
       });
+      dispatch(setUser({ ...currentUser, imageUrl: currentUser?.imageUrl }));
     },
     onError: error => {
       Toast.show({

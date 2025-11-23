@@ -1,12 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useChangePasswordContext } from '@src/screens/ChangePassword/context/ChangePasswordContext';
 import { useChangePasswordApi } from '@modules/core';
 import { translate } from '@modules/localization';
@@ -22,34 +17,45 @@ const ChangePasswordButton: React.FC = () => {
       navigation.navigate('success', { type: 'passwordChanged' });
     },
     onError: error => {
-      Alert.alert(
-        translate(`${TranslationNamespaces.CHANGE_PASSWORD}:errorTitle`),
-        error.errorMessage ||
+      Toast.show({
+        type: 'fail',
+        text1:
+          error.errorMessage ||
           translate(`${TranslationNamespaces.CHANGE_PASSWORD}:errorMessage`),
-      );
+      });
     },
   });
 
   const handleChangePasswordPress = () => {
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert(
-        translate(`${TranslationNamespaces.CHANGE_PASSWORD}:errorTitle`),
-        translate(`${TranslationNamespaces.CHANGE_PASSWORD}:fillAllFields`),
-      );
+      Toast.show({
+        type: 'fail',
+        text1: translate(
+          `${TranslationNamespaces.CHANGE_PASSWORD}:fillAllFields`,
+        ),
+      });
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert(
-        translate(`${TranslationNamespaces.CHANGE_PASSWORD}:errorTitle`),
-        translate(
+      Toast.show({
+        type: 'fail',
+        text1: translate(
           `${TranslationNamespaces.CHANGE_PASSWORD}:passwordsDoNotMatch`,
         ),
-      );
+      });
       return;
     }
-
+    if (newPassword === currentPassword) {
+      Toast.show({
+        type: 'fail',
+        text1: translate(
+          `${TranslationNamespaces.CHANGE_PASSWORD}:newPasswordCannotBeSameAsCurrentPassword`,
+        ),
+      });
+      return;
+    }
     // Call API
     changePassword({
       body: {

@@ -238,6 +238,13 @@ const Favourites: React.FC = () => {
         ),
         category: 'REAL_ESTATE',
       },
+      {
+        id: 12,
+        title: translate(
+          `${TranslationNamespaces.FINANCING}:personalFinancing`,
+        ),
+        category: 'PERSONAL',
+      },
     ],
     [],
   );

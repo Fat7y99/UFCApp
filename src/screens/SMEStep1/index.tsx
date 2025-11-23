@@ -25,7 +25,11 @@ import {
   setBankName,
   setRemainingBalance,
 } from '@src/store';
-import { getInputConstraints, formatInput } from '@src/utils/InputFormatting';
+import {
+  getInputConstraints,
+  formatInput,
+  filterEnglishLettersAndSpaces,
+} from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -69,10 +73,6 @@ const SMEStep1: React.FC = () => {
     // Reset touched fields when form is reset
     setTouchedFields(new Set());
   }, [dispatch, serviceId, title]);
-
-  // Filter text input to only allow English letters and spaces
-  const filterEnglishLettersAndSpaces = (text: string): string =>
-    text.replace(/[^a-zA-Z\s]/g, '');
 
   // Validate all fields
   const isLiabilityTypeValid = useMemo(

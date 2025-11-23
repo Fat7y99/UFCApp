@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -22,12 +22,15 @@ const isRTL = I18nManager.isRTL;
 const SettingsHeader: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+  const currenUser = useAppSelector(state => state.user.user);
 
   const handleBackPress = () => {
     navigation.navigate('Home');
   };
-  const currenUser = useAppSelector(state => state.user.user);
-  console.log('fatoo7', currenUser, currenUser?.imageUrl, currenUser?.data);
+  useEffect(() => {
+    setImageUrl(currenUser?.imageUrl);
+  }, [currenUser]);
   return (
     <View style={styles.container}>
       <StatusBar
@@ -54,10 +57,7 @@ const SettingsHeader: React.FC = () => {
         {/* Avatar floating in the middle */}
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
-            <Image
-              source={{ uri: currenUser?.imageUrl as string }}
-              style={styles.avatar}
-            />
+            <Image source={{ uri: imageUrl as string }} style={styles.avatar} />
           </View>
         </View>
 
