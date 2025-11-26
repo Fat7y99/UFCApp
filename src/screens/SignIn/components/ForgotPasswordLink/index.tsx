@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'flex-end',
     marginBottom: ResponsiveDimensions.vs(20),
+    marginTop: ResponsiveDimensions.vs(10),
   },
   linkText: {
     color: '#00FFFF', // Cyan color for forgot password link

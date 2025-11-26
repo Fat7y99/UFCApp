@@ -113,13 +113,19 @@ export const getInputConstraints = (fieldType: string) => {
 export const validateInput = (value: string, fieldType: string): boolean => {
   switch (fieldType) {
     case 'amount':
+
     case 'salary':
     case 'installment':
     case 'balance':
     case 'value':
     case 'income':
-      const numericValue = value.replace(/[^0-9.]/g, '');
-      return numericValue.length > 0 && !isNaN(parseFloat(numericValue));
+      const numericValue = value // Convert Arabic digits → English digits
+        .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+        // Convert Arabic decimal comma → English decimal point
+        .replace(/،/g, '.')
+        // Keep ONLY digits + decimal point
+        .replace(/[^0-9.]/g, '');
+      return numericValue.length > 0;
 
     case 'phone':
     case 'mobile':
@@ -144,29 +150,43 @@ export const validateEmail = (emailPass: string) => {
 };
 
 export const formatInput = (text: string, noDecimal?: boolean) => {
-  const cleanText = text.replace(/[^0-9]/g, '');
+  // Detect if the user typed Arabic digits
+  const isArabic = /[\u0660-\u0669]/.test(text);
 
-  if (cleanText === '') {
-    return cleanText;
-  }
+  // Convert Arabic → English ONLY internally
+  const normalized = text.replace(/[\u0660-\u0669]/g, d =>
+    String(d.charCodeAt(0) - 0x0660),
+  );
+
+  // Extract only digits
+  const cleanText = normalized.replace(/[^0-9]/g, '');
+  if (!cleanText) return '';
+
+  let formatted = '';
 
   if (noDecimal) {
-    console.log('cleansText', text);
-    return parseInt(cleanText, 10).toLocaleString();
-  }
-
-  let formattedValue = '';
-
-  if (cleanText.length === 1) {
-    formattedValue = `0.0${cleanText}`;
-  } else if (cleanText.length === 2) {
-    formattedValue = `0.${cleanText}`;
+    // Format based on original language
+    formatted = Number(cleanText).toLocaleString(isArabic ? 'ar-EG' : 'en-US');
   } else {
-    formattedValue = `${parseInt(cleanText.slice(0, -2), 10).toLocaleString()}.${cleanText.slice(-2)}`;
+    if (cleanText.length === 1) {
+      formatted = `0.0${cleanText}`;
+    } else if (cleanText.length === 2) {
+      formatted = `0.${cleanText}`;
+    } else {
+      formatted = `${Number(cleanText.slice(0, -2)).toLocaleString(isArabic ? 'ar-EG' : 'en-US')}.${cleanText.slice(-2)}`;
+    }
   }
 
-  return formattedValue;
+  // If Arabic input → convert final digits back to Arabic
+  if (isArabic) {
+    formatted = formatted.replace(/[0-9]/g, d =>
+      String.fromCharCode(d.charCodeAt(0) + 0x0660),
+    );
+  }
+
+  return formatted;
 };
+
 export const filterEnglishLettersAndSpaces = (text: string): string =>
   //allow arabic, english letters and spaces
   text.replace(/[^a-zA-Z\s\u0600-\u06FF]/g, '');

@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import {
@@ -8,6 +9,8 @@ import {
   StyleSheet,
   ImageBackground,
   I18nManager,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import type { RootStackParamList } from '@src/navigation';
 import { LogoIcon, AppImages } from '@modules/assets';
@@ -36,9 +39,14 @@ export default React.memo(() => {
     username: '',
     password: '',
   });
+  const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(prev => !prev);
   };
 
   const handleSignIn = () => {
@@ -91,16 +99,30 @@ export default React.memo(() => {
                 onChangeText={value => handleInputChange('username', value)}
               />
 
-              <FormInput
-                textAlign={isRTL ? 'right' : 'left'}
-                placeholder={translate(
-                  `${TranslationNamespaces.LOGIN}:password`,
-                )}
-                value={formData.password}
-                maxLength={50}
-                onChangeText={value => handleInputChange('password', value)}
-                secureTextEntry
-              />
+              <View style={styles.passwordInputContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder={translate(
+                    `${TranslationNamespaces.LOGIN}:password`,
+                  )}
+                  placeholderTextColor="white"
+                  value={formData.password}
+                  maxLength={50}
+                  onChangeText={value => handleInputChange('password', value)}
+                  secureTextEntry={!isPasswordVisible}
+                  textAlign={isRTL ? 'right' : 'left'}
+                />
+                <TouchableOpacity
+                  onPress={togglePasswordVisibility}
+                  activeOpacity={0.7}
+                >
+                  <MaterialDesignIcons
+                    name={isPasswordVisible ? 'eye-off' : 'eye'}
+                    size={ResponsiveDimensions.vs(20)}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* Forgot Password Link */}
@@ -159,5 +181,21 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     gap: ResponsiveDimensions.vs(16),
+  },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: ResponsiveDimensions.vs(50),
+    backgroundColor: AppColors.themeLight.primary_1,
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: ResponsiveDimensions.vs(15),
+    paddingHorizontal: ResponsiveDimensions.vs(16),
+  },
+  passwordInput: {
+    flex: 1,
+    color: 'white',
+    fontSize: ResponsiveDimensions.vs(16),
   },
 });
