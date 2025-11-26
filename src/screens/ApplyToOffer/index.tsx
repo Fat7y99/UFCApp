@@ -149,6 +149,7 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
                 onChangeText={setDob}
                 editable={false}
                 textAlign={isRTL ? 'right' : 'left'}
+                onPress={() => setHandleOpenCalendar('dob')}
               />
               <CalendarLogo />
             </TouchableOpacity>
@@ -201,6 +202,7 @@ export default React.memo((props: RootStackScreenProps<'applyToOffer'>) => {
                 onChangeText={setServiceStartDate}
                 editable={false}
                 textAlign={isRTL ? 'right' : 'left'}
+                onPress={() => setHandleOpenCalendar('serviceStartDate')}
               />
               <CalendarLogo />
             </TouchableOpacity>

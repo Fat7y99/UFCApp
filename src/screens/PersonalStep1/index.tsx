@@ -404,6 +404,10 @@ const PersonalStep1: React.FC = () => {
                   value={dob}
                   onChangeText={text => dispatch(setDob(text))}
                   editable={false}
+                  onPress={() => {
+                    setTouchedFields(prev => new Set(prev).add('dob'));
+                    setHandleOpenCalendar('dob');
+                  }}
                 />
                 <CalendarLogo />
               </TouchableOpacity>
@@ -472,6 +476,12 @@ const PersonalStep1: React.FC = () => {
                   value={serviceStartDate}
                   onChangeText={text => dispatch(setServiceStartDate(text))}
                   editable={false}
+                  onPress={() => {
+                    setTouchedFields(prev =>
+                      new Set(prev).add('serviceStartDate'),
+                    );
+                    setHandleOpenCalendar('serviceStartDate');
+                  }}
                 />
                 <CalendarLogo />
               </TouchableOpacity>

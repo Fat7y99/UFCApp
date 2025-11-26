@@ -411,6 +411,10 @@ const RealEstateStep1: React.FC = () => {
                   value={dob}
                   onChangeText={text => dispatch(setDob(text))}
                   editable={false}
+                  onPress={() => () => {
+                    setTouchedFields(prev => new Set(prev).add('dob'));
+                    setHandleOpenCalendar(true);
+                  }}
                 />
                 <CalendarLogo />
               </TouchableOpacity>
@@ -480,6 +484,12 @@ const RealEstateStep1: React.FC = () => {
                   value={serviceStartDate}
                   onChangeText={text => dispatch(setServiceStartDate(text))}
                   editable={false}
+                  onPress={() => {
+                    setTouchedFields(prev =>
+                      new Set(prev).add('serviceStartDate'),
+                    );
+                    setHandleOpenServiceStartDateCalendar(true);
+                  }}
                 />
                 <CalendarLogo />
               </TouchableOpacity>

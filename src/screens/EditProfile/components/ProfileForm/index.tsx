@@ -281,6 +281,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             )}
             placeholderTextColor="#B0B0B0"
             editable={false}
+            onPress={() => setHandleOpenCalendar(true)}
           />
           <CalendarLogo />
         </TouchableOpacity>
