@@ -27,6 +27,7 @@ import {
   getInputConstraints,
   formatInput,
   filterEnglishLettersAndSpaces,
+  validateInput,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -118,10 +119,7 @@ const PersonalStep2: React.FC = () => {
     if (!monthlyInstallment || monthlyInstallment.trim() === '') {
       return false;
     }
-    const numericValue = monthlyInstallment.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    // Valid if it's a number and > 0 (must be greater than 0)
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(monthlyInstallment, 'amount');
   }, [monthlyInstallment]);
 
   const isBankNameValid = useMemo(() => bankName.trim() !== '', [bankName]);
@@ -130,10 +128,7 @@ const PersonalStep2: React.FC = () => {
     if (!remainingBalance || remainingBalance.trim() === '') {
       return false;
     }
-    const numericValue = remainingBalance.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    // Valid if it's a number and > 0 (must be greater than 0)
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(remainingBalance, 'amount');
   }, [remainingBalance]);
 
   // Check if fields have errors (for red border display)
@@ -151,17 +146,13 @@ const PersonalStep2: React.FC = () => {
     if (!basicSalary || basicSalary.trim() === '') {
       return false;
     }
-    const numericValue = basicSalary.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(basicSalary, 'amount');
   }, [basicSalary]);
   const isNetSalaryValid = useMemo(() => {
     if (!netSalary || netSalary.trim() === '') {
       return false;
     }
-    const numericValue = netSalary.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(netSalary, 'amount');
   }, [netSalary]);
   const isCurrentBankValid = useMemo(
     () => currentBank.trim() !== '',

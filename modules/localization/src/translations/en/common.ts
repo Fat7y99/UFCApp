@@ -54,4 +54,5 @@ export default {
   internalServerError: 'Internal server error',
   maxLimitSendOTP: 'Maximum limit for sending OTP reached',
   validationFailed: 'Validation failed',
+  close: 'Close',
 };

@@ -74,4 +74,9 @@ export default {
   propertyCity: 'مدينة العقار',
   annualPropertyIncome: 'الدخل السنوي للعقار',
   propertyAgeMinimumError: 'يجب أن يكون عمر العقار أكثر من 3 سنوات',
+
+  // Tooltip
+  crAgeDescription: 'أدخل عمر السجل التجاري بالسنوات.',
+  example: 'مثال:',
+  years: 'سنوات',
 };

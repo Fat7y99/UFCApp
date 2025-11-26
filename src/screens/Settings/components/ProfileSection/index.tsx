@@ -11,12 +11,14 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { EditProfileIcon } from 'modules/assets/src';
 import { useGetCurrentUserApi } from 'modules/core/src/Api/hooks';
 const isRTL = I18nManager.isRTL;
-const ProfileSection: React.FC = () => {
+const ProfileSection: React.FC<{
+  onChangeImageUrl: (uri?: string) => void;
+}> = ({ onChangeImageUrl }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleEditProfile = () => {
-    navigation.navigate('editProfile');
+    navigation.navigate('editProfile', { onChangeImageUrl: onChangeImageUrl });
   };
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   const { data: currentUser } = useGetCurrentUserApi({

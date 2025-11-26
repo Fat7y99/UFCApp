@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { useRoute } from '@react-navigation/native';
 import moment from 'moment';
 import * as React from 'react';
 import { StyleSheet, ScrollView, ActivityIndicator, View } from 'react-native';
@@ -16,7 +17,7 @@ interface ProfileData {
   address: string;
 }
 
-export default React.memo(() => {
+export default () => {
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   const { data: currentUser, isLoading } = useGetCurrentUserApi({
     enabled: isLoggedIn,
@@ -74,7 +75,8 @@ export default React.memo(() => {
       </Screen>
     );
   }
-
+  const route = useRoute<any>();
+  const onChangeImageUrl = route.params.onChangeImageUrl;
   return (
     <Screen style={styles.container}>
       <ScrollView
@@ -84,7 +86,7 @@ export default React.memo(() => {
         automaticallyAdjustKeyboardInsets={true}
       >
         {/* Edit Profile Header */}
-        <EditProfileHeader />
+        <EditProfileHeader onChangeImageUrl={onChangeImageUrl} />
 
         {/* Profile Form */}
         <ProfileForm
@@ -97,7 +99,7 @@ export default React.memo(() => {
       </ScrollView>
     </Screen>
   );
-});
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -34,6 +34,7 @@ import {
   getInputConstraints,
   formatInput,
   filterEnglishLettersAndSpaces,
+  validateInput,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import { translate } from '@modules/localization';
@@ -205,17 +206,13 @@ const PersonalStep1: React.FC = () => {
     if (!basicSalary || basicSalary.trim() === '') {
       return false;
     }
-    const numericValue = basicSalary.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(basicSalary, 'amount');
   }, [basicSalary]);
   const isNetSalaryValid = useMemo(() => {
     if (!netSalary || netSalary.trim() === '') {
       return false;
     }
-    const numericValue = netSalary.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(netSalary, 'amount');
   }, [netSalary]);
   const isCurrentBankValid = useMemo(
     () => currentBank.trim() !== '',

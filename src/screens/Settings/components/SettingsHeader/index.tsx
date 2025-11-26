@@ -1,6 +1,6 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   Image,
   I18nManager,
 } from 'react-native';
-import { useAppSelector } from '@src/store';
+
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -19,18 +19,16 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from 'navigation/RootStack.types';
 import { AppImages } from 'modules/assets/src';
 const isRTL = I18nManager.isRTL;
-const SettingsHeader: React.FC = () => {
+const SettingsHeader: React.FC<{ imageUrl: string | undefined }> = ({
+  imageUrl,
+}) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-  const currenUser = useAppSelector(state => state.user.user);
 
   const handleBackPress = () => {
     navigation.navigate('Home');
   };
-  useEffect(() => {
-    setImageUrl(currenUser?.imageUrl);
-  }, [currenUser]);
+
   return (
     <View style={styles.container}>
       <StatusBar

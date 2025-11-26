@@ -30,6 +30,7 @@ import {
   formatNumber,
   formatInput,
   filterEnglishLettersAndSpaces,
+  validateInput,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -151,17 +152,13 @@ const RealEstateStep3: React.FC = () => {
     if (!propertyValue || propertyValue.trim() === '') {
       return false;
     }
-    const numericValue = propertyValue.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    // Valid if it's a number and > 0 (must be greater than 0)
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(propertyValue, 'amount');
   }, [propertyValue]);
   const isPropertyAgeValid = useMemo(() => {
     if (!propertyAge.trim()) {
       return false;
     }
-    const age = parseInt(propertyAge.replace(/,/g, ''), 10);
-    return !isNaN(age) && age > 3;
+    return validateInput(propertyAge, 'age');
   }, [propertyAge]);
   const isPropertyCityValid = useMemo(
     () => propertyCity.trim() !== '',
@@ -171,10 +168,7 @@ const RealEstateStep3: React.FC = () => {
     if (!annualPropertyIncome || annualPropertyIncome.trim() === '') {
       return false;
     }
-    const numericValue = annualPropertyIncome.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    // Valid if it's a number and > 0 (must be greater than 0)
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(annualPropertyIncome, 'amount');
   }, [annualPropertyIncome]);
 
   // Check if fields have errors (for red border display)

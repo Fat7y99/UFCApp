@@ -74,4 +74,9 @@ export default {
   propertyCity: 'Property City',
   annualPropertyIncome: 'Annual Property Income',
   propertyAgeMinimumError: 'Property age must be more than 3 years',
+
+  // Tooltip
+  crAgeDescription: 'Enter the age of your Commercial Registration in years.',
+  example: 'Example:',
+  years: 'years',
 };

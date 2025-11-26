@@ -51,4 +51,5 @@ export default {
   internalServerError: 'خطأ في الخادم الداخلي',
   maxLimitSendOTP: 'تم الوصول إلى الحد الأقصى لإرسال رمز التحقق',
   validationFailed: 'فشل التحقق',
+  close: 'إغلاق',
 };

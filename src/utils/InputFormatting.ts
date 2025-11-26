@@ -113,11 +113,11 @@ export const getInputConstraints = (fieldType: string) => {
 export const validateInput = (value: string, fieldType: string): boolean => {
   switch (fieldType) {
     case 'amount':
-
     case 'salary':
     case 'installment':
     case 'balance':
     case 'value':
+    case 'age':
     case 'income':
       const numericValue = value // Convert Arabic digits → English digits
         .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
@@ -125,6 +125,7 @@ export const validateInput = (value: string, fieldType: string): boolean => {
         .replace(/،/g, '.')
         // Keep ONLY digits + decimal point
         .replace(/[^0-9.]/g, '');
+      console.log('numericValue', numericValue);
       return numericValue.length > 0;
 
     case 'phone':

@@ -1,4 +1,5 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
 import {
@@ -11,6 +12,7 @@ import {
   Image,
   ActivityIndicator,
   I18nManager,
+  Modal,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -28,9 +30,9 @@ import {
 } from '@src/store';
 import {
   getInputConstraints,
-  formatNumber,
   formatInput,
   filterEnglishLettersAndSpaces,
+  validateInput,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -111,6 +113,7 @@ const SMEStep2: React.FC = () => {
     },
   });
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showCrAgeTooltip, setShowCrAgeTooltip] = useState(false);
 
   // Track which fields have been touched/changed by user
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
@@ -137,10 +140,7 @@ const SMEStep2: React.FC = () => {
     if (!posAnnualPropertyIncome || posAnnualPropertyIncome.trim() === '') {
       return false;
     }
-    const numericValue = posAnnualPropertyIncome.replace(/,/g, '');
-    const numValue = parseFloat(numericValue);
-    // Valid if it's a number and > 0 (must be greater than 0)
-    return !isNaN(numValue) && numValue > 0;
+    return validateInput(posAnnualPropertyIncome, 'amount');
   }, [posAnnualPropertyIncome, serviceId]);
   const isFinancialStatementAvailableValid = useMemo(
     () => financialStatementAvailable.trim() !== '',
@@ -299,19 +299,36 @@ const SMEStep2: React.FC = () => {
 
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
-              <TextInput
-                style={[styles.input, hasCrAgeError && styles.inputError]}
-                placeholder={translate(
-                  `${TranslationNamespaces.FINANCING}:crAge`,
-                )}
-                placeholderTextColor="#999"
-                value={crAge}
-                onChangeText={text => {
-                  setTouchedFields(prev => new Set(prev).add('crAge'));
-                  dispatch(setCrAge(formatNumber(text)));
-                }}
-                {...getInputConstraints('year')}
-              />
+              <View
+                style={[
+                  styles.inputWithInfoIcon,
+                  hasCrAgeError && styles.inputError,
+                ]}
+              >
+                <TextInput
+                  style={styles.inputInsideContainer}
+                  placeholder={translate(
+                    `${TranslationNamespaces.FINANCING}:crAge`,
+                  )}
+                  placeholderTextColor="#999"
+                  value={crAge}
+                  onChangeText={text => {
+                    setTouchedFields(prev => new Set(prev).add('crAge'));
+                    dispatch(setCrAge(text));
+                  }}
+                  {...getInputConstraints('year')}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowCrAgeTooltip(true)}
+                  activeOpacity={0.7}
+                >
+                  <MaterialDesignIcons
+                    name="information-variant-circle"
+                    size={ResponsiveDimensions.vs(20)}
+                    color={AppColors.themeLight.primary_1}
+                  />
+                </TouchableOpacity>
+              </View>
               <Text style={styles.mandatoryStar}>*</Text>
             </View>
           </View>
@@ -482,6 +499,50 @@ const SMEStep2: React.FC = () => {
           )}
         </TouchableOpacity>
       </ScrollView>
+
+      {/* CR Age Tooltip Modal */}
+      <Modal
+        visible={showCrAgeTooltip}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowCrAgeTooltip(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowCrAgeTooltip(false)}
+        >
+          <View style={styles.tooltipContainer}>
+            <View style={styles.tooltipContent}>
+              <Text style={styles.tooltipTitle}>
+                {translate(`${TranslationNamespaces.FINANCING}:crAge`)}
+              </Text>
+              <Text style={styles.tooltipDescription}>
+                {translate(
+                  `${TranslationNamespaces.FINANCING}:crAgeDescription`,
+                )}
+              </Text>
+              <View style={styles.tooltipExample}>
+                <Text style={styles.tooltipExampleLabel}>
+                  {translate(`${TranslationNamespaces.FINANCING}:example`)}
+                </Text>
+                <Text style={styles.tooltipExampleValue}>20</Text>
+                <Text style={styles.tooltipExampleText}>
+                  {translate(`${TranslationNamespaces.FINANCING}:years`)}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.tooltipCloseButton}
+                onPress={() => setShowCrAgeTooltip(false)}
+              >
+                <Text style={styles.tooltipCloseButtonText}>
+                  {translate(`${TranslationNamespaces.COMMON}:close`)}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </Screen>
   );
 };
@@ -650,7 +711,97 @@ const styles = StyleSheet.create({
   },
   dropdownOptionText: {
     fontSize: ResponsiveDimensions.vs(16),
+  },
+  inputWithInfoIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+    borderRadius: ResponsiveDimensions.vs(12),
+    borderWidth: 1,
+    borderColor: '#8C8C8C',
+    paddingHorizontal: ResponsiveDimensions.vs(16),
+    paddingVertical: ResponsiveDimensions.vs(16),
+  },
+  inputInsideContainer: {
+    flex: 1,
+    fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
+    textAlign: isRTL ? 'right' : 'left',
+    padding: 0,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: ResponsiveDimensions.vs(20),
+  },
+  tooltipContainer: {
+    width: '100%',
+    maxWidth: ResponsiveDimensions.vs(400),
+  },
+  tooltipContent: {
+    backgroundColor: 'white',
+    borderRadius: ResponsiveDimensions.vs(16),
+    padding: ResponsiveDimensions.vs(24),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  tooltipTitle: {
+    fontSize: ResponsiveDimensions.vs(18),
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: ResponsiveDimensions.vs(12),
+    textAlign: isRTL ? 'left' : 'right',
+  },
+  tooltipDescription: {
+    fontSize: ResponsiveDimensions.vs(14),
+    color: '#666',
+    marginBottom: ResponsiveDimensions.vs(16),
+    lineHeight: ResponsiveDimensions.vs(20),
+    textAlign: isRTL ? 'left' : 'right',
+  },
+  tooltipExample: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: ResponsiveDimensions.vs(12),
+    borderRadius: ResponsiveDimensions.vs(8),
+    marginBottom: ResponsiveDimensions.vs(16),
+    gap: ResponsiveDimensions.vs(8),
+  },
+  tooltipExampleLabel: {
+    fontSize: ResponsiveDimensions.vs(14),
+    color: '#666',
+    fontWeight: '500',
+  },
+  tooltipExampleValue: {
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: 'bold',
+    color: AppColors.themeLight.primary_1,
+  },
+  tooltipExampleText: {
+    fontSize: ResponsiveDimensions.vs(14),
+    color: '#666',
+  },
+  tooltipCloseButton: {
+    backgroundColor: AppColors.themeLight.primary_1,
+    paddingVertical: ResponsiveDimensions.vs(12),
+    paddingHorizontal: ResponsiveDimensions.vs(24),
+    borderRadius: ResponsiveDimensions.vs(8),
+    alignItems: 'center',
+  },
+  tooltipCloseButtonText: {
+    color: 'white',
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: '600',
   },
   nextButton: {
     backgroundColor: '#4CAF50',

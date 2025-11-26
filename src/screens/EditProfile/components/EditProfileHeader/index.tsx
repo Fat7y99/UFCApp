@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -24,25 +24,41 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { ImagePickerResponse, MediaType } from 'react-native-image-picker';
 import { AppImages } from 'modules/assets/src';
 const isRTL = I18nManager.isRTL;
-const EditProfileHeader: React.FC = () => {
+const EditProfileHeader: React.FC<{
+  onChangeImageUrl: (uri?: string) => void;
+}> = ({ onChangeImageUrl }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
 
-  const { data: currentUser } = useGetCurrentUserApi({
+  const dispatch = useDispatch();
+  const { data: currentUser, refetch: refetchUser } = useGetCurrentUserApi({
     enabled: isLoggedIn,
   });
-  const dispatch = useDispatch();
+
+  // Update Redux and parent component when user data changes
+  useEffect(() => {
+    if (currentUser) {
+      const imageUrl = (currentUser as any)?.imageUrl;
+      onChangeImageUrl?.(imageUrl);
+      dispatch(setUser({ ...currentUser, imageUrl } as any));
+    }
+  }, [currentUser, dispatch, onChangeImageUrl]);
 
   const { mutate: updateImage, isPending } = useUpdateImageProfileApi({
-    onSuccess: () => {
+    onSuccess: async () => {
       Toast.show({
         type: 'success',
         text1: translate(
           `${TranslationNamespaces.EDIT_PROFILE}:profileImageUpdatedSuccessfully`,
         ),
       });
-      dispatch(setUser({ ...currentUser, imageUrl: currentUser?.imageUrl }));
+      // Refetch user data to get the updated imageUrl
+      refetchUser().then(data => {
+        onChangeImageUrl?.(data?.imageUrl as string);
+        dispatch(setUser({ ...data, imageUrl: data?.imageUrl as string }));
+        console.log('dataaaa', data);
+      });
     },
     onError: error => {
       Toast.show({
@@ -108,8 +124,8 @@ const EditProfileHeader: React.FC = () => {
       }
     });
   };
-
-  const imageUri = (currentUser as any)?.imageUrl;
+  const storedUser = useAppSelector(state => state.user.user);
+  const imageUri = (storedUser as any)?.imageUrl;
 
   return (
     <View style={styles.container}>
