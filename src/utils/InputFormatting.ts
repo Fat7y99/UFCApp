@@ -191,3 +191,5 @@ export const formatInput = (text: string, noDecimal?: boolean) => {
 export const filterEnglishLettersAndSpaces = (text: string): string =>
   //allow arabic, english letters and spaces
   text.replace(/[^a-zA-Z\s\u0600-\u06FF]/g, '');
+export const convertArabicNumberToEnglish = (number: string) =>
+  number.replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660));

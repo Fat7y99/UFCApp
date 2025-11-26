@@ -44,8 +44,8 @@ import { AppColors } from '@modules/theme';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppImages, CalendarLogo, PersonalStep1Logo } from 'modules/assets/src';
 
-const COUNTRY_CODE = '+966';
-
+const isRTL = I18nManager.isRTL;
+const COUNTRY_CODE = !isRTL ? '+966' : '+٩٦٦';
 // Local MobileNumberInput component matching RealEstateStep1 input styles
 interface MobileNumberInputProps {
   placeholder: string;
@@ -69,7 +69,7 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
 
   const handleTextChange = (text: string) => {
     // Always prepend country code
-    const newValue = countryCode + text.replace(/[^\d]/g, '');
+    const newValue = countryCode + text.replace(/[^\d\u0660-\u0669]/g, '');
     onChangeText(newValue);
   };
 
@@ -91,7 +91,6 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-const isRTL = I18nManager.isRTL;
 const PersonalStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const dispatch = useAppDispatch();

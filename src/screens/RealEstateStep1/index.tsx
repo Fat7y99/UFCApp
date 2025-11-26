@@ -48,7 +48,8 @@ import {
   RealEstateAllStepsLogo,
 } from 'modules/assets/src';
 
-const COUNTRY_CODE = '+966';
+const isRTL = I18nManager.isRTL;
+const COUNTRY_CODE = !isRTL ? '+966' : '+٩٦٦';
 
 // Local MobileNumberInput component matching RealEstateStep1 input styles
 interface MobileNumberInputProps {
@@ -73,7 +74,8 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
 
   const handleTextChange = (text: string) => {
     // Always prepend country code
-    const newValue = countryCode + text.replace(/[^\d]/g, '');
+    const newValue = countryCode + text.replace(/[^\d\u0660-\u0669]/g, '');
+    console.log('newValue', newValue);
     onChangeText(newValue);
   };
 
@@ -99,7 +101,6 @@ type RealEstateStep1RouteProp = RouteProp<
   RootStackParamList,
   'realEstateStep1'
 >;
-const isRTL = I18nManager.isRTL;
 const RealEstateStep1: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RealEstateStep1RouteProp>();

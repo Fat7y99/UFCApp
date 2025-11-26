@@ -33,6 +33,7 @@ import {
   formatInput,
   filterEnglishLettersAndSpaces,
   validateInput,
+  convertArabicNumberToEnglish,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -208,16 +209,29 @@ const SMEStep2: React.FC = () => {
           financialStatementsAvailable:
             financialStatementAvailable ===
             translate(`${TranslationNamespaces.FINANCING}:yes`),
-          crAgeYears: crAge ? parseInt(crAge.replace(/,/g, ''), 10) : undefined,
+          crAgeYears: crAge
+            ? parseInt(
+                convertArabicNumberToEnglish(crAge.replace(/,/g, '')),
+                10,
+              )
+            : undefined,
         },
         customerLiability: {
           liabilityType: liabilityType || undefined,
           monthlyInstallment: monthlyInstallment
-            ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(
+                  monthlyInstallment.replace(/,/g, ''),
+                ),
+              )
             : undefined,
           bankName: bankName || undefined,
           remainingBalance: remainingBalance
-            ? parseFloat(remainingBalance.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(
+                  remainingBalance.replace(/,/g, ''),
+                ),
+              )
             : undefined,
         },
       },

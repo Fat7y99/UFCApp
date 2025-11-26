@@ -14,8 +14,7 @@ import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
 import { CalendarLogo } from 'modules/assets/src';
 const isRTL = I18nManager.isRTL;
-const COUNTRY_CODE = '+966';
-
+const COUNTRY_CODE = !isRTL ? '+966' : '+٩٦٦';
 // Local MobileNumberInput component matching RealEstateStep1 input styles
 interface MobileNumberInputProps {
   value: string;
@@ -41,7 +40,7 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
 
   const handleTextChange = (text: string) => {
     // Always prepend country code
-    const newValue = countryCode + text.replace(/[^\d]/g, '');
+    const newValue = countryCode + text.replace(/[^\d\u0660-\u0669]/g, '');
     onChangeText(newValue);
   };
 

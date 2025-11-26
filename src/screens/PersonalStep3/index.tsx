@@ -28,6 +28,7 @@ import {
   formatInput,
   filterEnglishLettersAndSpaces,
   validateInput,
+  convertArabicNumberToEnglish,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -174,10 +175,14 @@ const PersonalStep3: React.FC = () => {
           jobTitle: jobTitle || undefined,
           serviceStartDate: serviceStartDate || undefined,
           basicSalary: basicSalary
-            ? parseFloat(basicSalary.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(basicSalary.replace(/,/g, '')),
+              )
             : undefined,
           netSalary: netSalary
-            ? parseFloat(netSalary.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(netSalary.replace(/,/g, '')),
+              )
             : undefined,
           currentBank: currentBank || undefined,
           city: city || undefined,
@@ -185,11 +190,19 @@ const PersonalStep3: React.FC = () => {
         customerLiability: {
           liabilityType: liabilityType || undefined,
           monthlyInstallment: monthlyInstallment
-            ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(
+                  monthlyInstallment.replace(/,/g, ''),
+                ),
+              )
             : undefined,
           bankName: bankName || undefined,
           remainingBalance: remainingBalance
-            ? parseFloat(remainingBalance.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(
+                  remainingBalance.replace(/,/g, ''),
+                ),
+              )
             : undefined,
         },
       },

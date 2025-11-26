@@ -31,6 +31,7 @@ import {
   formatInput,
   filterEnglishLettersAndSpaces,
   validateInput,
+  convertArabicNumberToEnglish,
 } from '@src/utils/InputFormatting';
 import { Screen } from '@modules/components';
 import {
@@ -236,12 +237,23 @@ const RealEstateStep3: React.FC = () => {
           financingType: realEstateFinancingType || undefined,
           propertyType: propertyType || undefined,
           propertyValue: propertyValue
-            ? parseFloat(propertyValue.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(propertyValue.replace(/,/g, '')),
+              )
             : undefined,
-          propertyAgeYears: propertyAge ? parseInt(propertyAge, 10) : undefined,
+          propertyAgeYears: propertyAge
+            ? parseInt(
+                convertArabicNumberToEnglish(propertyAge.replace(/,/g, '')),
+                10,
+              )
+            : undefined,
           propertyCity: propertyCity || undefined,
           annualPropertyIncome: annualPropertyIncome
-            ? parseFloat(annualPropertyIncome.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(
+                  annualPropertyIncome.replace(/,/g, ''),
+                ),
+              )
             : undefined,
         },
         customerBaseInfo: {
@@ -251,10 +263,14 @@ const RealEstateStep3: React.FC = () => {
           employer: employer || undefined,
           jobTitle: jobTitle || undefined,
           basicSalary: basicSalary
-            ? parseFloat(basicSalary.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(basicSalary.replace(/,/g, '')),
+              )
             : undefined,
           netSalary: netSalary
-            ? parseFloat(netSalary.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(netSalary.replace(/,/g, '')),
+              )
             : undefined,
           currentBank: currentBank || undefined,
           city: city || undefined,
@@ -263,11 +279,19 @@ const RealEstateStep3: React.FC = () => {
         customerLiability: {
           liabilityType: liabilityType || undefined,
           monthlyInstallment: monthlyInstallment
-            ? parseFloat(monthlyInstallment.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(
+                  monthlyInstallment.replace(/,/g, ''),
+                ),
+              )
             : undefined,
           bankName: bankName || undefined,
           remainingBalance: remainingBalance
-            ? parseFloat(remainingBalance.replace(/,/g, ''))
+            ? parseFloat(
+                convertArabicNumberToEnglish(
+                  remainingBalance.replace(/,/g, ''),
+                ),
+              )
             : undefined,
         },
       },

@@ -25,7 +25,7 @@ const MobileNumberInput: React.FC<MobileNumberInputProps> = ({
 
   const handleTextChange = (text: string) => {
     // Always prepend country code
-    const newValue = countryCode + text.replace(/[^\d]/g, '');
+    const newValue = countryCode + text.replace(/[^\d\u0660-\u0669]/g, '');
     onChangeText(newValue);
   };
 

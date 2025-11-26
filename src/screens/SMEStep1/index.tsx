@@ -272,6 +272,7 @@ const SMEStep1: React.FC = () => {
                     new Set(prev).add('remainingBalance'),
                   );
                   const formattedText = formatInput(text, true);
+                  console.log('formattedText', formattedText);
                   dispatch(setRemainingBalance(formattedText));
                 }}
                 value={remainingBalance?.toLocaleString() ?? ''}

@@ -24,7 +24,7 @@ import {
 } from './components';
 
 const isRTL = I18nManager.isRTL;
-const COUNTRY_CODE = '+966';
+const COUNTRY_CODE = !isRTL ? '+966' : '+٩٦٦';
 
 export default React.memo(() => {
   const theme = useAppTheme();
