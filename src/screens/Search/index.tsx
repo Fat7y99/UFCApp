@@ -28,7 +28,7 @@ interface ServiceType {
   id: number;
   title: string;
   subtitle?: string;
-  category: 'SME' | 'REAL_ESTATE';
+  category: 'SME' | 'REAL_ESTATE' | 'PERSONAL';
 }
 
 const Search: React.FC = () => {
@@ -164,6 +164,14 @@ const Search: React.FC = () => {
     } else if (selectedService.category === 'REAL_ESTATE') {
       navigation.navigate('Home', {
         screen: 'realEstateStep1',
+        params: {
+          serviceId: selectedService.id,
+          title: selectedService.title,
+        },
+      });
+    } else if (selectedService.category === 'PERSONAL') {
+      navigation.navigate('Home', {
+        screen: 'personalStep1',
         params: {
           serviceId: selectedService.id,
           title: selectedService.title,

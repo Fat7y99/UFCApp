@@ -773,14 +773,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: ResponsiveDimensions.vs(12),
-    textAlign: isRTL ? 'left' : 'right',
+    textAlign: 'left',
   },
   tooltipDescription: {
     fontSize: ResponsiveDimensions.vs(14),
     color: '#666',
     marginBottom: ResponsiveDimensions.vs(16),
     lineHeight: ResponsiveDimensions.vs(20),
-    textAlign: isRTL ? 'left' : 'right',
+    textAlign: 'left',
   },
   tooltipExample: {
     flexDirection: 'row',

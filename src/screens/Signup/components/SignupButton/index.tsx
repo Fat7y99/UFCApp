@@ -166,8 +166,8 @@ const SignupButton: React.FC<SignupButtonProps> = ({
       // Must start with 1 or 2
       if (
         value.length > 0 &&
-        !value.startsWith('1') &&
-        !value.startsWith('2')
+        !(value.startsWith('1') || value.startsWith('١')) &&
+        !(value.startsWith('2') || value.startsWith('٢'))
       ) {
         Toast.show({
           type: 'fail',

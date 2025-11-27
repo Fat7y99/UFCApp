@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useChangePasswordContext } from '@src/screens/ChangePassword/context/ChangePasswordContext';
+import { SuccessType } from '@src/screens/Success/types';
 import { useChangePasswordApi } from '@modules/core';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
@@ -14,7 +15,7 @@ const ChangePasswordButton: React.FC = () => {
     useChangePasswordContext();
   const { mutate: changePassword, isPending } = useChangePasswordApi({
     onSuccess: () => {
-      navigation.navigate('success', { type: 'passwordChanged' });
+      navigation.navigate('success', { type: SuccessType.PASSWORD_CHANGED });
     },
     onError: error => {
       Toast.show({

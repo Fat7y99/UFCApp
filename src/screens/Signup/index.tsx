@@ -106,7 +106,7 @@ export default React.memo(() => {
       setFormData(prev => ({ ...prev, [field]: value }));
       return;
     } else if (field === 'idNumber') {
-      const idNumberValue = value.replace(/[^0-9*]/g, '');
+      const idNumberValue = value.replace(/[^0-9\u0660-\u0669*]/g, '');
       setFormData(prev => ({ ...prev, [field]: idNumberValue }));
       return;
     } else if (field === 'password' || field === 'confirmPassword') {
