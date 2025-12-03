@@ -31,7 +31,7 @@ const PasswordForm: React.FC = () => {
         autoCapitalize="none"
         autoCorrect={false}
         textAlign={isRTL ? 'right' : 'left'}
-        maxLength={50}
+        maxLength={30}
       />
 
       {/* New Password Input */}
@@ -47,7 +47,7 @@ const PasswordForm: React.FC = () => {
         autoCapitalize="none"
         autoCorrect={false}
         textAlign={isRTL ? 'right' : 'left'}
-        maxLength={50}
+        maxLength={30}
       />
 
       {/* Confirm New Password Input */}
@@ -63,7 +63,7 @@ const PasswordForm: React.FC = () => {
         autoCapitalize="none"
         autoCorrect={false}
         textAlign={isRTL ? 'right' : 'left'}
-        maxLength={50}
+        maxLength={30}
       />
     </View>
   );

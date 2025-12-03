@@ -98,7 +98,7 @@ export default React.memo(() => {
                   `${TranslationNamespaces.LOGIN}:username`,
                 )}
                 value={formData.username}
-                maxLength={50}
+                maxLength={30}
                 onChangeText={value => handleInputChange('username', value)}
               />
 
@@ -110,7 +110,7 @@ export default React.memo(() => {
                   )}
                   placeholderTextColor="white"
                   value={formData.password}
-                  maxLength={50}
+                  maxLength={30}
                   onChangeText={value => handleInputChange('password', value)}
                   secureTextEntry={!isPasswordVisible}
                   textAlign={isRTL ? 'right' : 'left'}

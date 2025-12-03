@@ -166,7 +166,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             setProfileData(prev => ({ ...prev, fullName: value }))
           }
           placeholderTextColor="#B0B0B0"
-          maxLength={50}
+          maxLength={30}
         />
         <View style={styles.separator} />
       </View>
@@ -185,7 +185,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           keyboardType="email-address"
           autoCapitalize="none"
           placeholderTextColor="#B0B0B0"
-          maxLength={50}
+          maxLength={30}
         />
         <View style={styles.separator} />
       </View>
@@ -302,7 +302,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             `${TranslationNamespaces.EDIT_PROFILE}:addressPlaceholder`,
           )}
           placeholderTextColor="#B0B0B0"
-          maxLength={50}
+          maxLength={30}
         />
         <View style={styles.separator} />
       </View>

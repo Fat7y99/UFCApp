@@ -159,7 +159,7 @@ export default React.memo(() => {
                 value={formData.name}
                 onChangeText={value => handleInputChange('name', value)}
                 textAlign={isRTL ? 'right' : 'left'}
-                maxLength={50}
+                maxLength={30}
               />
 
               <FormInput
@@ -169,7 +169,7 @@ export default React.memo(() => {
                 )}
                 value={formData.username}
                 onChangeText={value => handleInputChange('username', value)}
-                maxLength={50}
+                maxLength={30}
               />
 
               <MobileNumberInput
@@ -189,7 +189,7 @@ export default React.memo(() => {
                 placeholder={translate(`${TranslationNamespaces.SIGNUP}:email`)}
                 value={formData.email}
                 onChangeText={value => handleInputChange('email', value)}
-                maxLength={50}
+                maxLength={30}
               />
 
               <FormInput
@@ -198,7 +198,7 @@ export default React.memo(() => {
                   `${TranslationNamespaces.SIGNUP}:idNumber`,
                 )}
                 value={formData.idNumber}
-                maxLength={50}
+                maxLength={30}
                 onChangeText={value => handleInputChange('idNumber', value)}
               />
 
@@ -209,7 +209,7 @@ export default React.memo(() => {
                 )}
                 value={formData.password}
                 onChangeText={value => handleInputChange('password', value)}
-                maxLength={50}
+                maxLength={30}
                 secureTextEntry
               />
 
@@ -222,7 +222,7 @@ export default React.memo(() => {
                 onChangeText={value =>
                   handleInputChange('confirmPassword', value)
                 }
-                maxLength={50}
+                maxLength={30}
                 secureTextEntry
               />
             </View>

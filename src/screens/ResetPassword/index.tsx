@@ -170,7 +170,7 @@ export default React.memo(() => {
                 }}
                 secureTextEntry
                 textAlign={isRTL ? 'right' : 'left'}
-                maxLength={50}
+                maxLength={30}
               />
 
               {/* Confirm New Password Input */}
@@ -184,7 +184,7 @@ export default React.memo(() => {
                 }}
                 secureTextEntry
                 textAlign={isRTL ? 'right' : 'left'}
-                maxLength={50}
+                maxLength={30}
               />
             </View>
 

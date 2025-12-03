@@ -60,7 +60,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
-        maxLength={50}
+        maxLength={30}
         onBlur={() => {
           if (!touchedFields.has('email')) {
             setTouchedFields(prev => new Set(prev).add('email'));
