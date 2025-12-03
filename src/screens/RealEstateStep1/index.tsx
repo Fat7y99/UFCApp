@@ -412,7 +412,7 @@ const RealEstateStep1: React.FC = () => {
                   value={dob}
                   onChangeText={text => dispatch(setDob(text))}
                   editable={false}
-                  onPress={() => () => {
+                  onPress={() => {
                     setTouchedFields(prev => new Set(prev).add('dob'));
                     setHandleOpenCalendar(true);
                   }}
@@ -854,6 +854,7 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(16),
     color: '#333',
     textAlign: isRTL ? 'right' : 'left',
+    backgroundColor: 'white',
   },
   calendarIcon: {
     fontSize: ResponsiveDimensions.vs(16),
