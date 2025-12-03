@@ -1,6 +1,7 @@
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
 import * as React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
+import { useAppSelector } from '@src/store';
 import { Screen } from '@modules/components';
 
 import {
@@ -10,32 +11,42 @@ import {
   ServicesSection,
 } from './components';
 import { AppColors } from 'modules/theme/src';
+import { fetchUnreadNotificationsCount } from 'modules/utils/src/UserUtils';
 
-export default React.memo(() => (
-  <Screen
-    style={styles.container}
-    showNavigationBar={false}
-    statusBarColor={AppColors.themeLight.primary_1}
-  >
-    {/* Fixed Header Section */}
-    <HeaderSection />
+export default () => {
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
 
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.scrollViewContent}
-      showsVerticalScrollIndicator={false}
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      fetchUnreadNotificationsCount();
+    }
+  }, [isLoggedIn]);
+  return (
+    <Screen
+      style={styles.container}
+      showNavigationBar={false}
+      statusBarColor={AppColors.themeLight.primary_1}
     >
-      {/* Banner Section */}
-      <BannerSection />
+      {/* Fixed Header Section */}
+      <HeaderSection />
 
-      {/* Offers Section */}
-      <OffersSection />
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Banner Section */}
+        <BannerSection />
 
-      {/* Services Section */}
-      <ServicesSection />
-    </ScrollView>
-  </Screen>
-));
+        {/* Offers Section */}
+        <OffersSection />
+
+        {/* Services Section */}
+        <ServicesSection />
+      </ScrollView>
+    </Screen>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

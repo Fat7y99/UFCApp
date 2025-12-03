@@ -37,7 +37,8 @@ export default {
   profileUpdatedSuccessfully: 'Profile updated successfully',
   operationCompletedSuccessfully: 'Operation completed successfully',
   serviceFavouritedSuccessfully: 'Service added to favorites successfully',
-  serviceUnfavouritedSuccessfully: 'Service removed from favorites successfully',
+  serviceUnfavouritedSuccessfully:
+    'Service removed from favorites successfully',
   // Error codes
   unauthorized: 'Unauthorized',
   objectNotFound: 'Object not found',
@@ -55,4 +56,10 @@ export default {
   maxLimitSendOTP: 'Maximum limit for sending OTP reached',
   validationFailed: 'Validation failed',
   close: 'Close',
+  today: 'Today',
+  yesterday: 'Yesterday',
+  internetLostTitle: 'No Internet Connection',
+  internetLostDescription:
+    'Please check your internet connection and try again.',
+  settings: 'Settings',
 };

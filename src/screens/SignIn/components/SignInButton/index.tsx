@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: ResponsiveDimensions.vs(32),
     borderRadius: ResponsiveDimensions.vs(8),
     alignItems: 'center',
-    marginBottom: ResponsiveDimensions.vs(20),
+    flex: 1,
   },
   buttonText: {
     color: AppColors.themeLight.pressedButtonColor,

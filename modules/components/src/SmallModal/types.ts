@@ -1,3 +1,9 @@
+export interface SmallModalButton {
+  text: string;
+  onPress: () => void;
+  isPrimary?: boolean;
+}
+
 export interface SmallModalTypes {
   title?: string;
   description?: string;
@@ -6,4 +12,5 @@ export interface SmallModalTypes {
   onCancel?: () => void;
   transaparent?: boolean;
   numberNoOnboarding?: string;
+  buttons?: SmallModalButton[];
 }

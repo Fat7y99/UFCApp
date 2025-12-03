@@ -1,4 +1,3 @@
-import { CommonActions } from '@react-navigation/native';
 import * as React from 'react';
 import { hide as rnBootSplashHide } from 'react-native-bootsplash';
 import { navigationRef } from '@src/navigation/NavigationUtils';
@@ -21,9 +20,9 @@ export const useHideSplash = (props: UseHideSplashProps) => {
 
   const openNextScreen = React.useCallback(async () => {
     console.info(getLogMessage('openNextScreen - navigating to landing'));
-    navigationRef.dispatch(
-      CommonActions.reset({ index: 0, routes: [{ name: 'landing' as any }] }),
-    );
+    // navigationRef.dispatch(
+    //   CommonActions.reset({ index: 0, routes: [{ name: 'landing' as any }] }),
+    // );
     try {
       await rnBootSplashHide();
     } catch (error) {}

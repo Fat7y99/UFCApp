@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   Text,
@@ -9,8 +10,10 @@ import {
   I18nManager,
 } from 'react-native';
 import type { RootStackScreenProps } from '@src/navigation';
+import { toArabicDigits } from '@src/utils/InputFormatting';
 import { LoanLogo, AccountLogo, AlertLogo, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
+import { TranslationNamespaces } from '@modules/localization';
 import { AppColors } from '@modules/theme';
 import styles from './styles';
 const isRTL = I18nManager.isRTL;
@@ -19,6 +22,10 @@ export default React.memo(
     const { route } = props;
     const navigation = useNavigation();
     const { notification } = route.params;
+    const { t: translate } = useTranslation([
+      TranslationNamespaces.COMMON,
+      TranslationNamespaces.NOTIFICATIONS,
+    ]);
 
     const getNotificationIcon = (type: string) => {
       switch (type.toLowerCase()) {
@@ -32,7 +39,6 @@ export default React.memo(
           return <LoanLogo />;
       }
     };
-
     const formatDate = (date: string) => {
       const notificationDate = new Date(date);
       const today = new Date();
@@ -40,14 +46,14 @@ export default React.memo(
       yesterday.setDate(yesterday.getDate() - 1);
 
       if (notificationDate.toDateString() === today.toDateString()) {
-        return 'Today';
+        return translate(`${TranslationNamespaces.COMMON}:today`);
       } else if (notificationDate.toDateString() === yesterday.toDateString()) {
-        return 'Yesterday';
+        return translate(`${TranslationNamespaces.COMMON}:yesterday`);
       } else {
-        return notificationDate.toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: '2-digit',
-        });
+        // Use current language locale for date formatting
+        return isRTL
+          ? `${toArabicDigits(notificationDate.getDate())}/${toArabicDigits(notificationDate.getMonth())} `
+          : `${notificationDate.getMonth()}/${notificationDate.getDate()} `;
       }
     };
 
@@ -71,8 +77,8 @@ export default React.memo(
               ]}
             />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, isRTL && { textAlign: 'left' }]}>
-            Notifications
+          <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
+            {translate(`${TranslationNamespaces.NOTIFICATIONS}:notifications`)}
           </Text>
         </View>
 
@@ -100,8 +106,7 @@ export default React.memo(
             {/* Notification Content */}
             <View style={styles.notificationContent}>
               <Text style={styles.notificationMessage}>
-                {notification.message ||
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'}
+                {notification.message}
               </Text>
             </View>
           </View>

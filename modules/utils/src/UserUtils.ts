@@ -5,7 +5,6 @@ import {
   removeUser as removeLocalStorageUser,
   removeUnreadNotificationsCount as removeLocalStorageUnreadNotificationsCount,
   removeApiToken as removeLocalStorageApiToken,
-  removeRefreshToken as removeLocalStorageRefreshToken,
   removeFcmToken as removeLocalStorageFcmToken,
   queryNotifications,
   setUnreadNotificationsCount as setLocalStorageUnreadNotificationsCount,
@@ -64,7 +63,7 @@ export const saveRefreshToken = (refreshToken: string) => {
  * Fetch unread notifications count and update the store and local storage.
  * This is called asynchronously and doesn't block navigation.
  */
-const fetchUnreadNotificationsCount = async () => {
+export const fetchUnreadNotificationsCount = async () => {
   try {
     console.info(getLogMessage('fetchUnreadNotificationsCount'));
     const count = await queryNotifications.getUnreadNotificationsCount();
@@ -105,7 +104,7 @@ export const removeLocalStorageUserData = () => {
   removeLocalStorageUser();
   removeLocalStorageUnreadNotificationsCount();
   removeLocalStorageApiToken();
-  removeLocalStorageRefreshToken();
+  // removeLocalStorageRefreshToken();
   removeLocalStorageFcmToken();
 };
 

@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
 import { ResponsiveDimensions } from '@eslam-elmeniawy/react-native-common-components';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
@@ -36,7 +36,43 @@ export const styles = StyleSheet.create({
     color: '#272424',
     textAlign: 'center',
   },
-  button: { marginTop: ResponsiveDimensions.vs(24) },
+  button: {
+    marginTop: ResponsiveDimensions.vs(24),
+    paddingVertical: ResponsiveDimensions.vs(12),
+    paddingHorizontal: ResponsiveDimensions.vs(24),
+    borderRadius: ResponsiveDimensions.vs(8),
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: ResponsiveDimensions.vs(100),
+  },
+  primaryButton: {
+    backgroundColor: '#0038FF',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#0038FF',
+  },
+  buttonText: {
+    fontSize: ResponsiveDimensions.vs(16),
+    fontWeight: '600',
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+  },
+  secondaryButtonText: {
+    color: '#0038FF',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: ResponsiveDimensions.vs(16),
+    gap: ResponsiveDimensions.vs(12),
+  },
+  buttonSpacing: {
+    marginLeft: ResponsiveDimensions.vs(12),
+  },
   cancelBtn: { marginBottom: ResponsiveDimensions.vs(10) },
   cancelBtnReverse: { marginTop: ResponsiveDimensions.vs(10) },
 });

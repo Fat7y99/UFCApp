@@ -31,4 +31,5 @@ export default {
   usernameCannotContainSpaces: 'لا يمكن أن يحتوي اسم المستخدم على مسافات',
   usernameCannotContainSpecialCharacters:
     'لا يمكن أن يحتوي اسم المستخدم على أحرف خاصة',
+  idNumberMustBe10Characters: 'يجب أن يكون رقم الهوية 10 أرقام',
 };

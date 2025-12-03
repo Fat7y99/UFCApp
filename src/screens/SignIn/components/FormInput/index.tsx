@@ -37,6 +37,7 @@ const FormInput: React.FC<FormInputProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: ResponsiveDimensions.vs(16),
+    width: '100%',
   },
   input: {
     height: ResponsiveDimensions.vs(50),
@@ -47,6 +48,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: ResponsiveDimensions.vs(16),
     color: 'white',
     fontSize: ResponsiveDimensions.vs(16),
+    width: '100%',
+    overflow: 'hidden',
   },
 });
 

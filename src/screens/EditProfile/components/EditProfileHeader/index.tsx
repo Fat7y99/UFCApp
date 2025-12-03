@@ -13,6 +13,7 @@ import {
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
+import { useAppPermissions } from '@src/App/useAppPermissions';
 import type { RootStackParamList } from '@src/navigation';
 import { setUser, useAppSelector } from '@src/store';
 import { useUpdateImageProfileApi, useGetCurrentUserApi } from '@modules/core';
@@ -35,7 +36,7 @@ const EditProfileHeader: React.FC<{
   const { data: currentUser, refetch: refetchUser } = useGetCurrentUserApi({
     enabled: isLoggedIn,
   });
-
+  const { requestPhotoPermission } = useAppPermissions();
   // Update Redux and parent component when user data changes
   useEffect(() => {
     if (currentUser) {
@@ -76,7 +77,7 @@ const EditProfileHeader: React.FC<{
     navigation.goBack();
   };
 
-  const handleAddPhotoPress = () => {
+  const handleAddPhotoPress = async () => {
     const options = {
       mediaType: 'photo' as MediaType,
       quality: 0.8 as const,
@@ -84,44 +85,52 @@ const EditProfileHeader: React.FC<{
       maxHeight: 1024,
       includeBase64: false,
     };
-
-    launchImageLibrary(options, (response: ImagePickerResponse) => {
-      if (response.didCancel) {
-        return;
-      }
-
-      if (response.errorMessage) {
+    await requestPhotoPermission().then(hasPermission => {
+      if (!hasPermission) {
         Toast.show({
           type: 'fail',
-          text1: response.errorMessage,
+          text1: 'Please grant photo permission to continue',
         });
         return;
       }
-
-      if (response.assets && response.assets[0]) {
-        const asset = response.assets[0];
-        if (asset.uri) {
-          // Create FormData
-          const formData = new FormData();
-
-          // Determine file type
-          const fileType = asset.type || 'image/jpeg';
-          const fileName = asset.fileName || `profile_${Date.now()}.jpg`;
-
-          // Append file to FormData
-          formData.append('image', {
-            uri:
-              Platform.OS === 'ios'
-                ? asset.uri.replace('file://', '')
-                : asset.uri,
-            type: fileType,
-            name: fileName,
-          } as any);
-
-          // Call API
-          updateImage({ body: formData });
+      launchImageLibrary(options, (response: ImagePickerResponse) => {
+        if (response.didCancel) {
+          return;
         }
-      }
+
+        if (response.errorMessage) {
+          Toast.show({
+            type: 'fail',
+            text1: response.errorMessage,
+          });
+          return;
+        }
+
+        if (response.assets && response.assets[0]) {
+          const asset = response.assets[0];
+          if (asset.uri) {
+            // Create FormData
+            const formData = new FormData();
+
+            // Determine file type
+            const fileType = asset.type || 'image/jpeg';
+            const fileName = asset.fileName || `profile_${Date.now()}.jpg`;
+
+            // Append file to FormData
+            formData.append('image', {
+              uri:
+                Platform.OS === 'ios'
+                  ? asset.uri.replace('file://', '')
+                  : asset.uri,
+              type: fileType,
+              name: fileName,
+            } as any);
+
+            // Call API
+            updateImage({ body: formData });
+          }
+        }
+      });
     });
   };
   const storedUser = useAppSelector(state => state.user.user);

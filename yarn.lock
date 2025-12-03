@@ -4829,6 +4829,7 @@ __metadata:
     react-i18next: ^15.7.3
     react-native: 0.81.4
     react-native-asset: ^2.1.1
+    react-native-biometrics: ^3.0.1
     react-native-bootsplash: ^6.3.11
     react-native-clean-project: ^4.0.3
     react-native-config: ^1.5.9
@@ -4843,6 +4844,7 @@ __metadata:
     react-native-network-logger: ^2.0.1
     react-native-orientation-locker: ^1.7.0
     react-native-paper: ^5.14.5
+    react-native-permissions: ^5.4.4
     react-native-progress: ^5.0.1
     react-native-reanimated: ^4.1.0
     react-native-restart: ^0.0.27
@@ -4860,6 +4862,7 @@ __metadata:
     reactotron-react-native-mmkv: ^0.2.9
     reactotron-react-query: ^2.0.2
     redux-logger: ^3.0.6
+    rn-local-authentication: ^1.2.5
     run-script-os: ^1.1.6
     tinycolor2: ^1.6.0
     toastify-react-native: ^7.2.3
@@ -11907,6 +11910,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-biometrics@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "react-native-biometrics@npm:3.0.1"
+  peerDependencies:
+    react-native: ">=0.60.0"
+  checksum: 3864fea4bbf3dee1d360daf048e4f9980083c4e919e95082a5e4646e3b22475bb2b592cae18cccd7fb55b50498dca29e5346cf98d958646cbfc26fed5654bc53
+  languageName: node
+  linkType: hard
+
 "react-native-bootsplash@npm:^6.3.11":
   version: 6.3.11
   resolution: "react-native-bootsplash@npm:6.3.11"
@@ -12101,6 +12113,20 @@ __metadata:
     react-native: "*"
     react-native-safe-area-context: "*"
   checksum: f986937ebeb2cdea338d384dfc7814d2c0dbe3e8cd3645ce720832b78f588eccf3fc490bf1afb942a9d6046cd842984c011316c4d9c2fabf59a38ae1a47fccb3
+  languageName: node
+  linkType: hard
+
+"react-native-permissions@npm:^5.4.4":
+  version: 5.4.4
+  resolution: "react-native-permissions@npm:5.4.4"
+  peerDependencies:
+    react: ">=18.1.0"
+    react-native: ">=0.70.0"
+    react-native-windows: ">=0.70.0"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 43deb38d03321c6b23c7f9f6e1561a629e3aff1e4be20e643ff85010f040b82d707a7db43179108a203663cd138da2f3b6d954f1b278f44ed85797ec49bbacb1
   languageName: node
   linkType: hard
 
@@ -12735,6 +12761,15 @@ __metadata:
   bin:
     rimraf: bin.js
   checksum: 87f4164e396f0171b0a3386cc1877a817f572148ee13a7e113b238e48e8a9f2f31d009a92ec38a591ff1567d9662c6b67fd8818a2dbbaed74bc26a87a2a4a9a0
+  languageName: node
+  linkType: hard
+
+"rn-local-authentication@npm:^1.2.5":
+  version: 1.2.5
+  resolution: "rn-local-authentication@npm:1.2.5"
+  peerDependencies:
+    react-native: "*"
+  checksum: 1036ee805a51c744c218e66e464a7b75e715d97a7a4a2c3c9a61820f42525c543e5f62e837407fc1976302c17def1ef00143dcdad8475b9c99f5194c668fbec6
   languageName: node
   linkType: hard
 

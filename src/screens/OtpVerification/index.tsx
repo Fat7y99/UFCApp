@@ -15,6 +15,7 @@ import {
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
 
+import { convertArabicNumberToEnglish } from '@src/utils/InputFormatting';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { useSignupApi } from '@modules/core';
@@ -93,7 +94,7 @@ export default React.memo(() => {
       }
 
       navigation.navigate('resetPassword', {
-        phone: phoneNumber,
+        phone: convertArabicNumberToEnglish(phoneNumber || ''),
         otp: fullOtp,
       });
     } else {
@@ -110,7 +111,9 @@ export default React.memo(() => {
         body: {
           ...signupData,
           otp: fullOtp,
-          phone: signupData.phone || phoneNumber,
+          phone: convertArabicNumberToEnglish(
+            signupData.phone || phoneNumber || '',
+          ),
         },
       });
     }

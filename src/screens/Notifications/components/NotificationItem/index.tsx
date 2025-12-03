@@ -1,11 +1,14 @@
 import { Text } from '@eslam-elmeniawy/react-native-common-components';
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { I18nManager, View } from 'react-native';
 import { TouchableRipple } from 'react-native-paper';
 import type { RootStackParamList } from '@src/navigation';
+import { toArabicDigits } from '@src/utils/InputFormatting';
 import { LoanLogo, AccountLogo, AlertLogo } from '@modules/assets';
 import { useMarkNotificationReadApi, type ApiRequest } from '@modules/core';
+import { TranslationNamespaces } from '@modules/localization';
 import { processNotification } from '@modules/utils';
 import styles from './styles';
 import type { NotificationItemProps } from './types';
@@ -22,6 +25,7 @@ export default React.memo((props: NotificationItemProps) => {
   const { item: notification } = props;
   const navigation = useNavigation<NavigationProp>();
   const markAsReadMutation = useMarkNotificationReadApi();
+  const { t: translate } = useTranslation([TranslationNamespaces.COMMON]);
 
   const onNotificationPress = () => {
     console.info(getLogMessage('onNotificationPress'), notification);
@@ -50,22 +54,24 @@ export default React.memo((props: NotificationItemProps) => {
         return <LoanLogo />;
     }
   };
-
+  const isRtl = I18nManager.isRTL;
   const formatDate = (date: string) => {
+    console.log('date', date);
     const notificationDate = new Date(date);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
     if (notificationDate.toDateString() === today.toDateString()) {
-      return 'Today';
+      return translate(`${TranslationNamespaces.COMMON}:today`);
     } else if (notificationDate.toDateString() === yesterday.toDateString()) {
-      return 'Yesterday';
+      return translate(`${TranslationNamespaces.COMMON}:yesterday`);
     } else {
-      return notificationDate.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-      });
+      // Use current language locale for date formatting
+
+      return isRtl
+        ? `${toArabicDigits(notificationDate.getDate())}/${toArabicDigits(notificationDate.getMonth())} `
+        : `${notificationDate.getMonth()}/${notificationDate.getDate()} `;
     }
   };
 

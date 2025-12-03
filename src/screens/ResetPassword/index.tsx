@@ -14,6 +14,7 @@ import {
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
 import { FormInput } from '@src/screens/SignIn/components';
+import { convertArabicNumberToEnglish } from '@src/utils/InputFormatting';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { useForgetPasswordApi } from '@modules/core';
@@ -110,7 +111,7 @@ export default React.memo(() => {
       body: {
         otp: otpCode,
         password: password,
-        phone: phoneNumber,
+        phone: convertArabicNumberToEnglish(phoneNumber || ''),
       },
     });
   };

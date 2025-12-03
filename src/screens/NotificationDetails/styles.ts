@@ -34,12 +34,16 @@ const styles = StyleSheet.create({
     fontSize: ResponsiveDimensions.vs(20),
     fontWeight: 'bold',
   },
+  headerTitleRTL: {
+    textAlign: 'left',
+  },
   scrollView: {
     flex: 1,
-    paddingHorizontal: ResponsiveDimensions.vs(20),
+    // paddingHorizontal: ResponsiveDimensions.vs(20),
     paddingTop: ResponsiveDimensions.vs(20),
   },
   contentCard: {
+    flex: 1,
     backgroundColor: 'white',
     padding: ResponsiveDimensions.vs(20),
   },
@@ -47,6 +51,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: ResponsiveDimensions.vs(20),
+    backgroundColor: 'white',
   },
   iconContainer: {
     width: ResponsiveDimensions.vs(50),

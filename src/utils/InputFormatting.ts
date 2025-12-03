@@ -193,3 +193,12 @@ export const filterEnglishLettersAndSpaces = (text: string): string =>
   text.replace(/[^a-zA-Z\s\u0600-\u06FF]/g, '');
 export const convertArabicNumberToEnglish = (number: string) =>
   number.replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660));
+
+export const toArabicDigits = (value: string | number) => {
+  const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+  return value
+    .toString()
+    .replace(/[0-9]/g, digit => arabic[english.indexOf(digit)]);
+};

@@ -8,7 +8,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { validateEmail } from '@src/utils/InputFormatting';
+import {
+  convertArabicNumberToEnglish,
+  validateEmail,
+} from '@src/utils/InputFormatting';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 
@@ -163,6 +166,17 @@ const SignupButton: React.FC<SignupButtonProps> = ({
       return true;
     }
     if (fieldKey === 'idNumber') {
+      //validate it should be 10 characters
+      if (value.length !== 10) {
+        Toast.show({
+          type: 'fail',
+          text1: translate(
+            `${TranslationNamespaces.SIGNUP}:idNumberMustBe10Characters`,
+          ),
+        });
+        return false;
+      }
+
       // Must start with 1 or 2
       if (
         value.length > 0 &&
@@ -217,7 +231,7 @@ const SignupButton: React.FC<SignupButtonProps> = ({
       sendOTP(
         {
           body: {
-            phone: formData.mobileNumber,
+            phone: convertArabicNumberToEnglish(formData.mobileNumber || ''),
             username: formData.username,
             email: formData.email,
           },
@@ -225,11 +239,17 @@ const SignupButton: React.FC<SignupButtonProps> = ({
         {
           onSuccess: () => {
             navigation.navigate('otpVerification', {
-              phone: formData.mobileNumber,
+              phone: convertArabicNumberToEnglish(formData.mobileNumber || ''),
               signupData: formData,
               resendOtpHandler: () => {
                 sendOTP(
-                  { body: { phone: formData.mobileNumber } },
+                  {
+                    body: {
+                      phone: convertArabicNumberToEnglish(
+                        formData.mobileNumber || '',
+                      ),
+                    },
+                  },
                   {
                     onSuccess: () => {},
                     onError: error => {

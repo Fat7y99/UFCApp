@@ -22,4 +22,9 @@ export default {
   phoneNumberRequired: 'رقم الهاتف مطلوب',
   failedToSendOtp: 'فشل إرسال رمز التحقق. يرجى المحاولة مرة أخرى.',
   invalidCredentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
+  noSavedCredentials: 'لم يتم العثور على بيانات محفوظة. يرجى تسجيل الدخول باسم المستخدم وكلمة المرور أولاً.',
+  biometricNotAvailable: 'المصادقة البيومترية غير متاحة على هذا الجهاز.',
+  authenticateToSignIn: 'المصادقة لتسجيل الدخول',
+  biometricAuthentication: 'المصادقة البيومترية',
+  fetchingUserDetails: 'جلب تفاصيل المستخدم',
 };

@@ -169,7 +169,7 @@ const PersonalStep3: React.FC = () => {
         serviceId,
         customerBaseInfo: {
           name: name || undefined,
-          phone: mobile || undefined,
+          phone: convertArabicNumberToEnglish(mobile || ''),
           birthDate: dob || undefined,
           employer: employer || undefined,
           jobTitle: jobTitle || undefined,

@@ -27,7 +27,6 @@ import {
 } from '@src/store/realEstateForm';
 import {
   getInputConstraints,
-  formatNumber,
   formatInput,
   filterEnglishLettersAndSpaces,
   validateInput,
@@ -258,7 +257,7 @@ const RealEstateStep3: React.FC = () => {
         },
         customerBaseInfo: {
           name: name || undefined,
-          phone: mobile || undefined,
+          phone: convertArabicNumberToEnglish(mobile || ''),
           birthDate: dob || undefined,
           employer: employer || undefined,
           jobTitle: jobTitle || undefined,
@@ -436,7 +435,7 @@ const RealEstateStep3: React.FC = () => {
                 value={propertyAge}
                 onChangeText={text => {
                   setTouchedFields(prev => new Set(prev).add('propertyAge'));
-                  dispatch(setPropertyAge(formatNumber(text)));
+                  dispatch(setPropertyAge(text));
                 }}
                 {...getInputConstraints('year')}
               />

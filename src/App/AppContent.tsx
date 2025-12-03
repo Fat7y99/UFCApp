@@ -6,10 +6,16 @@ import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@src/navigation';
 import { useSplash } from '@src/screens/Splash/useSplash';
 import toastConfig from '@src/utils/Toast';
-import { ToastManager, ErrorDialog, LoadingDialog } from '@modules/components';
+import {
+  ToastManager,
+  ErrorDialog,
+  LoadingDialog,
+  InternetDialog,
+} from '@modules/components';
 import { useAppTheme } from '@modules/theme';
 import { clientPersister, queryClient } from '@modules/utils';
 
+import { useAppPermissions } from './useAppPermissions';
 import { useForegroundMessagesListener } from './useForegroundMessagesListener';
 import { useLocalizationInitialization } from './useLocalizationInitialization';
 
@@ -30,6 +36,7 @@ export default React.memo(() => {
   // useFirebaseMessagingInitialization();
   useForegroundMessagesListener();
   useNotificationsInteraction();
+  useAppPermissions(true);
   const HideSplash = () => {
     useSplash({
       isBootSplashLogoLoaded: true,
@@ -51,6 +58,7 @@ export default React.memo(() => {
           <HideSplash />
           <ErrorDialog />
           <LoadingDialog />
+          <InternetDialog />
         </PersistQueryClientProvider>
         <ToastManager />
         <Toast config={toastConfig} />

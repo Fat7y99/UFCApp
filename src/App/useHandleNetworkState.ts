@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { Toast } from 'toastify-react-native';
 import {
   useAppDispatch,
   removeIsConnectionExpensive,
   setIsConnectionExpensive,
   setIsInternetAvailable,
 } from '@src/store';
-import { translate } from '@modules/localization';
 import type { NetInfoState } from '@react-native-community/netinfo';
 
 export const useHandleNetworkState = () => {
@@ -53,24 +51,10 @@ export const useHandleNetworkState = () => {
     [dispatch],
   );
 
-  const handleInternetLoastToast = React.useCallback(
-    (isInternetAvailable: boolean | null) => {
-      console.info(getLogMessage('handleInternetLoastToast'));
-
-      if (isInternetAvailable === false) {
-        Toast.show({ type: 'error', text2: translate('internetLost') });
-      } else {
-        Toast.hide();
-      }
-    },
-    [],
-  );
-
   /**
    * handleNetworkState
    *
    * Save network state to redux store.
-   * Check if not internet then show connection lost toast.
    *
    * @param state The new network state to handle.
    */
@@ -80,19 +64,12 @@ export const useHandleNetworkState = () => {
       console.info(getLogMessage('state'), state);
 
       // Check Internet available state.
-      const isInternetAvailable = checkInternetAvailableState(state);
+      checkInternetAvailableState(state);
 
       // Check connection expensive state.
       checkConnectionExpensiveState(state);
-
-      // Show internet lost toast if no Internet connection available.
-      handleInternetLoastToast(isInternetAvailable);
     },
-    [
-      checkConnectionExpensiveState,
-      checkInternetAvailableState,
-      handleInternetLoastToast,
-    ],
+    [checkConnectionExpensiveState, checkInternetAvailableState],
   );
 
   return handleNetworkState;

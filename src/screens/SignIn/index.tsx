@@ -21,9 +21,11 @@ import { useAppTheme, AppColors } from '@modules/theme';
 import {
   FormInput,
   SignInButton,
+  BiometricButton,
   SignUpLink,
   ForgotPasswordLink,
 } from './components';
+import useBiometricButton from './components/BiometricButton/useBiometricButton';
 import useSignInButton from './components/SignInButton/useSignInButton';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -33,6 +35,7 @@ export default React.memo(() => {
   const theme = useAppTheme();
   const navigation = useNavigation<NavigationProp>();
   const { isSigningIn, onSignInPress } = useSignInButton();
+  const { isAuthenticating, onBiometricPress } = useBiometricButton();
 
   // Form state
   const [formData, setFormData] = React.useState({
@@ -128,8 +131,15 @@ export default React.memo(() => {
             {/* Forgot Password Link */}
             <ForgotPasswordLink onPress={handleForgotPassword} />
 
-            {/* Sign In Button */}
-            <SignInButton onPress={handleSignIn} disabled={isSigningIn} />
+            {/* Sign In Button and Biometric Button */}
+            <View style={styles.buttonsContainer}>
+              <SignInButton onPress={handleSignIn} disabled={isSigningIn} />
+
+              <BiometricButton
+                onPress={onBiometricPress}
+                disabled={isAuthenticating || isSigningIn}
+              />
+            </View>
 
             {/* Sign Up Link */}
             <SignUpLink onPress={handleSignUp} />
@@ -182,6 +192,13 @@ const styles = StyleSheet.create({
   formContainer: {
     gap: ResponsiveDimensions.vs(16),
   },
+  buttonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ResponsiveDimensions.vs(12),
+    marginBottom: ResponsiveDimensions.vs(20),
+    width: '100%',
+  },
   passwordInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -192,10 +209,13 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: ResponsiveDimensions.vs(15),
     paddingHorizontal: ResponsiveDimensions.vs(16),
+    width: '100%',
+    overflow: 'hidden',
   },
   passwordInput: {
     flex: 1,
     color: 'white',
     fontSize: ResponsiveDimensions.vs(16),
+    minWidth: 0,
   },
 });

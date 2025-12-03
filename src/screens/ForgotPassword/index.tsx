@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import type { RootStackParamList } from '@src/navigation';
+import { convertArabicNumberToEnglish } from '@src/utils/InputFormatting';
 import { LogoIcon, AppImages } from '@modules/assets';
 import { Screen } from '@modules/components';
 import { useSendForgetPasswordOTPApi } from '@modules/core';
@@ -32,11 +33,13 @@ export default React.memo(() => {
   const { mutate: sendOTP, isPending } = useSendForgetPasswordOTPApi({
     onSuccess: () => {
       navigation.navigate('otpVerification', {
-        phone: phoneNumber,
+        phone: convertArabicNumberToEnglish(phoneNumber || ''),
         isForgetPassword: true,
         resendOtpHandler: () => {
           sendOTP(
-            { body: { phone: phoneNumber } },
+            {
+              body: { phone: convertArabicNumberToEnglish(phoneNumber || '') },
+            },
             {
               onSuccess: () => {},
               onError: error => {
@@ -75,7 +78,9 @@ export default React.memo(() => {
       return;
     }
 
-    sendOTP({ body: { phone: phoneNumber } });
+    sendOTP({
+      body: { phone: convertArabicNumberToEnglish(phoneNumber || '') },
+    });
   };
 
   return (

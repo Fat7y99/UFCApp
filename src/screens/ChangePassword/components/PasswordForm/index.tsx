@@ -63,6 +63,7 @@ const PasswordForm: React.FC = () => {
         autoCapitalize="none"
         autoCorrect={false}
         textAlign={isRTL ? 'right' : 'left'}
+        maxLength={50}
       />
     </View>
   );

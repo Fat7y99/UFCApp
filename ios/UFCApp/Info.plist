@@ -85,5 +85,11 @@
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to allow you to select and upload profile pictures.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need access to save photos to your photo library.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>We need permission to send you notifications about important updates and messages.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>We need to use Face ID or Touch ID to authenticate and sign you in securely.</string>
 </dict>
 </plist>

@@ -52,4 +52,10 @@ export default {
   maxLimitSendOTP: 'تم الوصول إلى الحد الأقصى لإرسال رمز التحقق',
   validationFailed: 'فشل التحقق',
   close: 'إغلاق',
+  today: 'اليوم',
+  yesterday: 'أمس',
+  internetLostTitle: 'لا يوجد اتصال بالإنترنت',
+  internetLostDescription:
+    'يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.',
+  settings: 'الإعدادات',
 };

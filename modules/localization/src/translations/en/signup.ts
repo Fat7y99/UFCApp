@@ -31,4 +31,5 @@ export default {
   usernameCannotContainSpaces: 'Username cannot contain spaces',
   usernameCannotContainSpecialCharacters:
     'Username cannot contain special characters',
+  idNumberMustBe10Characters: 'ID number must be 10 characters',
 };

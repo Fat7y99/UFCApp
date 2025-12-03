@@ -22,4 +22,9 @@ export default {
   phoneNumberRequired: 'Phone number is required',
   failedToSendOtp: 'Failed to send OTP. Please try again.',
   invalidCredentials: 'Your username or password is incorrect',
+  noSavedCredentials: 'No saved credentials found. Please sign in with username and password first.',
+  biometricNotAvailable: 'Biometric authentication is not available on this device.',
+  authenticateToSignIn: 'Authenticate to sign in',
+  biometricAuthentication: 'Biometric Authentication',
+  fetchingUserDetails: 'fetching user details',
 };

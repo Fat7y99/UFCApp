@@ -278,6 +278,35 @@ const getErrorMessage = (error: AxiosError<ServerErrorResponse>) => {
 
 const handleAxiosError = async (error: AxiosError<ServerErrorResponse>) => {
   console.info(getLogMessage('handleAxiosError'), error);
+
+  // Check for timeout or network errors
+  const isTimeoutError =
+    error.code === 'ECONNABORTED' ||
+    error.message?.toLowerCase().includes('timeout') ||
+    error.message === translate('networkError');
+
+  const isNetworkError =
+    error.code === 'ERR_NETWORK' ||
+    error.code === 'ENOTFOUND' ||
+    error.code === 'ECONNREFUSED' ||
+    (!error.response && error.request);
+
+  if (isTimeoutError || isNetworkError) {
+    console.info(getLogMessage('Timeout or network error detected'), {
+      isTimeoutError,
+      isNetworkError,
+      code: error.code,
+    });
+    const severError: ServerError = {
+      ...error,
+      date: new Date(),
+      status: error.response?.status,
+      data: error.response?.data,
+      errorMessage: translate('internetLost'),
+    };
+    return Promise.reject(severError);
+  }
+
   const isLoginRequestStatus = isLoginRequest(error.config?.url);
   if (isLoginRequestStatus) {
     const severError: ServerError = {
@@ -360,13 +389,34 @@ const responseFulfilledInterceptor = (response: AxiosResponse<any, any>) => {
 
 const responseRejectedInterceptor = async (error: any) => {
   console.error(
-    getLogMessage(`❌ Got Error from %c${error.response?.config?.url}`),
+    getLogMessage(
+      `❌ Got Error from %c${error.response?.config?.url || error.config?.url || 'unknown'}`,
+    ),
     `color: ${ConsoleColors.url}`,
     error,
   );
 
   if (axios.isAxiosError<ServerErrorResponse>(error)) {
     return handleAxiosError(error);
+  }
+
+  // Handle non-axios errors (like timeout)
+  const isTimeoutError =
+    error.code === 'ECONNABORTED' ||
+    error.message?.toLowerCase().includes('timeout') ||
+    error.message === translate('networkError');
+
+  const isNetworkError =
+    error.code === 'ERR_NETWORK' ||
+    error.code === 'ENOTFOUND' ||
+    error.code === 'ECONNREFUSED';
+
+  if (isTimeoutError || isNetworkError) {
+    const severError: ServerError = {
+      ...error,
+      errorMessage: translate('internetLost'),
+    };
+    return Promise.reject(severError);
   }
 
   const severError: ServerError = {
