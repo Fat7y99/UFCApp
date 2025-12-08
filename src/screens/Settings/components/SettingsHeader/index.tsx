@@ -11,6 +11,7 @@ import {
   I18nManager,
 } from 'react-native';
 
+import { useAppSelector } from '@src/store';
 import { translate } from '@modules/localization';
 import { TranslationNamespaces } from '@modules/localization/src/enums';
 import { AppColors } from '@modules/theme';
@@ -28,7 +29,7 @@ const SettingsHeader: React.FC<{ imageUrl: string | undefined }> = ({
   const handleBackPress = () => {
     navigation.navigate('Home');
   };
-
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   return (
     <View style={styles.container}>
       <StatusBar
@@ -55,7 +56,14 @@ const SettingsHeader: React.FC<{ imageUrl: string | undefined }> = ({
         {/* Avatar floating in the middle */}
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
-            <Image source={{ uri: imageUrl as string }} style={styles.avatar} />
+            {isLoggedIn ? (
+              <Image
+                source={{ uri: imageUrl as string }}
+                style={styles.avatar}
+              />
+            ) : (
+              <Text style={styles.avatarText}>👤</Text>
+            )}
           </View>
         </View>
 

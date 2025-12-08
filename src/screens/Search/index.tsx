@@ -96,7 +96,7 @@ const Search: React.FC = () => {
       });
     },
   });
-
+  const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
   // Unfavourite mutation
   const { mutate: unfavourite, isPending: isUnfavouriting } = useUnfavouriteApi(
     {
@@ -128,15 +128,12 @@ const Search: React.FC = () => {
 
   // Handle favourite/unfavourite
   const handleFavouriteToggle = (serviceId: number) => {
-    if (!user) {
-      Toast.show({
-        type: 'fail',
-        text1: translate(`${TranslationNamespaces.COMMON}:unauthorized`),
-      });
+    const isFavourite = favouriteServiceIds.has(serviceId);
+    console.log('isLoggedIn', isLoggedIn);
+    if (!isLoggedIn) {
+      goSignUpScreen();
       return;
     }
-
-    const isFavourite = favouriteServiceIds.has(serviceId);
     if (isFavourite) {
       unfavourite({ pathVar: serviceId });
     } else {
@@ -349,17 +346,19 @@ const Search: React.FC = () => {
                   )}
                 </View>
                 {/* Favourite/Unfavourite icon */}
-                <TouchableOpacity
-                  style={{ paddingStart: ResponsiveDimensions.vs(10) }}
-                  onPress={() => handleFavouriteToggle(service.id)}
-                  disabled={isFavouriting || isUnfavouriting}
-                >
-                  {favouriteServiceIds.has(service.id) ? (
-                    <FavIcon />
-                  ) : (
-                    <UnFavIcon />
-                  )}
-                </TouchableOpacity>
+                {isLoggedIn && (
+                  <TouchableOpacity
+                    style={{ paddingStart: ResponsiveDimensions.vs(10) }}
+                    onPress={() => handleFavouriteToggle(service.id)}
+                    disabled={isFavouriting || isUnfavouriting}
+                  >
+                    {favouriteServiceIds.has(service.id) ? (
+                      <FavIcon />
+                    ) : (
+                      <UnFavIcon />
+                    )}
+                  </TouchableOpacity>
+                )}
               </TouchableOpacity>
             ))
           ) : (

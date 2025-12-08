@@ -17,8 +17,12 @@ export default () => {
   const isLoggedIn = useAppSelector(state => state.user.isLoggedIn);
 
   React.useEffect(() => {
+    console.log('isLoggedIn', isLoggedIn);
     if (isLoggedIn) {
+      console.log('if isLoggedIn');
       fetchUnreadNotificationsCount();
+    } else {
+      console.log('else isLoggedIn');
     }
   }, [isLoggedIn]);
   return (

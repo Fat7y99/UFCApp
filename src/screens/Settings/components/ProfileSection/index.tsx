@@ -28,7 +28,7 @@ const ProfileSection: React.FC<{
   return (
     <View style={styles.container}>
       {/* Username */}
-      {currentUser ? (
+      {isLoggedIn && currentUser ? (
         <>
           <Text style={[styles.username, isRTL && { textAlign: 'left' }]}>
             {isRTL ? ' ' : ''}
