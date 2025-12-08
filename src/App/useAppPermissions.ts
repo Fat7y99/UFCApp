@@ -141,20 +141,16 @@ export const useAppPermissions = (fromApp?: boolean) => {
         // Check iOS photo permission status without requesting
         const result = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
 
-        // GRANTED means full access to all photos
-        // LIMITED means access only to selected photos (iOS enforces this at system level)
-        const hasPermission = result === RESULTS.GRANTED;
-        const hasLimitedAccess = result === RESULTS.LIMITED;
+        const hasPermission =
+          result === RESULTS.GRANTED || result === RESULTS.LIMITED;
 
         console.info(
           getLogMessage('iOS photo permission status (checked)'),
           result,
-          `Full access: ${hasPermission}, Limited access: ${hasLimitedAccess}`,
+          hasPermission,
         );
 
-        // Return true for both GRANTED and LIMITED
-        // iOS enforces limited access - app can only access selected photos when LIMITED
-        return hasPermission || hasLimitedAccess;
+        return hasPermission;
       } else if (Platform.OS === 'android') {
         // Android 13+ uses READ_MEDIA_IMAGES
         // Android < 13 uses READ_EXTERNAL_STORAGE
@@ -201,31 +197,23 @@ export const useAppPermissions = (fromApp?: boolean) => {
 
       if (Platform.OS === 'ios') {
         // Use react-native-permissions to request iOS photo permissions
-        // This will show the native iOS permission modal with options:
-        // - "Select Photos..." (limited access) -> RESULTS.LIMITED
-        // - "Allow Access to All Photos" (full access) -> RESULTS.GRANTED
+        // This will show the native iOS permission modal
         const result = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
 
-        // Only GRANTED means full access to all photos
-        // LIMITED means access only to selected photos (iOS enforces this)
-        const isGranted = result === RESULTS.GRANTED;
-        const isLimited = result === RESULTS.LIMITED;
+        const isGranted =
+          result === RESULTS.GRANTED || result === RESULTS.LIMITED;
 
         console.info(
           getLogMessage('iOS photo permission status'),
           result,
-          `Full access: ${isGranted}, Limited access: ${isLimited}`,
+          isGranted,
         );
 
-        if (result === RESULTS.DENIED || result === RESULTS.BLOCKED) {
+        if (!isGranted) {
           console.warn(getLogMessage('iOS photo permission denied'));
-          return false;
         }
 
-        // Return true for both GRANTED and LIMITED
-        // LIMITED access is enforced by iOS - app can only access selected photos
-        // This allows the app to proceed with image picker, which respects limited access
-        return isGranted || isLimited;
+        return isGranted;
       } else if (Platform.OS === 'android') {
         // Android 13+ uses READ_MEDIA_IMAGES
         // Android < 13 uses READ_EXTERNAL_STORAGE
